@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+import dj_database_url 
 
 from pathlib import Path 
 import os 
@@ -26,9 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-7#1^7b*)c0m796z4mul^!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'false' # Get from env var, default True for local dev
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
-
-
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,tijaniapatira.onrender.com').split(',')
 # Application definition
 
 INSTALLED_APPS = [
@@ -77,16 +76,25 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql', # Change to postgresql
-        'NAME': 'myportfolio_db',                 # Your database name
-        'USER': 'myportfolio_user',               # Your database username
-        'PASSWORD': 'Tijania32000',       # Your database password
-        'HOST': 'localhost',                      # For local development. On Render, this will be provided by Render's Postgres.
-        'PORT': '',                               # Leave empty for default (5432) or specify if needed.
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # For Render deployment
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    # For local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'myportfolio_db',                 # Your local database name
+            'USER': 'myportfolio_user',               # Your local database username
+            'PASSWORD': 'Tijania32000',       # Your local database password
+            'HOST': 'localhost',                      # For local development
+            'PORT': '',                               # Leave empty for default (5432) or specify if needed.
+        }
+    }
 
 
 # Password validation
