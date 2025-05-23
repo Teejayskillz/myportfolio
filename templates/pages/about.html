@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Me{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">About Me</h1>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            {% comment %}
+            <img src="{% static 'img/your_profile_picture.jpg' %}" alt="Your Profile Picture" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            {% endcomment %}
+            <p class="lead">Aspiring Django Developer</p>
+        </div>
+        <div class="col-md-8">
+            <p>Hello! I'm [Your Name], a passionate Django developer. I enjoy creating web applications that solve real-world problems. My journey into programming started with [mention briefly how you started, e.g., a simple Python script, an online course].</p>
+            <p>I have experience with:
+                <ul>
+                    <li><strong>Languages:</strong> Python, JavaScript (basic)</li>
+                    <li><strong>Frameworks:</strong> Django, Django REST Framework (basic)</li>
+                    <li><strong>Databases:</strong> PostgreSQL, SQLite</li>
+                    <li><strong>Frontend:</strong> HTML, CSS (with Bootstrap), basic JavaScript</li>
+                    <li><strong>Tools:</strong> Git, GitHub</li>
+                </ul>
+            </p>
+            <p>I'm always eager to learn new technologies and improve my skills. Feel free to connect with me!</p>
+        </div>
+    </div>
+
+    <h2 class="mt-5 mb-3">My Skills</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Backend</h4>
+            <ul>
+                <li>Django</li>
+                <li>Python</li>
+                <li>REST APIs (DRF)</li>
+                <li>Database ORM</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h4>Frontend & Tools</h4>
+            <ul>
+                <li>HTML5</li>
+                <li>CSS3 (Bootstrap)</li>
+                <li>Git & GitHub</li>
+                <li>Basic JavaScript</li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

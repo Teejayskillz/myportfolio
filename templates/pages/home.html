@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome to My Portfolio{% endblock %}
+
+{% block content %}
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-5 fw-bold">Hi, I'm Tijani Apatira!</h1>
+            <p class="col-md-8 fs-4 mx-auto">A passionate Django developer building robust web applications. Explore my projects to see what I've been working on.</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'projects:project_list' %}" role="button">View My Projects</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'contact:contact_page' %}" role="button">Contact Me </a>
+
+            <h2> You can also contact us </h2>  
+ 
+              
+        </div>
+    </div>
+
+    <section class="my-5 text-center">
+        <h2>What I Do</h2>
+        <p>I build dynamic and scalable web applications using Python and Django. My focus is on clean code, efficient solutions, and user-friendly interfaces.</p>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <h3>Backend Development</h3>
+                <p>Building powerful APIs and robust server-side logic.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>Database Design</h3>
+                <p>Structuring efficient and reliable databases for data integrity.</p>
+            </div>
+            <div class="col-md-4">
+                <h3>Deployment & Scaling</h3>
+                <p>Getting applications live and ready for growth.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

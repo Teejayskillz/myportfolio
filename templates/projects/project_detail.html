@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - Project Details{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ project.title }}</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            {% if project.image %}
+                <img src="{{ project.image.url }}" class="img-fluid rounded shadow-sm mb-4" alt="{{ project.title }}">
+            {% else %}
+                <img src="{% static 'img/placeholder_project.jpg' %}" class="img-fluid rounded shadow-sm mb-4" alt="Placeholder Image">
+            {% endif %}
+
+            <p>{{ project.description|linebreaksbr }}</p>
+
+            <h4 class="mt-4">Technologies Used:</h4>
+            <p>{{ project.technologies }}</p>
+
+            <div class="mt-4">
+                {% if project.github_url %}
+                    <a href="{{ project.github_url }}" class="btn btn-dark me-2" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                {% endif %}
+                {% if project.live_demo_url %}
+                    <a href="{{ project.live_demo_url }}" class="btn btn-success" target="_blank" rel="noopener noreferrer">View Live Demo</a>
+                {% endif %}
+                <a href="{% url 'projects:project_list' %}" class="btn btn-secondary ms-2">Back to Projects</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mt-md-0 mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Project Quick Info</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Category:</strong> Web Development</li>
+                        <li class="list-group-item"><strong>Technologies:</strong> {{ project.technologies }}</li>
+                        {% if project.github_url %}
+                            <li class="list-group-item"><strong>GitHub:</strong> <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer">Link</a></li>
+                        {% endif %}
+                        {% if project.live_demo_url %}
+                            <li class="list-group-item"><strong>Live Demo:</strong> <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener noreferrer">Link</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,45 @@
+# myportfolio_site/render.yaml
+
+services:
+  - type: web
+    name: myportfolio
+    env: python
+    buildCommand: "./build.sh" # Or just 'pip install -r requirements.txt' if you prefer simpler
+    startCommand: "gunicorn myportfolio.wsgi:application" # As per Procfile
+    plan: starter # Or 'free' if Render has a free tier for web services (check current offerings)
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true # Render will generate a strong secret key for you
+      - key: WEB_CONCURRENCY
+        value: 4 # Number of Gunicorn workers (adjust based on your plan/CPU)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: myportfolio_db # Name of your database service below
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: "myportfolio.onrender.com,yourcustomdomain.com" # Replace with your Render URL and any custom domains
+      - key: DJANGO_DEBUG
+        value: "False" # IMPORTANT: Always False in production!
+      # Add email credentials here if you use an SMTP backend
+      # - key: EMAIL_HOST
+      #   value: "smtp.sendgrid.net"
+      # - key: EMAIL_PORT
+      #   value: "587"
+      # - key: EMAIL_USE_TLS
+      #   value: "True"
+      # - key: EMAIL_HOST_USER
+      #   value: "your_sendgrid_username"
+      # - key: EMAIL_HOST_PASSWORD
+      #   value: "your_sendgrid_api_key"
+      # - key: DEFAULT_FROM_EMAIL
+      #   value: "no-reply@yourdomain.com"
+
+
+  - type: postgres
+    name: myportfolio_db # Name of your PostgreSQL service
+    plan: starter # Or 'free' if Render has a free tier for databases (check current offerings)
+    databaseName: myportfolio_db # The database name inside Postgres
+    user: myportfolio_user # The database user name inside Postgres
+    # Optional: Initial database setup commands (e.g., creating extensions)
+    # createCommands:
+    #   - "CREATE EXTENSION IF NOT EXISTS hstore;" # Example

@@ -1,0 +1,91 @@
+{% extends 'base.html' %} {# Inherits from the base layout. #}
+{% load static %} {# Loads the static files tag for any potential images/CSS. #}
+{# {% load crispy_forms_tags %} #}  {# Optional: Load crispy forms tags if you install it for better form rendering #}
+
+
+{% block title %}Contact Me{% endblock %} {# Sets the page title. #}
+
+{% block content %} {# Starts the content block. #}
+    <h1 class="mb-4 text-center">Get in Touch</h1>
+
+    <div class="row justify-content-center"> {# Centers the content horizontally. #}
+        <div class="col-lg-8 col-md-10"> {# Adjusts column width for responsiveness. #}
+
+            {% if messages %} {# Checks if there are any messages (success/error) to display. #}
+                {% for message in messages %} {# Loops through each message. #}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }} {# Displays the message text. #}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card shadow-sm p-4"> {# Bootstrap card with shadow and padding. #}
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">Send me a message!</h5>
+                    <form method="post"> {# HTML form that sends data using the POST method. #}
+                        {% csrf_token %} {# Django's CSRF token for security. This MUST be included in all POST forms. #}
+
+                        {# Render the form fields manually for more control and Bootstrap integration #}
+                        <div class="mb-3">
+                            {{ form.name.label_tag }} {# Renders the label for the 'name' field. #}
+                            {{ form.name }} {# Renders the 'name' input field. #}
+                            {% if form.name.errors %} {# Checks if there are errors for the 'name' field. #}
+                                {% for error in form.name.errors %}
+                                    <small class="text-danger">{{ error }}</small> {# Displays validation errors in red. #}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                {% for error in form.email.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.subject.label_tag }}
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                {% for error in form.subject.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.message.label_tag }}
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                                {% for error in form.message.errors %}
+                                    <small class="text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {# Alternatively, if you installed django-crispy-forms, you can simply use: #}
+                        {# {{ form|crispy }} #}
+
+                        <div class="d-grid gap-2"> {# Bootstrap utility for grid layout buttons. #}
+                            <button type="submit" class="btn btn-primary btn-lg">Send Message</button> {# Submit button. #}
+                        </div>
+                    </form>
+
+                    <p class="text-center mt-4">
+                        You can also find me on: <br>
+                        <a href="https://www.linkedin.com/in/tijani-apatira-13b358367/" target="_blank" class="btn btn-sm btn-outline-primary mt-2 me-2">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                        <a href="https://github.com/Teejayskillz/" target="_blank" class="btn btn-sm btn-outline-dark mt-2 me-2">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://wa.me/2349027717380" target="_blank" class="btn btn-sm btn-outline-success mt-2">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} {# Ends the content block. #}
