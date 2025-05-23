@@ -155,6 +155,7 @@ def current_year(request):
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # where static file is located
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
