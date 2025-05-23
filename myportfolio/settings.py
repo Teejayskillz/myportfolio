@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
-
+print(f"DEBUG: DATABASE_URL loaded: {DATABASE_URL}")
 if DATABASE_URL:
     # For Render deployment
     DATABASES = {
