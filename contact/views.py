@@ -42,7 +42,7 @@ def contact_view(request):
                     full_subject,
                     full_message,
                     settings.DEFAULT_FROM_EMAIL, # Or simply 'your.email@example.com' for console backend testing
-                    ['your_actual_email@example.com'], # <-- REPLACE WITH YOUR REAL EMAIL ADDRESS
+                    ['contact@sleekpedia.com.ng'], # <-- REPLACE WITH YOUR REAL EMAIL ADDRESS
                     fail_silently=False, # If True, suppresses exceptions raised during email sending. Keep False for debugging.
                 )
                 # Add a success message to be displayed to the user.
