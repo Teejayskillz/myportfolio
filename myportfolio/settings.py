@@ -164,15 +164,15 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration (for contact form)
-# During development, this prints emails to the console.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Production Email Configuration for Hosting Provider SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mail.sleekpedia.com.ng') # e.g., 'mail.sleekpedia.com.ng'
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587)) # Usually 587 or 465
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true' # Or EMAIL_USE_SSL based on your host
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'contact@sleekpedia.com.ng') # Should be 'contact@sleekpedia.com.ng'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'Tijania32000') # The password for contact@sleekpedia.com.ng
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'contact@sleekpedia.com.ng') # The sender email
 
-# For production, you would configure SMTP details like this:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.sendgrid.net' # Example for SendGrid
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your_smtp_username'
-# EMAIL_HOST_PASSWORD = 'your_smtp_password'
-# DEFAULT_FROM_EMAIL = 'no-reply@yourdomain.com' # Email address that appears as the sender
-# SERVER_EMAIL = 'error_reporting@yourdomain.com' # For Django error notifications
+# For Django's internal error reporting (optional, but good practice)
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+ADMINS = [('Tijani Apatira', 'tijaniapatira@gmail.com')] # Replace with your real Gmail
