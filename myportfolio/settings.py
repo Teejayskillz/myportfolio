@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -154,10 +155,12 @@ def current_year(request):
     }
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # where static file is located
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles' # Where Django will collect all static files for deployment
+STATICFILES_DIRS = [                  # Where Django will look for your app's static files
+    BASE_DIR / "static",              # Example: If you have a 'static' folder at your project root
+    # BASE_DIR / "myportfolio_site/static", # If you prefer to put project-wide static files here
 ]
 
 # Default primary key field type

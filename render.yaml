@@ -12,6 +12,7 @@ services:
       # Create superuser non-interactively using environment variables.
       # '|| true' ensures the build doesn't fail if the user already exists on subsequent deploys.
       python manage.py createsuperuser --noinput || true
+      python manage.py collectstatic --noinput
     startCommand: "gunicorn myportfolio.wsgi:application" # As per Procfile
     plan: starter # Or 'free' if Render has a free tier for web services (check current offerings)
     envVars:
