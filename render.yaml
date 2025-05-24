@@ -30,11 +30,11 @@ services:
 
       # --- ADD THESE ENVIRONMENT VARIABLES FOR SUPERUSER CREATION ---
       - key: DJANGO_SUPERUSER_USERNAME
-        value: your_admin_username_here # <-- REPLACE with your desired admin username
+        value: Skillz # <-- REPLACE with your desired admin username
       - key: DJANGO_SUPERUSER_EMAIL
-        value: your_admin_email_here@example.com # <-- REPLACE with your desired admin email
+        value: tijaniapatira@gmail.com# <-- REPLACE with your desired admin email
       - key: DJANGO_SUPERUSER_PASSWORD
-        value: your_strong_admin_password_here # <-- REPLACE with a STRONG password (Render keeps this secure)
+        value: Tijania32000 <-- REPLACE with a STRONG password (Render keeps this secure)
 
       # Add email credentials here if you use an SMTP backend (already in your current config)
       # - key: EMAIL_HOST
