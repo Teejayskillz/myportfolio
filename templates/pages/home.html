@@ -1,35 +1,227 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Welcome to Lagos Web Dev!{% endblock %}
+{# {% block title %}Welcome to Lagos Web Dev!{% endblock %} #}
 
 {% block content %}
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-5 fw-bold">Welcome to Lagos Web Dev!</h1>
-            <p id="typing-text"  class="col-md-8 fs-4 mx-auto"></p> {# Keep this empty #}
-            <a class="btn btn-primary btn-lg" href="{% url 'projects:project_list' %}" role="button">View My Projects</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'contact:contact_page' %}" role="button">Contact Me </a>    
+<div class="p-5 mb-4 bg-primary text-white rounded-3 shadow-lg"> {# Added bg-primary, text-white, shadow-lg #}
+    <div class="container-fluid py-5 text-center">
+        <h2 class="display-6 fw-bold mb-4">Welcome to Lagos Web Dev!</h2>
+        <h1 class="display-4 fw-bold mb-4">Your Vision, Our Code.</h1> {# Stronger, more benefit-oriented headline #}
+        <p id="typing-text" class="col-md-8 fs-4 mx-auto lead mb-5"></p> {# Added lead, mb-5 #}
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center"> {# Added button grouping #}
+            <a class="btn btn-light btn-lg px-4 me-sm-3" href="{% url 'projects:project_list' %}" role="button">Explore Our Work</a> {# Changed to btn-light, stronger CTA #}
+            <a class="btn btn-outline-light btn-lg px-4" href="{% url 'contact:contact_page' %}" role="button">Get a Quote</a> {# Changed to btn-outline-light, specific CTA #}
         </div>
     </div>
-    <section class="my-5 text-center">
-        <h2>What I Do</h2>
-        <p>I build dynamic and scalable web applications using Python and Django. My focus is on clean code, efficient solutions, and user-friendly interfaces.</p>
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <h3>Backend Development</h3>
-                <p>Building powerful APIs and robust server-side logic.</p>
+</div>
+<section class="my-5 py-5 text-center bg-light">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-3">What We Do</h2>
+        <p class="lead mb-5">
+            We build **dynamic and scalable web applications**. Our focus is on **clean code, efficient solutions**, and **user-friendly interfaces** that drive your business forward.
+        </p>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col" data-aos="fade-right" data-aos-delay="0"> {# Animates first, delay 0 #}
+                <div class="card h-100 shadow-sm border-0 service-card">
+                    <div class="card-body p-4">
+                        <i class="fas fa-server fa-4x text-primary mb-3"></i>
+                        <h3 class="card-title fw-bold">Backend Development</h3>
+                        <p class="card-text text-muted">Building powerful APIs and robust server-side logic that powers your applications efficiently.</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <h3>Database Design</h3>
-                <p>Structuring efficient and reliable databases for data integrity.</p>
+            <div class="col" data-aos="fade-right" data-aos-delay="200"> {# Animates second, with a slight delay #}
+                <div class="card h-100 shadow-sm border-0 service-card">
+                    <div class="card-body p-4">
+                        <i class="fas fa-database fa-4x text-primary mb-3"></i>
+                        <h3 class="card-title fw-bold">Database Design</h3>
+                        <p class="card-text text-muted">Structuring efficient and reliable databases to ensure data integrity and optimal performance.</p>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <h3>Deployment & Scaling</h3>
-                <p>Getting applications live and ready for growth.</p>
+            <div class="col" data-aos="fade-right" data-aos-delay="400"> {# Animates third, with more delay #}
+                <div class="card h-100 shadow-sm border-0 service-card">
+                    <div class="card-body p-4">
+                        <i class="fas fa-rocket fa-4x text-primary mb-3"></i>
+                        <h3 class="card-title fw-bold">Deployment & Scaling</h3>
+                        <p class="card-text text-muted">Getting your applications live, secure, and ready to scale with your business's growth.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<section class="my-5 py-5 text-center">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-5">Our Core Technologies</h2>
+
+        <div class="row justify-content-center g-4">
+            {# Backend / Frameworks #}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-python fa-4x text-info mb-2"></i>
+                    <p class="fw-bold mb-0">Python</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-django fa-4x text-success mb-2"></i>
+                    <p class="fw-bold mb-0">Django</p>
+                </div>
+            </div>
+
+            {# CMS / E-commerce #}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-wordpress fa-4x mb-2" style="color: #21759b;"></i>
+                    <p class="fw-bold mb-0">WordPress</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-shopify fa-4x mb-2" style="color: #96bf48;"></i>
+                    <p class="fw-bold mb-0">Shopify</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-wordpress-simple fa-4x mb-2" style="color: #796696;"></i>
+                    <p class="fw-bold mb-0">WooCommerce</p>
+                </div>
+            </div>
+
+            {# Databases #}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fas fa-database fa-4x text-secondary mb-2"></i>
+                    <p class="fw-bold mb-0">MySQL</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fas fa-database fa-4x text-warning mb-2"></i>
+                    <p class="fw-bold mb-0">PostgreSQL</p>
+                </div>
+            </div>
+
+            {# Frontend #}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-js-square fa-4x text-danger mb-2"></i>
+                    <p class="fw-bold mb-0">JavaScript</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-html5 fa-4x text-primary mb-2"></i>
+                    <p class="fw-bold mb-0">HTML5</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-css3-alt fa-4x text-info mb-2"></i>
+                    <p class="fw-bold mb-0">CSS3</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fab fa-bootstrap fa-4x text-purple mb-2" style="color: #7952B3;"></i> {# Bootstrap icon with its brand color #}
+                    <p class="fw-bold mb-0">Bootstrap</p>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="tech-icon-item p-3">
+                    <i class="fas fa-terminal fa-4x text-dark mb-2"></i> {# Using fa-terminal as a generic icon for libraries #}
+                    <p class="fw-bold mb-0">Type.js</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+{% load static %}
+
+<section class="my-5 py-5 text-center bg-light">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-3">Our Featured Work</h2>
+        <p class="lead mb-5">
+            Discover how we've helped businesses achieve their digital goals with innovative and impactful web solutions.
+        </p>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for project in featured_projects %}
+            <div class="col" data-aos="fade-up" data-aos-delay="{{ project.aos_delay }}"> {# Directly use project.aos_delay #}
+                <div class="card h-100 shadow-sm border-0 project-card">
+                    <img src="{{ project.thumbnail.url }}" class="card-img-top" alt="{{ project.title }} Screenshot">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">{{ project.title }}</h4>
+                        <p class="card-text text-muted">{{ project.short_description }}</p>
+                        <a href="{% url 'projects:project_detail' project.slug %}" class="btn btn-outline-primary mt-3">View Project</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted">No featured projects available yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-5">
+            <a href="{% url 'projects:project_list' %}" class="btn btn-primary btn-lg">View All Projects</a>
+        </div>
+    </div>
+</section>
+
+
+
+<section class="my-5 py-5 text-center">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-5">What Our Clients Say</h2>
+
+        <div class="row justify-content-center g-4">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                <div class="card shadow-sm h-100 p-4">
+                    <div class="card-body">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p class="card-text fst-italic mb-3">"Lagos Web Dev delivered an outstanding e-commerce platform that has significantly boosted our online sales. Their team was professional, responsive, and truly understood our needs."</p>
+                        <h5 class="fw-bold mb-0">- Jane Doe</h5>
+                        <p class="text-muted small">CEO, Fashion Forward Co.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card shadow-sm h-100 p-4">
+                    <div class="card-body">
+                        <i class="fas fa-quote-left fa-2x text-primary mb-3"></i>
+                        <p class="card-text fst-italic mb-3">"The Django web application built by Lagos Web Dev has revolutionized our internal processes. We've seen a massive improvement in efficiency since its implementation."</p>
+                        <h5 class="fw-bold mb-0">- John Smith</h5>
+                        <p class="text-muted small">Operations Manager, Logistics Inc.</p>
+                    </div>
+                </div>
+            </div>
+            {# Add more testimonials here #}
+        </div>
+    </div>
+</section>
+
+
+
+<section class="my-5 py-5 bg-primary text-white text-center">
+    <div class="container" data-aos="zoom-in">
+        <h2 class="display-5 fw-bold mb-3">Ready to Transform Your Online Presence?</h2>
+        <p class="lead mb-4">
+            Let's discuss your project and build a powerful web solution tailored to your business needs.
+        </p>
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-light btn-lg px-5">Get a Free Consultation</a>
+    </div>
+</section>
 {% endblock %}
 
 {% block extra_scripts %}
