@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import dj_database_url 
+
 
 from pathlib import Path 
 import os 
@@ -76,26 +76,32 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASE_URL = os.environ.get('DATABASE_URL')
-print(f"DEBUG: DATABASE_URL loaded: {DATABASE_URL}")
-if DATABASE_URL:
-    # For Render deployment
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
-else:
-    # For local development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'myportfolio_db',                 # Your local database name
-            'USER': 'myportfolio_user',               # Your local database username
-            'PASSWORD': 'Tijania32000',       # Your local database password
-            'HOST': 'localhost',                      # For local development
-            'PORT': '',                               # Leave empty for default (5432) or specify if needed.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'lagos_web_dev_db',     # Your new database name
+        'USER': 'Skillz',       # The MySQL user you created
+        'PASSWORD': 'Tijania32000',   # The password for that user
+        'HOST': 'localhost',           # Or the IP address of your MySQL server
+        'PORT': '3306',                # Default MySQL port (usually 3306)
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", # Recommended for MySQL to avoid some common issues
         }
     }
+}
+
+#else:
+    # For local development
+   # DATABASES = {
+       # 'default': {
+         #   'ENGINE': 'django.db.backends.postgresql',
+         #   'NAME': 'myportfolio_db',                 # Your local database name
+          #  'USER': 'myportfolio_user',               # Your local database username
+          #  'PASSWORD': 'Tijania32000',       # Your local database password
+          #  'HOST': 'localhost',                      # For local development
+          #  'PORT': '',                               # Leave empty for default (5432) or specify if needed.
+     #   }
+  #  }
 
 
 # Password validation
@@ -132,10 +138,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
