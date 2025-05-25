@@ -82,8 +82,9 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lagos_web_dev_db',     # Your new database name
-        'USER': 'Skillz',       # The MySQL user you created
+        #'NAME': 'lagos_web_dev_db',  
+        'NAME': 'hypeblog_lagosweb',   # Your new database name
+        'USER': 'hypeblog_lagosweb',       # The MySQL user you created
         'PASSWORD': 'Tijania32000',   # The password for that user
         'HOST': 'localhost',           # Or the IP address of your MySQL server
         'PORT': '3306',                # Default MySQL port (usually 3306)
