@@ -142,44 +142,60 @@
     </div>
 </section>
 
-
-
-
-{% load static %}
-
 <section class="my-5 py-5 text-center bg-light">
     <div class="container">
-        <h2 class="display-5 fw-bold mb-3">Our Featured Work</h2>
+        <h2 class="display-5 fw-bold mb-3">Why Choose Us?</h2>
         <p class="lead mb-5">
-            Discover how we've helped businesses achieve their digital goals with innovative and impactful web solutions.
+            At Lagos Web Dev, we are committed to delivering high-quality web solutions that not only meet but exceed your expectations. Our team of experienced developers and designers work closely with you to bring your vision to life.
         </p>
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            {% for project in featured_projects %}
-            <div class="col" data-aos="fade-up" data-aos-delay="{{ project.aos_delay }}"> {# Directly use project.aos_delay #}
-                <div class="card h-100 shadow-sm border-0 project-card">
-                    <img src="{{ project.thumbnail.url }}" class="card-img-top" alt="{{ project.title }} Screenshot">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {# Feature Card 1: Expertise #}
+            <div class="col" data-aos="fade-up" data-aos-delay="0">
+                <div class="card h-100 shadow-sm border-0 feature-card">
+                    <i class="fas fa-code fa-3x text-primary mb-3"></i>
                     <div class="card-body">
-                        <h4 class="card-title fw-bold">{{ project.title }}</h4>
-                        <p class="card-text text-muted">{{ project.short_description }}</p>
-                        <a href="{% url 'projects:project_detail' project.slug %}" class="btn btn-outline-primary mt-3">View Project</a>
+                        <h4 class="card-title fw-bold">Expertise</h4>
+                        <p class="card-text text-muted">Benefit from our team's deep knowledge in the latest web technologies and best practices.</p>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12">
-                <p class="text-muted">No featured projects available yet. Check back soon!</p>
-            </div>
-            {% endfor %}
-        </div>
 
-        <div class="mt-5">
-            <a href="{% url 'projects:project_list' %}" class="btn btn-primary btn-lg">View All Projects</a>
+            {# Feature Card 2: Custom Solutions #}
+            <div class="col" data-aos="fade-up" data-aos-delay="150">
+                <div class="card h-100 shadow-sm border-0 feature-card">
+                    <i class="fas fa-magic fa-3x text-primary mb-3"></i>
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">Custom Solutions</h4>
+                        <p class="card-text text-muted">We craft bespoke web experiences tailored precisely to your unique business needs and goals.</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Feature Card 3: Client-Centric Approach #}
+            <div class="col" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 shadow-sm border-0 feature-card">
+                    <i class="fas fa-handshake fa-3x text-primary mb-3"></i>
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">Client-Centric Approach</h4>
+                        <p class="card-text text-muted">Your vision is our priority. We maintain open communication and collaboration every step of the way.</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Feature Card 4: Timely Delivery #}
+            <div class="col" data-aos="fade-up" data-aos-delay="450">
+                <div class="card h-100 shadow-sm border-0 feature-card">
+                    <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">Timely Delivery</h4>
+                        <p class="card-text text-muted">We are committed to delivering projects on time and within budget, without compromising quality.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
-
-
 
 <section class="my-5 py-5 text-center">
     <div class="container">

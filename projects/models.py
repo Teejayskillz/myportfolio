@@ -10,7 +10,6 @@ class Project(models.Model):
     github_url = models.URLField(blank=True, null=True )
     live_demo_url = models.URLField(blank=True, null=True)
     technologies = models.CharField(max_length=200, help_text="Comma-separated list of technologies (e.g., Django, Python, Bootstrap)")
-    is_featured = models.BooleanField(default=False, help_text="check if this project should be featured on the home page")
     slug = models.SlugField(unique=True,blank=True, help_text="unique identifier for this project, used in urls ")
 
     def __str__(self):
