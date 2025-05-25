@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path 
 import os 
+import pymysql
+pymysql.install_as_MySQLdb()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,9 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-7#1^7b*)c0m796z4mul^!8%h6ay7s)a0sfipkvz3aop8wcv0e)'
 )
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() == 'false' # Get from env var, default True for local dev
+DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,tijaniapatira.onrender.com').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,lagoswebdev.com').split(',')
 # Application definition
 
 INSTALLED_APPS = [
@@ -79,8 +82,8 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lagos_web_dev_db',     # Your new database name
-        'USER': 'Skillz',       # The MySQL user you created
+        'NAME': 'hypeblog_lagosweb',     # Your new database name
+        'USER': 'hypeblog_lagosweb',       # The MySQL user you created
         'PASSWORD': 'Tijania32000',   # The password for that user
         'HOST': 'localhost',           # Or the IP address of your MySQL server
         'PORT': '3306',                # Default MySQL port (usually 3306)
