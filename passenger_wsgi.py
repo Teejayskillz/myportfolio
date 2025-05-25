@@ -1,38 +1,28 @@
-import sys
+# /home/hypeblog/lagoswebdev.com/passenger_wsgi.py
+
 import os
+import sys
 
-# Step 1: Define project root
-project_home = '/home/hypeblog/lagoswebdev.com'
-project_name = 'myportfolio'
-
-# Step 2: Add project and app paths to system
-sys.path.insert(0, project_home)
-sys.path.insert(0, os.path.join(project_home, project_name))
-
-# Step 3: Set settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myportfolio.settings')
-
-# Step 4: Load Django WSGI application
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
-
-# Set the path to your application's base directory
-# This should be the directory containing 'manage.py'
-# For your setup, this is '/home/hypeblog/lagoswebdev.com'
-sys.path.insert(0, os.path.dirname(__file__))
-
-# Set the path to your virtual environment's Python executable
-# This path must match what you see in cPanel's "Setup Python App"
-# for your application's virtual environment.
-# Based on your previous logs, it's likely:
-# /home/hypeblog/virtualenv/lagoswebdev.com/3.9/bin/python3.9
+# IMPORTANT: Path to your virtual environment's Python executable.
+# This MUST EXACTLY match what's in cPanel's "Setup Python App".
 INTERP = "/home/hypeblog/virtualenv/lagoswebdev.com/3.9/bin/python3.9"
 
-# Activate the virtual environment
+# If the current Python interpreter isn't from the virtual environment,
+# restart the process using the virtual environment's interpreter.
+# This ensures all subsequent code runs within the activated environment.
 if sys.executable != INTERP:
     os.execl(INTERP, INTERP, *sys.argv)
 
-# Set the DJANGO_SETTINGS_MODULE environment variable
-# Replace 'myportfolio' with the actual name of your Django project's settings folder
-# (the one containing settings.py)
+# Add your project's base directory to the Python path.
+# This is the directory containing 'manage.py' and your 'myportfolio' app.
+sys.path.insert(0, os.path.dirname(__file__))
+
+# Set the DJANGO_SETTINGS_MODULE environment variable.
+# 'myportfolio' should be the name of your main Django project folder
+# (the one containing settings.py, urls.py, wsgi.py, etc.).
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myportfolio.settings'
+
+# Import and get the Django WSGI application.
+# This must be the final step after all environment setup.
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
