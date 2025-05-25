@@ -1,18 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Welcome to My Portfolio{% endblock %}
+{% block title %}Welcome to Lagos Web Dev!{% endblock %}
 
 {% block content %}
     <div class="p-5 mb-4 bg-light rounded-3">
         <div class="container-fluid py-5 text-center">
-            <h1 class="display-5 fw-bold">Hi, I'm Tijani Apatira!</h1>
-            <p class="col-md-8 fs-4 mx-auto">A passionate Django developer building robust web applications. Explore my projects to see what I've been working on.</p>
+            <h1 class="display-5 fw-bold">Welcome to Lagos Web Dev!</h1>
+            <p id="typing-text"  class="col-md-8 fs-4 mx-auto"></p> {# Keep this empty #}
             <a class="btn btn-primary btn-lg" href="{% url 'projects:project_list' %}" role="button">View My Projects</a>
             <a class="btn btn-primary btn-lg" href="{% url 'contact:contact_page' %}" role="button">Contact Me </a>    
         </div>
     </div>
-<!--Hero section end-->
     <section class="my-5 text-center">
         <h2>What I Do</h2>
         <p>I build dynamic and scalable web applications using Python and Django. My focus is on clean code, efficient solutions, and user-friendly interfaces.</p>
@@ -31,4 +30,9 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="{% static 'js/custom_typing.js' %}"></script>
 {% endblock %}

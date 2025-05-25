@@ -10,12 +10,24 @@
 
     {% load static %} {# This line is important to use static files #}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Optional: Add some basic styling for the cursor if Type.js's default isn't enough */
+        .typed-cursor {
+            opacity: 1;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'pages:home' %}">Tijani Apatira </a>
+            <a class="navbar-brand" href="{% url 'pages:home' %}">LagosWebDev</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -31,7 +43,7 @@
                         <a class="nav-link" href="{% url 'pages:about' %}">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact:contact_page' %}">Contact</a> {# Add this line #}
+                        <a class="nav-link" href="{% url 'contact:contact_page' %}">Contact</a>
                     </li>
                     </ul>
             </div>
@@ -47,9 +59,13 @@
 
     <footer class="footer mt-auto py-3 bg-light text-center">
         <div class="container">
-            <span class="text-muted">&copy; {{ current_year }} Tijani Apatira. All rights reserved.</span>
+            <span class="text-muted">&copy; {{ current_year }} LagosWebDev. All rights reserved.</span>
         </div>
     </footer>
+    
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    
+    <script src="{% static 'js/custom_typing.js' %}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
