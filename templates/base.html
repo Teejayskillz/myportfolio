@@ -15,6 +15,20 @@
     {# AOS CSS #}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
+        .whatsapp-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #25D366;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+.whatsapp-button:hover {
+  transform: scale(1.1);
+}
         .typed-cursor {
             opacity: 1;
             animation: blink 0.7s infinite;
@@ -97,6 +111,11 @@
             <span class="text-muted">&copy; {{ current_year }} LagosWebDev. All rights reserved.</span>
         </div>
     </footer>
+
+    <a href="https://wa.me/2349027717380" target="_blank" class="whatsapp-button" aria-label="Chat on WhatsApp">
+        <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" alt="WhatsApp Chat" />
+      </a>
+      
     
     {# 1. Type.js library #}
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
