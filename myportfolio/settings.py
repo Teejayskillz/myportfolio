@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
+
 """
 
 
@@ -92,22 +93,6 @@ DATABASES = {
     }
 }
 
-#else:
-    # For local development
-   # DATABASES = {
-       # 'default': {
-         #   'ENGINE': 'django.db.backends.postgresql',
-         #   'NAME': 'myportfolio_db',                 # Your local database name
-          #  'USER': 'myportfolio_user',               # Your local database username
-          #  'PASSWORD': 'Tijania32000',       # Your local database password
-          #  'HOST': 'localhost',                      # For local development
-          #  'PORT': '',                               # Leave empty for default (5432) or specify if needed.
-     #   }
-  #  }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -173,14 +158,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration (for contact form)
 # Production Email Configuration for Hosting Provider SMTP
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mail.sleekpedia.com.ng') # e.g., 'mail.sleekpedia.com.ng'
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587)) # Usually 587 or 465
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true' # Or EMAIL_USE_SSL based on your host
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'contact@sleekpedia.com.ng') # Should be 'contact@sleekpedia.com.ng'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'Tijania32000') # The password for contact@sleekpedia.com.ng
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'contact@sleekpedia.com.ng') # The sender email
+# settings.py
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mail.lagoswebdev.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 465)) # <--- CHANGE THIS TO 465
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'False').lower() == 'true' # <--- CHANGE THIS TO FALSE
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'True').lower() == 'true'   # <--- ADD THIS AND SET TO TRUE
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'contact@lagoswebdev.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'Tijania32000')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'contact@lagoswebdev.com')
+
+# It's also good practice to set SERVER_EMAIL for Django's internal error reporting
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # For Django's internal error reporting (optional, but good practice)
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 ADMINS = [('Tijani Apatira', 'tijaniapatira@gmail.com')] # Replace with your real Gmail
