@@ -37,6 +37,7 @@ ALLOWED_HOSTS = os.environ.get(
     '127.0.0.1,localhost,lagoswebdev.com,www.lagoswebdev.com,lagoswebdev.com.hypeblog9jatv.com.ng,www.lagoswebdev.com.hypeblog9jatv.com.ng,mail.lagoswebdev.com'
 ).split(',')
 
+SITE_ID = 1 
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites', 
+    'django.contrib.sitemaps',
     'pages',        # We will create this app
     'projects',     # We will create this app
     'contact', 

@@ -18,6 +18,15 @@ from django.contrib import admin
 from django.urls import path , include
 from django.conf import settings 
 from django.conf.urls.static import static 
+from django.views.static import serve 
+from django.contrib.sitemaps.views import sitemap
+from .sitemap import StaticViewSitemap, BlogPostSitemap 
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'blog-posts': BlogPostSitemap,
+}
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +35,13 @@ urlpatterns = [
     path('contact/', include('contact.urls')), 
     path('pricing/', include('pricing.urls')), 
     path('blog/', include('blog.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', serve, {'path': 'robots.txt', 'document_root': settings.BASE_DIR}),
 ]
+
+    
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
