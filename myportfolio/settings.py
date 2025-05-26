@@ -15,6 +15,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path 
 import os 
 import pymysql
+from decouple import config 
+import dj_database_url
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -81,21 +83,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myportfolio.wsgi.application'
 
 
+print(f"DEBUG: DATABASE_URL as seen by decouple: {config('DATABASE_URL', default='(Not Found)')}")
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        #'NAME': 'lagos_web_dev_db',  
-        'NAME': 'hypeblog_lagosweb',   # Your new database name
-        'USER': 'hypeblog_lagosweb',       # The MySQL user you created
-        'PASSWORD': 'Tijania32000',   # The password for that user
-        'HOST': 'localhost',           # Or the IP address of your MySQL server
-        'PORT': '3306',                # Default MySQL port (usually 3306)
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", # Recommended for MySQL to avoid some common issues
-        }
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL', default=None), # Gets DATABASE_URL from .env or system environment
+        conn_max_age=600 # Optional: keeps database connections alive for better performance
+    )
 }
 
 
