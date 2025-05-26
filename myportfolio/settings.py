@@ -48,8 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pages',        # We will create this app
     'projects',     # We will create this app
-    'contact',    # Optional: If you add a contact form later
-    # 'blog',       # Optional: If you add a blog later
+    'contact', 
+    'pricing'  ,  
+    'blog',     
 ]
 
 MIDDLEWARE = [
@@ -83,7 +84,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myportfolio.wsgi.application'
 
 
-print(f"DEBUG: DATABASE_URL as seen by decouple: {config('DATABASE_URL', default='(Not Found)')}")
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

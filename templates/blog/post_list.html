@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if category %}{{ category.name }} Blog Posts{% else %}Our Blog{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-9">
+            <h1 class="mb-4 display-5 fw-bold">
+                {% if category %}Posts in "{{ category.name }}"{% else %}Latest Blog Posts{% endif %}
+            </h1>
+
+            {% for post in posts %}
+            <div class="card mb-4 shadow-sm" data-aos="fade-up" data-aos-delay="{{ post.aos_delay }}"> {# <--- THIS IS THE LINE TO FIX #}
+                <div class="row g-0">
+                    {% if post.image %}
+                    <div class="col-md-4">
+                        <img src="{{ post.image.url }}" class="img-fluid rounded-start h-100 object-fit-cover" alt="{{ post.title }}" style="max-height: 200px; width: 100%;">
+                    </div>
+                    {% endif %}
+                    <div class="{% if post.image %}col-md-8{% else %}col-md-12{% endif %}">
+                        <div class="card-body">
+                            <small class="text-muted d-block mb-2">Published: {{ post.publish|date:"F j, Y" }} by {{ post.author.get_full_name|default:post.author.username }}</small>
+                            <h2 class="card-title fw-bold"><a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">{{ post.title }}</a></h2>
+                            <p class="card-text">{{ post.content|truncatechars:200|safe }}</p>
+                            <p class="card-text">
+                                {% for cat in post.categories.all %}
+                                <span class="badge bg-secondary me-1"><a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" class="text-white text-decoration-none">{{ cat.name }}</a></span>
+                                {% endfor %}
+                            </p>
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-sm btn-outline-primary">Read More &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p class="lead">No blog posts found yet.</p>
+            {% endfor %}
+
+            {# Pagination Controls #}
+            {% if posts.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mt-5">
+                    {% if posts.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}{% if category %}&category_slug={{ category.slug }}{% endif %}">Previous</a></li>
+                    {% endif %}
+                    {% for i in posts.paginator.page_range %}
+                        <li class="page-item {% if posts.number == i %}active{% endif %}">
+                            <a class="page-link" href="?page={{ i }}{% if category %}&category_slug={{ category.slug }}{% endif %}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if posts.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}{% if category %}&category_slug={{ category.slug }}{% endif %}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+        </div>
+        <div class="col-lg-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light fw-bold">Categories</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item {% if not category %}active bg-primary text-white{% endif %}">
+                        <a href="{% url 'blog:post_list' %}" class="{% if not category %}text-white{% else %}text-decoration-none text-dark{% endif %}">All Categories</a>
+                    </li>
+                    {% for cat in all_categories %}
+                    <li class="list-group-item {% if category and category.slug == cat.slug %}active bg-primary text-white{% endif %}">
+                        <a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" class="{% if category and category.slug == cat.slug %}text-white{% else %}text-decoration-none text-dark{% endif %}">{{ cat.name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
