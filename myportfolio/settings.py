@@ -165,13 +165,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'mail.lagoswebdev.com')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 465))
-EMAIL_USE_TLS = False  # For SSL, this must be False
-EMAIL_USE_SSL = True   # This must be True for port 465
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'contact@lagoswebdev.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'Tijania32000')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'contact@lagoswebdev.com')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True    # Use SSL for port 465
+EMAIL_HOST_USER = 'tijaniapatira@gmail.com'
+EMAIL_HOST_PASSWORD = 'aucy qxaw bpob xhqc'  # app password
+DEFAULT_FROM_EMAIL = 'tijaniapatira@gmail.com'
+
 
 
 # It's also good practice to set SERVER_EMAIL for Django's internal error reporting
