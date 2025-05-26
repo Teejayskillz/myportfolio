@@ -5,21 +5,12 @@ import os
 from .forms import ContactForm
 from .utils import send_email_via_brevo  # import your Brevo function
 import requests 
-import logging # <--- Add this import
-logger = logging.getLogger(__name__) # <--- Add this line for logging
 
 def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-                        # --- ADD THESE LINES FOR DEBUGGING ---
-            retrieved_api_key = os.environ.get('BREVO_API_KEY')
-            logger.info(f"DEBUG: Retrieved BREVO_API_KEY: '{retrieved_api_key}' (Length: {len(retrieved_api_key) if retrieved_api_key else 'None'})")
-            # Make sure you are using the correct sender email that was verified in Brevo
-            # (which the curl test confirmed is 'teejayadewale87@gmail.com')
-            sender_email_to_use = 'teejayadewale87@gmail.com' 
-            logger.info(f"DEBUG: Using sender email: {sender_email_to_use}")
-            # --- END DEBUG LINES ---
+            
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             phone = form.cleaned_data.get('phone', 'Not provided')
