@@ -179,3 +179,5 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # For Django's internal error reporting (optional, but good practice)
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 ADMINS = [('Tijani Apatira', 'tijaniapatira@gmail.com')] # Replace with your real Gmail
+
+BREVO_API_KEY = "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"
