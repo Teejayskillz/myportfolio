@@ -1,67 +1,54 @@
-from django.shortcuts import render
-
-# Create your views here.
-# contact/views.py
-
-from django.shortcuts import render, redirect # Import redirect for successful form submissions.
-from django.core.mail import send_mail # Import send_mail to send emails.
-from django.conf import settings # Import settings to access email configuration.
-from django.contrib import messages # Import messages for user feedback (e.g., success/error).
-
-from .forms import ContactForm # Import our ContactForm.
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib import messages
+import os 
+from .forms import ContactForm
+from .utils import send_email_via_brevo  # import your Brevo function
+import requests 
+import logging # <--- Add this import
+logger = logging.getLogger(__name__) # <--- Add this line for logging
 
 def contact_view(request):
-    # Check if the request method is POST (meaning the form was submitted).
     if request.method == 'POST':
-        # Create a form instance from the submitted data.
         form = ContactForm(request.POST)
-        # Check if the submitted form data is valid according to our form's rules.
         if form.is_valid():
-            # Extract cleaned (validated and converted) data from the form.
+                        # --- ADD THESE LINES FOR DEBUGGING ---
+            retrieved_api_key = os.environ.get('BREVO_API_KEY')
+            logger.info(f"DEBUG: Retrieved BREVO_API_KEY: '{retrieved_api_key}' (Length: {len(retrieved_api_key) if retrieved_api_key else 'None'})")
+            # Make sure you are using the correct sender email that was verified in Brevo
+            # (which the curl test confirmed is 'teejayadewale87@gmail.com')
+            sender_email_to_use = 'teejayadewale87@gmail.com' 
+            logger.info(f"DEBUG: Using sender email: {sender_email_to_use}")
+            # --- END DEBUG LINES ---
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
+            phone = form.cleaned_data.get('phone', 'Not provided')
+
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
 
-            # Construct the email subject for yourself.
             full_subject = f"Portfolio Contact Form: {subject} from {name}"
-            # Construct the email message body.
-            full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message} \n\nphone: {phone}"
 
             try:
-                # Send the email.
-                # 'full_subject': The subject line of the email.
-                # 'full_message': The body of the email.
-                # 'settings.DEFAULT_FROM_EMAIL': The sender's email address (configured in settings.py).
-                #   If not set, it defaults to settings.SERVER_EMAIL or 'webmaster@localhost'.
-                # [settings.EMAIL_HOST_USER]: A list of recipients. Replace this with your actual email address.
-                #   In production, you'd send it to your email like ['your_actual_email@example.com'].
-                #   For development, you might just use settings.EMAIL_HOST_USER if configured.
-                #   For console backend, any email here works for testing.
-                send_mail(
-                    full_subject,
-                    full_message,
-                    settings.DEFAULT_FROM_EMAIL, # Or simply 'your.email@example.com' for console backend testing
-                    ['contact@sleekpedia.com.ng'], # <-- REPLACE WITH YOUR REAL EMAIL ADDRESS
-                    fail_silently=False, # If True, suppresses exceptions raised during email sending. Keep False for debugging.
+                # Use Brevo API instead of send_mail
+                response = send_email_via_brevo(
+                    subject=full_subject,
+                    to_email='contact@lagoswebdev.com',  # your destination inbox
+                    content=full_message.replace("\n", "<br>"),
+                    api_key=os.environ.get('BREVO_API_KEY')
                 )
-                # Add a success message to be displayed to the user.
-                messages.success(request, 'Your message has been sent successfully! I will get back to you soon.')
-                # Redirect to the homepage or a thank-you page after successful submission.
-                return redirect('pages:home') # Redirects to the homepage URL named 'home' in the 'pages' app.
+
+                if response.status_code == 201:
+                    messages.success(request, 'Your message has been sent successfully! I will get back to you soon.')
+                    return redirect('pages:home')
+                else:
+                    messages.error(request, f"Email failed to send. Brevo error: {response.status_code} - {response.text}")
             except Exception as e:
-                # If an error occurs during email sending, add an error message.
-                messages.error(request, f'There was an error sending your message. Please try again later. Error: {e}')
+                messages.error(request, f"There was an error sending your message. Please try again later. Error: {e}")
         else:
-            # If the form is not valid, add an error message.
             messages.error(request, 'Please correct the errors below.')
     else:
-        # If it's a GET request (meaning the user just navigated to the page), create an empty form.
         form = ContactForm()
 
-    # Prepare the context dictionary to pass to the template.
-    context = {
-        'form': form # Pass the form instance to the template.
-    }
-    # Render the contact.html template, passing the form.
-    return render(request, 'contact/contact.html', context)
+    return render(request, 'contact/contact.html', {'form': form})

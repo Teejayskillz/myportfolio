@@ -165,14 +165,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True    # Use SSL for port 465
-EMAIL_HOST_USER = 'tijaniapatira@gmail.com'
-EMAIL_HOST_PASSWORD = 'aucy qxaw bpob xhqc'  # app password
-DEFAULT_FROM_EMAIL = 'tijaniapatira@gmail.com'
+EMAIL_HOST = 'smtp-relay.brevo.com'  # Or smtp.sendinblue.com if using an older domain
+EMAIL_PORT = 587                    # Recommended for TLS with Brevo
+EMAIL_USE_TLS = True                # Use TLS for port 587
+EMAIL_USE_SSL = False               # Disable SSL if using TLS on 587
 
+# Ensure this is the email address registered with Brevo as your sender
+EMAIL_HOST_USER = 'contact@lagoswebdev.com' # Or whatever email you set up in Brevo
 
+# This environment variable MUST hold your Brevo SMTP API Key
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+# This should also be an email address registered with Brevo
+DEFAULT_FROM_EMAIL = 'contact@lagoswebdev.com'
 
 # It's also good practice to set SERVER_EMAIL for Django's internal error reporting
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
@@ -180,4 +185,34 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 ADMINS = [('Tijani Apatira', 'tijaniapatira@gmail.com')] # Replace with your real Gmail
 
-BREVO_API_KEY = "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"
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-7#1^7b*)c0m796z4mul^!8%h6ay7s)a0sfipkvz3aop8wcv0e)')
+
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'contact': { # This matches the name of your app
+            'handlers': ['console'],
+            'level': 'INFO', # Set to INFO to see the debug lines
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO', # You might want to change this to 'WARNING' for less verbosity
+            'propagate': False,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    }
+}

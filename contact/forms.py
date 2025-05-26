@@ -6,7 +6,12 @@ class ContactForm(forms.Form):
     email = forms.EmailField(label='Your Email',
                              required=True,
                              widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'your email address'}))
-    
+    phone = forms.CharField(
+        max_length=15,
+        label='Your Phone Number',
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Optional WhatsApp or phone number'})
+    )
     subject = forms.CharField(max_length=200, required=True,
                               widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject'}))
 
