@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ page.title|default:"Lagos Web Dev | Expert Web Development & SEO Services in Nigeria" }}{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}{{ page.meta_description|default:"Lagos Web Dev builds custom Django web applications, responsive WordPress websites, and Shopify e-commerce stores. Drive traffic, improve visibility, and grow your business online." }}{% endblock %}">
+    <title>{% block title %}{{ page.title|default:"Lagos Web Dev | Expert Web Developers in Lagos | SEO Services Nigeria" }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ page.meta_description|default:"Lagos Web Dev are expert web developers in Lagos, Nigeria. We build custom Django web applications, responsive WordPress websites, and Shopify e-commerce stores to drive traffic, improve visibility, and grow your business online." }}{% endblock %}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -16,19 +16,19 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         .whatsapp-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  background-color: #25D366;
-  border-radius: 50%;
-  padding: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-.whatsapp-button:hover {
-  transform: scale(1.1);
-}
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #25D366;
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+        }
         .typed-cursor {
             opacity: 1;
             animation: blink 0.7s infinite;
@@ -71,7 +71,6 @@
             --brand-dark: #343a40;
         }
     </style>
-  
 </head>
 <body>
 
@@ -92,13 +91,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'pages:about' %}">About</a>
                     </li>
-
-
-
-
-
-
-
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'blog:post_list' %}">Blog</a>
                     </li>
@@ -108,7 +100,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact:contact_page' %}">Contact</a>
                     </li>
-                    </ul>
+                </ul>
             </div>
         </div>
     </nav>
@@ -128,8 +120,7 @@
 
     <a href="https://wa.me/2349027717380" target="_blank" class="whatsapp-button" aria-label="Chat on WhatsApp">
         <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" alt="WhatsApp Chat" />
-      </a>
-      
+    </a>
     
     {# 1. Type.js library #}
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
