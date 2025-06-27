@@ -30,6 +30,7 @@ sitemaps = {
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('', include('pages.urls')),
     path('projects/', include('projects.urls')),
     path('contact/', include('contact.urls')), 

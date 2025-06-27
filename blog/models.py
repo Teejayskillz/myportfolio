@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User # To link posts to users
 from django.utils import timezone # For publishing date
 from django.template.defaultfilters import slugify # For creating URL-friendly slugs
+from django_ckeditor_5.fields import CKEditor5Field
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -32,7 +33,7 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique_for_date='publish', blank=True) # Unique for date ensures uniqueness for posts on the same day
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    content = models.TextField()
+    content = CKEditor5Field('Content', config_name='extends')
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True) # Requires Pillow (pip install Pillow)
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
