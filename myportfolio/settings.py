@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites', 
     'django.contrib.sitemaps',
-    'django_ckeditor_5',
+    'ckeditor',
+    'ckeditor_uploader',
     'pages',        # We will create this app
     'projects',     # We will create this app
     'contact', 
@@ -217,63 +218,52 @@ LOGGING = {
     }
 }
 
-CKEDITOR_5_CONFIGS = {
+CKEDITOR_UPLOAD_PATH = "uploads/" # This is where uploaded files will go within your MEDIA_ROOT
+CKEDITOR_IMAGE_BACKEND = "pillow" # Make sure Pillow is installed (pip install Pillow)
+
+CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', 'fileUpload'],
-        'language': 'en',
+        'toolbar': 'Full', # Or 'Basic', 'Standard' - defines the toolbar buttons
+        'height': 500,
+        'width': '100%',
+        'filebrowserWindowHeight': 725,
+        'filebrowserWindowWidth': 940,
+        'toolbarCanCollapse': True,
+        'mathJaxLib': '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([
+            'uploadimage', # the upload image feature
+            'uploadwidget', # this is needed to upload files
+            # Your other extra plugins...
+            'div',
+            'autolink',
+            'autoembed',
+            'embedsemantic',
+            'autogrow',
+            'widget',
+            'lineutils',
+            'clipboard',
+            'dialog',
+            'dialogui',
+            'elementspath'
+        ]),
     },
-    'extends': { # Ideal for blog post content
-        'toolbar': [
-            'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote',
-            'imageUpload', 'fileUpload', 'mediaEmbed', 'codeBlock', '|', 'undo', 'redo'
+    'awesome_toolbar': { # Example of a custom toolbar
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink', 'Anchor', 'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak'],
+            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['TextColor', 'BGColor'],
+            ['Maximize', 'ShowBlocks', '-', 'Source'],
+            ['SpellChecker', 'Scayt']
         ],
-        'image': { # Customizing image behavior
-            'toolbar': ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:alignRight', 'imageStyle:alignCenter', 'imageStyle:full'],
-        },
-        'link': {
-            'addTargetBlank': True, # Opens links in new tab by default
-            'defaultProtocol': 'https://',
-        },
-        'htmlSupport': { # Allows more HTML elements if you need them (use with caution)
-            'allow': [
-                {'name': 'img', 'attributes': {'class': True, 'src': True, 'alt': True}},
-                {'name': 'div', 'attributes': {'class': True}},
-                {'name': 'span', 'attributes': {'class': True}},
-                {'name': 'p', 'attributes': {'class': True}},
-                {'name': 'a', 'attributes': {'class': True}},
-                {'name': 'h1', 'attributes': {'class': True}},
-                {'name': 'h2', 'attributes': {'class': True}},
-                {'name': 'h3', 'attributes': {'class': True}},
-                {'name': 'h4', 'attributes': {'class': True}},
-                {'name': 'h5', 'attributes': {'class': True}},
-                {'name': 'h6', 'attributes': {'class': True}},
-                {'name': 'strong', 'attributes': {'class': True}},
-                {'name': 'em', 'attributes': {'class': True}},
-                {'name': 'ol', 'attributes': {'class': True}},
-                {'name': 'ul', 'attributes': {'class': True}},
-                {'name': 'li', 'attributes': {'class': True}},
-                {'name': 'blockquote', 'attributes': {'class': True}},
-                {'name': 'code', 'attributes': {'class': True}},
-                {'name': 'pre', 'attributes': {'class': True}},
-                {'name': 'table', 'attributes': {'class': True}},
-                {'name': 'thead', 'attributes': {'class': True}},
-                {'name': 'tbody', 'attributes': {'class': True}},
-                {'name': 'tr', 'attributes': {'class': True}},
-                {'name': 'th', 'attributes': {'class': True}},
-                {'name': 'td', 'attributes': {'class': True}},
-            ]
-        },
-        'height': 500, # A good height for blog posts
-        'filebrowserUploadUrl': '/ckeditor5/uploads/', # Ensure this matches your URL conf
-        'filebrowserBrowseUrl': '/ckeditor5/browse/',
+        'extraPlugins': ','.join([
+            'uploadimage', # the upload image feature
+            'uploadwidget', # this is needed to upload files
+        ]),
+        'height': 300,
+        'width': '100%',
     },
-    'simple': { # Another example config for shorter text fields
-        'toolbar': ['bold', 'italic', 'link'],
-        'language': 'en',
-    }
 }
-
-
-CKEDITOR_5_MAX_FILE_SIZE = 10 # Max file size in MB for blog images
-CKEDITOR_5_ALLOW_ALL_FILE_TYPES = False # Be cautious with this in production
-CKEDITOR_5_UPLOAD_FILE_TYPES = ['jpeg', 'png', 'jpg', 'gif', 'webp', 'pdf', 'docx'] # Common blog file types
