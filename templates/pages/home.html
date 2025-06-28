@@ -8,6 +8,8 @@
         --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        /* Using primary gradient for hover on service cards for consistency with your previous code */
+        --hover-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         --glass-bg: rgba(255, 255, 255, 0.15);
         --glass-border: rgba(255, 255, 255, 0.2);
         --glow-color: rgba(103, 126, 234, 0.5);
@@ -84,12 +86,13 @@
         left: 100%;
     }
 
-    /* Service cards with hover effects */
+    /* Service cards with hover effects - RE-FIXED TEXT COLOR (keep original) */
     .service-card {
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         border-radius: 20px;
         position: relative;
         overflow: hidden;
+        background: white; /* Ensure initial background is white */
     }
 
     .service-card::before {
@@ -99,24 +102,47 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: var(--accent-gradient);
+        background: var(--hover-gradient); /* Use the defined hover gradient */
         opacity: 0;
         transition: opacity 0.3s ease;
-        z-index: -1;
+        z-index: 1; /* Ensures this layer is beneath the card content but above initial background */
     }
 
     .service-card:hover {
         transform: translateY(-15px) scale(1.02);
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        color: white;
+        /* REMOVED: color: white; - This was the main culprit for all text going white */
     }
 
     .service-card:hover::before {
-        opacity: 1;
+        opacity: 1; /* Make the gradient visible on hover */
     }
 
-    .service-card:hover .card-text {
-        color: rgba(255, 255, 255, 0.9) !important;
+    /* Ensure content stays above the overlay */
+    .service-card .card-body {
+        position: relative;
+        z-index: 2; /* Ensures content is above the ::before pseudo-element */
+        transition: all 0.3s ease; /* Smooth transition for content */
+    }
+
+    /* IMPORTANT: Remove or comment out these lines to keep text its original color */
+    /*
+    .service-card:hover .card-body h3,
+    .service-card:hover .card-body p {
+        color: white !important;
+    }
+    */
+
+    /* Ensure icons stay their original color (text-primary) or desired color */
+    .service-card .card-body i {
+        transition: color 0.3s ease, filter 0.3s ease; /* Add transition for icon color and filter */
+    }
+
+    /* Icons will remain text-primary unless you explicitly set a new color here */
+    .service-card:hover .card-body i {
+        /* If you want icons to turn white on hover, uncomment the line below: */
+        /* color: white !important; */
+        filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3)); /* Add a subtle shadow for depth */
     }
 
     /* Technology icons with floating animation */
@@ -215,9 +241,9 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
-                    linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
-                    linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+        background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%),
+                    linear-gradient(-45deg, #f8f9fa 25%, transparent 25%),
+                    linear-gradient(45deg, transparent 75%, #f8f9fa 75%),
                     linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
         background-size: 30px 30px;
         background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
@@ -270,7 +296,6 @@
     }
 </style>
 
-<!-- Hero Section -->
 <section class="hero-section text-white">
     <div class="container-fluid py-5 text-center position-relative">
         <div class="row justify-content-center">
@@ -296,13 +321,12 @@
     </div>
 </section>
 
-<!-- What We Do Section -->
 <section class="my-5 py-5 text-center animated-bg">
     <div class="container">
         <h2 class="display-5 fw-bold mb-3" data-aos="fade-up">What We Do</h2>
         <p class="lead mb-5 col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
-            We build <strong>dynamic and scalable web applications</strong>. Our focus is on 
-            <strong>clean code, efficient solutions</strong>, and <strong>user-friendly interfaces</strong> 
+            We build **dynamic and scalable web applications**. Our focus is on
+            **clean code, efficient solutions**, and **user-friendly interfaces**
             that drive your business forward.
         </p>
 
@@ -338,13 +362,11 @@
     </div>
 </section>
 
-<!-- Technologies Section -->
 <section class="my-5 py-5 text-center" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
     <div class="container">
         <h2 class="display-5 fw-bold mb-5" data-aos="fade-up">Our Core Technologies</h2>
 
         <div class="row justify-content-center g-4">
-            <!-- Backend / Frameworks -->
             <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="0">
                 <div class="tech-icon-item p-3">
                     <i class="fab fa-python fa-4x text-info mb-2"></i>
@@ -358,7 +380,6 @@
                 </div>
             </div>
 
-            <!-- CMS / E-commerce -->
             <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="200">
                 <div class="tech-icon-item p-3">
                     <i class="fab fa-wordpress fa-4x mb-2" style="color: #21759b;"></i>
@@ -378,7 +399,6 @@
                 </div>
             </div>
 
-            <!-- Databases -->
             <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="500">
                 <div class="tech-icon-item p-3">
                     <i class="fas fa-database fa-4x text-secondary mb-2"></i>
@@ -392,7 +412,6 @@
                 </div>
             </div>
 
-            <!-- Frontend -->
             <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="700">
                 <div class="tech-icon-item p-3">
                     <i class="fab fa-js-square fa-4x text-danger mb-2"></i>
@@ -427,13 +446,12 @@
     </div>
 </section>
 
-<!-- Why Choose Us Section -->
 <section class="my-5 py-5 text-center animated-bg">
     <div class="container">
         <h2 class="display-5 fw-bold mb-3" data-aos="fade-up">Why Choose Us?</h2>
         <p class="lead mb-5 col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
-            At Lagos Web Dev, we are committed to delivering high-quality web solutions that not only meet 
-            but exceed your expectations. Our team of experienced developers and designers work closely 
+            At Lagos Web Dev, we are committed to delivering high-quality web solutions that not only meet
+            but exceed your expectations. Our team of experienced developers and designers work closely
             with you to bring your vision to life.
         </p>
 
@@ -481,7 +499,6 @@
     </div>
 </section>
 
-<!-- Testimonials Section -->
 <section class="my-5 py-5 text-center">
     <div class="container">
         <h2 class="display-5 fw-bold mb-5" data-aos="fade-up">What Our Clients Say</h2>
@@ -544,7 +561,6 @@
     </div>
 </section>
 
-<!-- CTA Section -->
 <section class="my-5 py-5 text-white text-center" style="background: var(--primary-gradient); position: relative; overflow: hidden;">
     <div class="container position-relative" data-aos="zoom-in">
         <div class="row justify-content-center">
@@ -559,13 +575,13 @@
             </div>
         </div>
     </div>
-    <!-- Floating shapes for visual interest -->
     <div style="position: absolute; top: 10%; left: 10%; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 6s ease-in-out infinite;"></div>
     <div style="position: absolute; top: 70%; right: 15%; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%; animation: float 8s ease-in-out infinite reverse;"></div>
     <div style="position: absolute; bottom: 20%; left: 20%; width: 80px; height: 80px; background: rgba(255,255,255,0.08); border-radius: 50%; animation: float 7s ease-in-out infinite;"></div>
 </section>
 
 {% endblock %}
+
 
 {% block extra_scripts %}
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
