@@ -35,6 +35,8 @@ Thumbs.db        # Windows
 # These are usually built/collected during deployment, not source code
 static_cdn/       # Or whatever your COLLECTSTATIC_ROOT is set to for collected static files
 media/           # User-uploaded files
+staticfiles/
+media_uploads/
 
 # Logs
 *.log
