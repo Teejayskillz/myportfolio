@@ -218,9 +218,8 @@ LOGGING = {
     }
 }
 
-CKEDITOR_UPLOAD_PATH = "uploads/" # This is where uploaded files will go within your MEDIA_ROOT
-CKEDITOR_IMAGE_BACKEND = "pillow" # Make sure Pillow is installed (pip install Pillow)
-
+CKEDITOR_UPLOAD_PATH = "uploads/ckeditor/" # Path *relative* to MEDIA_ROOT
+CKEDITOR_IMAGE_BACKEND = "pillow" # Make sure Pillow is installed: pip install Pillow
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Full', # Or 'Basic', 'Standard' - defines the toolbar buttons
@@ -247,6 +246,8 @@ CKEDITOR_CONFIGS = {
             'dialogui',
             'elementspath'
         ]),
+        'filebrowserUploadUrl': '/ckeditor/upload/', # Ensure this matches your urls.py path
+        'filebrowserBrowseUrl': '/ckeditor/browse/', # Ensure this matches your urls.py path
     },
     'awesome_toolbar': { # Example of a custom toolbar
         'toolbar': 'Custom',
