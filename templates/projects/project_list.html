@@ -21,7 +21,7 @@
                         {% endif %}
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ project.title }}</h5>
-                            <p class="card-text">{{ project.description|truncatechars:100 }}</p>
+                            <p class="card-text">{{ project.description|striptags|truncatechars:100 }}</p>
                             {% if project.technologies %}
                                 <p class="card-text"><small class="text-muted">Tech: {{ project.technologies }}</small></p>
                             {% endif %}
