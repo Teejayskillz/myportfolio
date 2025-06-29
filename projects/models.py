@@ -1,11 +1,14 @@
 from django.db import models
 from django.utils.text import slugify
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 # Create your models here.
 class Project(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = RichTextUploadingField(
+        config_name='default' # Use 'default' or your custom config name like 'awesome_toolbar'
+    )
     image = models.ImageField(upload_to='projects_images/')
     github_url = models.URLField(blank=True, null=True )
     live_demo_url = models.URLField(blank=True, null=True)
