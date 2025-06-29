@@ -14,7 +14,7 @@
                 <img src="{% static 'img/placeholder_project.jpg' %}" class="img-fluid rounded shadow-sm mb-4" alt="Placeholder Image">
             {% endif %}
 
-            <p>{{ project.description|linebreaksbr }}</p>
+            <p>{{ project.description|safe }}</p>
 
             <h4 class="mt-4">Technologies Used:</h4>
             <p>{{ project.technologies }}</p>
