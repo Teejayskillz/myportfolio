@@ -1,44 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Projects{% endblock %}
+{% block title %}> PROJECTS_LIST{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4 text-center">My Projects</h1>
+<div class="container mt-4 terminal-text">
+    <h1 class="mb-4 text-center">
+        <span class="prompt">system query</span> PROJECTS_LIST
+    </h1>
 
     {% if projects %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for project in projects %}
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
+                <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                    <div class="hacker-card h-100">
                         {% if project.image %}
-                            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
+                            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover; border-bottom: 1px solid var(--hacker-green);">
                         {% else %}
-                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
-                                <span class="text-muted">No Image</span>
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background: rgba(20,20,20,0.8); border-bottom: 1px solid var(--hacker-green);">
+                                <span class="text-muted">[NO_IMAGE_FOUND]</span>
                             </div>
                         {% endif %}
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ project.title }}</h5>
-                            <p class="card-text">{{ project.description|striptags|truncatechars:100 }}</p>
+                            <h5 class="card-title" style="color: var(--hacker-blue);">
+                                <i class="fas fa-folder-open me-2"></i>{{ project.title|upper }}
+                            </h5>
+                            <p class="card-text">
+                                <span class="prompt">>></span> {{ project.description|striptags|truncatechars:100 }}
+                            </p>
                             {% if project.technologies %}
-                                <p class="card-text"><small class="text-muted">Tech: {{ project.technologies }}</small></p>
+                                <p class="card-text">
+                                    <span class="prompt">tech:</span> 
+                                    <small>{{ project.technologies|upper }}</small>
+                                </p>
                             {% endif %}
                             <div class="mt-auto">
-                                <a href="{% url 'projects:project_detail' project.slug %}" class="btn btn-primary btn-sm">View Details</a>
+                                <a href="{% url 'projects:project_detail' project.slug %}" class="btn btn-hacker btn-sm">
+                                    <i class="fas fa-terminal me-1"></i>VIEW_DETAILS
+                                </a>
                             </div>
                         </div>
                         {% if project.github_url or project.live_demo_url %}
-                            <div class="card-footer bg-transparent">
+                            <div class="card-footer" style="background: rgba(20,20,20,0.8); border-top: 1px solid var(--hacker-green);">
                                 {% if project.github_url %}
-                                    <a href="{{ project.github_url }}" class="btn btn-outline-dark btn-sm me-2" target="_blank" rel="noopener noreferrer">
-                                        <i class="fab fa-github me-1"></i>GitHub
+                                    <a href="{{ project.github_url }}" class="btn btn-hacker btn-sm me-2" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-github me-1"></i>GITHUB
                                     </a>
                                 {% endif %}
                                 {% if project.live_demo_url %}
-                                    <a href="{{ project.live_demo_url }}" class="btn btn-outline-success btn-sm" target="_blank" rel="noopener noreferrer">
-                                        <i class="fas fa-external-link-alt me-1"></i>Live Demo
+                                    <a href="{{ project.live_demo_url }}" class="btn btn-hacker btn-sm" target="_blank" rel="noopener noreferrer">
+                                        <i class="fas fa-external-link-alt me-1"></i>LIVE_DEMO
                                     </a>
                                 {% endif %}
                             </div>
@@ -50,11 +61,17 @@
     {% else %}
         <div class="row">
             <div class="col-12">
-                <div class="text-center py-5">
-                    <h3 class="text-muted">No Projects Yet</h3>
-                    <p class="text-muted">No projects have been added yet.</p>
+                <div class="text-center py-5 terminal-text">
+                    <h3 class="text-muted">
+                        <span class="prompt">error</span> NO_PROJECTS_FOUND
+                    </h3>
+                    <p class="text-muted">
+                        <span class="prompt">>></span> No projects have been added yet.
+                    </p>
                     {% if user.is_staff %}
-                        <a href="{% url 'admin:index' %}" class="btn btn-primary">Add Projects via Admin</a>
+                        <a href="{% url 'admin:index' %}" class="btn btn-hacker">
+                            <i class="fas fa-terminal me-1"></i>ADD_PROJECTS
+                        </a>
                     {% endif %}
                 </div>
             </div>

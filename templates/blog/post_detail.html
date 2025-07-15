@@ -1,52 +1,112 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}> POST_{{ post.title|upper }}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 terminal-text">
     <div class="row justify-content-center">
         <div class="col-lg-9">
-            <article class="blog-post">
+            <article>
                 {% if post.image %}
-                    <img src="{{ post.image.url }}" class="img-fluid rounded mb-4 shadow" alt="{{ post.title }}">
+                    <img src="{{ post.image.url }}" class="img-fluid mb-4" alt="{{ post.title }}" style="border: 1px solid var(--hacker-green);">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-dark mb-4" style="height: 300px; border: 1px solid var(--hacker-green);">
+                        <span class="text-muted">[NO_IMAGE_AVAILABLE]</span>
+                    </div>
                 {% endif %}
 
-                <h1 class="display-4 fw-bold mb-3">{{ post.title }}</h1>
-                <p class="text-muted mb-4">
-                    Published on {{ post.publish|date:"F j, Y" }} by <span class="fw-bold">{{ post.author.get_full_name|default:post.author.username }}</span>
+                <h1 class="display-4 fw-bold mb-3" style="color: var(--hacker-green);">
+                    <span class="prompt">post</span> {{ post.title|upper }}
+                </h1>
+                
+                <div class="mb-4" style="border-bottom: 1px dashed var(--hacker-green); padding-bottom: 1rem;">
+                    <p>
+                        <span class="prompt">published</span> {{ post.publish|date:"Y-m-d" }}_BY_{{ post.author.get_full_name|upper|default:post.author.username|upper }}
+                    </p>
                     {% if post.categories.all %}
-                    <br>Categories:
-                    {% for cat in post.categories.all %}
-                        <span class="badge bg-info text-dark me-1"><a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" class="text-dark text-decoration-none">{{ cat.name }}</a></span>
-                    {% endfor %}
+                    <p>
+                        <span class="prompt">categories</span> 
+                        {% for cat in post.categories.all %}
+                            <span class="badge me-1" style="background: rgba(57, 255, 20, 0.2); border: 1px solid var(--hacker-green);">
+                                <a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" 
+                                   class="text-decoration-none" style="color: var(--hacker-green);">
+                                    {{ cat.name|upper }}
+                                </a>
+                            </span>
+                        {% endfor %}
+                    </p>
                     {% endif %}
-                </p>
-
-                <div class="blog-content lead">
-                    {{ post.content|safe }} {# Use |safe if you intend to allow HTML content (e.g., from a rich text editor) #}
                 </div>
 
-                <hr class="my-5">
+                <div class="blog-content" style="line-height: 1.8;">
+                    {{ post.content|safe }}
+                </div>
+
+                <hr class="my-5" style="border-color: var(--hacker-green);">
 
                 <div class="d-flex justify-content-between align-items-center">
-                    <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary">&larr; Back to Blog Posts</a>
-                    {# Optional: Add social sharing buttons here #}
-                    <div>
-                        Share:
-                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="text-primary me-2"><i class="fab fa-twitter fa-lg"></i></a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="text-primary me-2"><i class="fab fa-facebook-f fa-lg"></i></a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" class="text-primary"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                    <a href="{% url 'blog:post_list' %}" class="btn btn-hacker">
+                        <i class="fas fa-arrow-left me-1"></i>BACK_TO_BLOG
+                    </a>
+                    
+                    <div class="social-share">
+                        <span class="me-2" style="color: var(--hacker-blue);">SHARE:</span>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="me-2" style="color: var(--hacker-green);">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="me-2" style="color: var(--hacker-green);">
+                            <i class="fab fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" style="color: var(--hacker-green);">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
+                        </a>
                     </div>
                 </div>
 
-                {# Optional: Add a comments section here #}
-                <section class="mt-5">
-                    <h4>Comments (Coming Soon!)</h4>
+                <section class="mt-5 hacker-card p-4">
+                    <h4 style="color: var(--hacker-blue);">
+                        <span class="prompt">notice</span> COMMENTS_SYSTEM_OFFLINE
+                    </h4>
+                    <p>
+                        <span class="prompt">>></span> COMMENT_FUNCTIONALITY_UNDER_DEVELOPMENT
+                    </p>
                 </section>
-
             </article>
         </div>
     </div>
 </div>
+
+<style>
+    .blog-content h1, .blog-content h2, .blog-content h3,
+    .blog-content h4, .blog-content h5, .blog-content h6 {
+        color: var(--hacker-blue);
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .blog-content p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .blog-content a {
+        color: var(--hacker-blue);
+        text-decoration: underline;
+    }
+    
+    .blog-content code {
+        background: rgba(57, 255, 20, 0.1);
+        color: var(--hacker-green);
+        padding: 0.2rem 0.4rem;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .blog-content pre {
+        background: rgba(10, 10, 10, 0.9);
+        border: 1px solid var(--hacker-green);
+        padding: 1rem;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
+</style>
 {% endblock %}

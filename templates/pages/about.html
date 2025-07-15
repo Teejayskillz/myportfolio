@@ -1,93 +1,101 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}About Us - Lagos Web Dev{% endblock %}
+{% block title %}> ABOUT_SYSTEM{% endblock %}
 
 {% block content %}
-    <section class="py-5 text-center bg-light">
-        <div class="container">
-            <h1 class="display-4 fw-bold mb-3">About Lagos Web Dev</h1>
-            <p class="lead mb-5">
-                We are **Lagos Web Dev**, a dynamic team of passionate web developers and designers based in Lagos, committed to building impactful digital solutions. We believe in the power of well-crafted web applications to solve complex problems and drive business growth.
-            </p>
-            {# Optional: Add a team photo or agency logo if you have one #}
-            {% comment %}
-            <img src="{% static 'img/lagos_web_dev_team.jpg' %}" alt="Lagos Web Dev Team" class="img-fluid rounded shadow mb-4" style="max-width: 700px;">
-            {% endcomment %}
+<section class="py-5 text-center" style="border-bottom: 1px solid var(--hacker-green);">
+    <div class="container terminal-text">
+        <h1 class="display-4 fw-bold mb-3">
+            <span class="prompt">system query</span> ABOUT_LAGOS_WEB_DEV
+        </h1>
+        <p class="lead mb-5">
+            <span class="prompt">>></span> WE ARE A TEAM OF PASSIONATE DEVELOPERS BASED IN LAGOS. WE BUILD IMPACTFUL DIGITAL SOLUTIONS TO SOLVE COMPLEX PROBLEMS AND DRIVE BUSINESS GROWTH.
+        </p>
+        {% comment %}
+        <!-- Optional team photo -->
+        <img src="{% static 'img/lagos_web_dev_team.jpg' %}" alt="LAGOS_WEB_DEV_TEAM" class="img-fluid mb-4" style="max-width: 700px; border: 1px solid var(--hacker-green);">
+        {% endcomment %}
+    </div>
+</section>
+
+<section class="py-5" style="border-bottom: 1px solid var(--hacker-green);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 order-md-2 terminal-text">
+                <h2 class="mb-4" style="color: var(--hacker-blue);">
+                    <span class="prompt">mission</span> OUR_MISSION
+                </h2>
+                <p>
+                    <span class="prompt">>></span> TO EMPOWER BUSINESSES WITH CUTTING-EDGE WEB TECHNOLOGIES. WE DELIVER SCALABLE, SECURE, AND USER-FRIENDLY APPLICATIONS THAT ARE FUTURE-READY.
+                </p>
+                <p>
+                    <span class="prompt">>></span> WE THRIVE ON CHALLENGES AND CONSTANTLY EXPLORE NEW HORIZONS IN WEB DEVELOPMENT TO PROVIDE INNOVATIVE SOLUTIONS.
+                </p>
+            </div>
+            <div class="col-md-6 order-md-1 text-center">
+                <i class="fas fa-rocket fa-7x mb-4 mb-md-0" style="color: var(--hacker-blue);"></i>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    ---
+<section class="py-5" style="background: rgba(10,10,10,0.9); border-bottom: 1px solid var(--hacker-green);">
+    <div class="container terminal-text">
+        <h2 class="text-center mb-5">
+            <span class="prompt">system scan</span> CORE_TECHNOLOGIES
+        </h2>
+        <p class="text-center lead mb-4">
+            <span class="prompt">>></span> OUR TECH STACK ENSURES PERFORMANCE, RELIABILITY, AND MODERN AESTHETICS
+        </p>
 
-    <section class="py-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 order-md-2">
-                    <h2 class="mb-4">Our Mission</h2>
-                    <p>
-                        At Lagos Web Dev, our mission is to empower businesses and individuals with cutting-edge web technologies. We focus on delivering **scalable, secure, and user-friendly applications** that not only meet today's demands but are also future-ready. From conceptualization to deployment and ongoing support, we're dedicated to your success.
-                    </p>
-                    <p>
-                        We thrive on challenges and are constantly exploring new horizons in web development to ensure our clients always receive innovative and efficient solutions.
-                    </p>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="hacker-card h-100 p-4">
+                    <h4 class="mb-3" style="color: var(--hacker-blue);">
+                        <i class="fas fa-server me-2"></i>BACKEND_&_CMS
+                    </h4>
+                    <ul class="list-unstyled">
+                        <li><span class="prompt">></span> PYTHON: ROBUST FOUNDATION FOR BACKEND SYSTEMS</li>
+                        <li><span class="prompt">></span> DJANGO: SECURE AND SCALABLE WEB APPLICATIONS</li>
+                        <li><span class="prompt">></span> DRF: POWERFUL RESTFUL APIS</li>
+                        <li><span class="prompt">></span> WORDPRESS: FLEXIBLE CONTENT MANAGEMENT</li>
+                        <li><span class="prompt">></span> SHOPIFY/WOOCOMMERCE: E-COMMERCE SOLUTIONS</li>
+                    </ul>
                 </div>
-                <div class="col-md-6 order-md-1 text-center">
-                    <i class="fas fa-rocket fa-7x text-primary mb-4 mb-md-0"></i> {# Example icon #}
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="hacker-card h-100 p-4">
+                    <h4 class="mb-3" style="color: var(--hacker-blue);">
+                        <i class="fas fa-desktop me-2"></i>FRONTEND_&_TOOLS
+                    </h4>
+                    <ul class="list-unstyled">
+                        <li><span class="prompt">></span> HTML5/CSS3: MODERN RESPONSIVE DESIGN</li>
+                        <li><span class="prompt">></span> BOOTSTRAP: POWERFUL CSS FRAMEWORK</li>
+                        <li><span class="prompt">></span> JAVASCRIPT: INTERACTIVE FEATURES</li>
+                        <li><span class="prompt">></span> TYPE.JS: DYNAMIC TEXT ANIMATIONS</li>
+                        <li><span class="prompt">></span> POSTGRESQL/MYSQL: RELIABLE DATABASES</li>
+                        <li><span class="prompt">></span> GIT/GITHUB: VERSION CONTROL</li>
+                        <li><span class="prompt">></span> DEPLOYMENT: LIVE SERVER EXPERTISE</li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    ---
-
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Our Core Technologies & Expertise</h2>
-            <p class="text-center lead mb-4">
-                We harness a robust and versatile tech stack to bring your ideas to life, ensuring performance, reliability, and modern aesthetics.
-            </p>
-
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100 p-4">
-                        <h4 class="mb-3 text-primary"><i class="fas fa-server me-2"></i>Backend Development & CMS</h4>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Python:** The robust foundation for our backend systems.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Django:** Our primary framework for rapid, secure, and scalable web application development.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Django REST Framework (DRF):** Building powerful and efficient RESTful APIs.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**WordPress:** Flexible content management for blogs, portfolios, and business sites.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Shopify & WooCommerce:** Comprehensive e-commerce solutions for online stores.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100 p-4">
-                        <h4 class="mb-3 text-primary"><i class="fas fa-desktop me-2"></i>Frontend & Databases & Tools</h4>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**HTML5 & CSS3:** Structuring and styling modern, responsive web content.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Bootstrap:** Accelerating responsive design with a powerful CSS framework.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**JavaScript:** Adding interactivity and dynamic features to web pages.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Type.js:** Enhancing user experience with dynamic text animations.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**PostgreSQL & MySQL:** Reliable relational databases for robust data management.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Git & GitHub:** Collaborative version control for efficient teamwork.</li>
-                            <li><i class="fas fa-check-circle me-2 text-success"></i>**Deployment:** Expertise in deploying applications to live servers.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    ---
-
-    <section class="py-5 text-center">
-        <div class="container">
-            <h2 class="mb-4">Ready to Start Your Project?</h2>
-            <p class="lead mb-4">
-                We're excited to collaborate with you and turn your ideas into a robust web solution.
-            </p>
-            <a href="{% url 'contact:contact_page' %}" class="btn btn-primary btn-lg"><i class="fas fa-envelope me-2"></i>Get in Touch</a>
-        </div>
-    </section>
+<section class="py-5 text-center terminal-text">
+    <div class="container">
+        <h2 class="mb-4">
+            <span class="prompt">system ready</span> START_YOUR_PROJECT
+        </h2>
+        <p class="lead mb-4">
+            <span class="prompt">>></span> READY TO TRANSFORM YOUR IDEAS INTO A ROBUST WEB SOLUTION?
+        </p>
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-hacker btn-lg">
+            <i class="fas fa-terminal me-2"></i>GET_IN_TOUCH
+        </a>
+    </div>
+</section>
 
 {% endblock %}
