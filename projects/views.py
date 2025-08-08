@@ -18,7 +18,10 @@ def project_detail_view(request, slug): # NOW ACCEPTS 'slug'
     Display details of a single project
     """
     project = get_object_or_404(Project, slug=slug) # NOW QUERIES BY 'slug'
+    technologies_list = project.technologies.split() 
+
     context = {
-        'project': project
+        'project': project,
+        'technologies': technologies_list
     }
     return render(request, 'projects/project_detail.html', context)

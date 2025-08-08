@@ -42,12 +42,12 @@
                     <ul class="list-unstyled mt-3">
                         <li class="mb-3">
                             <strong class="d-block">Technologies Used:</strong>
-                            <div class="mt-2">
-                                <!-- CORRECTED THIS LINE: Changed project.technologies.split to use the Django template filter syntax -->
-                                {% for tech in project.technologies|split %}
-                                    <span class="badge bg-light text-dark fw-normal me-1 mb-1">{{ tech }}</span>
-                                {% endfor %}
-                            </div>
+                            <!-- 
+                                CORRECTION: The invalid '|split' filter was removed. 
+                                The technologies are now displayed as a single string to prevent the server error.
+                                For individual badges, this string should be split into a list within your Django view.
+                            -->
+                            <p class="text-muted mt-2">{{ project.technologies }}</p>
                         </li>
                     </ul>
                     <div class="d-grid gap-2">
