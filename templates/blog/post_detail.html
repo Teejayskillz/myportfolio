@@ -1,76 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}> POST_{{ post.title|upper }}{% endblock %}
+{% block title %}{{ post.title }} | LagosWebDev Blog{% endblock %}
 
 {% block content %}
-<div class="container py-5 terminal-text">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-9">
-            <article>
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" class="img-fluid mb-4" alt="{{ post.title }}" style="border: 1px solid var(--hacker-green);">
-                {% else %}
-                    <div class="d-flex align-items-center justify-content-center bg-dark mb-4" style="height: 300px; border: 1px solid var(--hacker-green);">
-                        <span class="text-muted">[NO_IMAGE_AVAILABLE]</span>
+        <div class="col-lg-8">
+            <article class="blog-post">
+                <header class="mb-4">
+                    <h1 class="fw-bold display-5">{{ post.title }}</h1>
+                    <div class="text-muted mt-2">
+                        <span>Published on {{ post.publish|date:"F j, Y" }} by {{ post.author.get_full_name|default:post.author.username }}</span>
                     </div>
+                    {% if post.categories.all %}
+                    <div class="mt-2">
+                        {% for cat in post.categories.all %}
+                            <a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" class="text-decoration-none">
+                                <span class="badge bg-light text-dark fw-normal">{{ cat.name }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </header>
+
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="img-fluid rounded shadow-sm mb-4" alt="{{ post.title }}">
                 {% endif %}
 
-                <h1 class="display-4 fw-bold mb-3" style="color: var(--hacker-green);">
-                    <span class="prompt">post</span> {{ post.title|upper }}
-                </h1>
-                
-                <div class="mb-4" style="border-bottom: 1px dashed var(--hacker-green); padding-bottom: 1rem;">
-                    <p>
-                        <span class="prompt">published</span> {{ post.publish|date:"Y-m-d" }}_BY_{{ post.author.get_full_name|upper|default:post.author.username|upper }}
-                    </p>
-                    {% if post.categories.all %}
-                    <p>
-                        <span class="prompt">categories</span> 
-                        {% for cat in post.categories.all %}
-                            <span class="badge me-1" style="background: rgba(57, 255, 20, 0.2); border: 1px solid var(--hacker-green);">
-                                <a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" 
-                                   class="text-decoration-none" style="color: var(--hacker-green);">
-                                    {{ cat.name|upper }}
-                                </a>
-                            </span>
-                        {% endfor %}
-                    </p>
-                    {% endif %}
-                </div>
-
-                <div class="blog-content" style="line-height: 1.8;">
+                <div class="blog-content">
                     {{ post.content|safe }}
                 </div>
 
-                <hr class="my-5" style="border-color: var(--hacker-green);">
+                <hr class="my-5">
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <a href="{% url 'blog:post_list' %}" class="btn btn-hacker">
-                        <i class="fas fa-arrow-left me-1"></i>BACK_TO_BLOG
+                <footer class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <a href="{% url 'blog:post_list' %}" class="btn btn-outline-secondary mb-3 mb-md-0">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Blog
                     </a>
                     
                     <div class="social-share">
-                        <span class="me-2" style="color: var(--hacker-blue);">SHARE:</span>
-                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="me-2" style="color: var(--hacker-green);">
-                            <i class="fab fa-twitter fa-lg"></i>
+                        <span class="fw-bold me-2">Share this post:</span>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ post.title|urlencode }}" target="_blank" class="text-dark me-2 fs-5" title="Share on Twitter">
+                            <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="me-2" style="color: var(--hacker-green);">
-                            <i class="fab fa-facebook-f fa-lg"></i>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" target="_blank" class="text-dark me-2 fs-5" title="Share on Facebook">
+                            <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" style="color: var(--hacker-green);">
-                            <i class="fab fa-linkedin-in fa-lg"></i>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ post.title|urlencode }}" target="_blank" class="text-dark fs-5" title="Share on LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
                         </a>
                     </div>
-                </div>
+                </footer>
 
-                <section class="mt-5 hacker-card p-4">
-                    <h4 style="color: var(--hacker-blue);">
-                        <span class="prompt">notice</span> COMMENTS_SYSTEM_OFFLINE
-                    </h4>
-                    <p>
-                        <span class="prompt">>></span> COMMENT_FUNCTIONALITY_UNDER_DEVELOPMENT
-                    </p>
+                <section class="mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Comments</h4>
+                            <p class="card-text text-muted">The comments system is currently under development. Please check back soon!</p>
+                        </div>
+                    </div>
                 </section>
             </article>
         </div>
@@ -78,35 +67,60 @@
 </div>
 
 <style>
+    .blog-content {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
     .blog-content h1, .blog-content h2, .blog-content h3,
     .blog-content h4, .blog-content h5, .blog-content h6 {
-        color: var(--hacker-blue);
-        margin-top: 2rem;
-        margin-bottom: 1rem;
+        font-weight: 700;
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
     }
-    
     .blog-content p {
         margin-bottom: 1.5rem;
     }
-    
     .blog-content a {
-        color: var(--hacker-blue);
+        color: var(--primary-blue);
         text-decoration: underline;
     }
-    
-    .blog-content code {
-        background: rgba(57, 255, 20, 0.1);
-        color: var(--hacker-green);
-        padding: 0.2rem 0.4rem;
-        font-family: 'Courier New', monospace;
+    .blog-content a:hover {
+        text-decoration: none;
     }
-    
-    .blog-content pre {
-        background: rgba(10, 10, 10, 0.9);
-        border: 1px solid var(--hacker-green);
-        padding: 1rem;
-        overflow-x: auto;
+    .blog-content blockquote {
+        border-left: 4px solid #e9ecef;
+        padding-left: 1rem;
         margin: 1.5rem 0;
+        font-style: italic;
+        color: #6c757d;
+    }
+    .blog-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.25rem;
+        margin: 1.5rem 0;
+    }
+    /* Clean, readable style for code blocks */
+    .blog-content pre {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        overflow-x: auto;
+        font-size: 0.9rem;
+    }
+    .blog-content code {
+        background-color: #e9ecef;
+        color: #c7254e;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-size: 90%;
+    }
+    .blog-content pre code {
+        background-color: transparent;
+        color: inherit;
+        padding: 0;
+        border-radius: 0;
     }
 </style>
 {% endblock %}
