@@ -1,42 +1,39 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}> PRICING_MODULE{% endblock %}
+{% block title %}Pricing Plans | Lagos Web Developer{% endblock %}
 
 {% block content %}
-<div class="container py-5 terminal-text">
-    <h1 class="display-4 text-center mb-5">
-        <span class="prompt">system query</span> SERVICE_PRICING
-    </h1>
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Simple, Transparent Pricing</h1>
+        <p class="lead text-muted">Choose the plan that best fits your business needs. No hidden fees.</p>
+    </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
         {% for plan in plans %}
-        <div class="col" data-aos="fade-up" data-aos-delay="{{ plan.aos_delay }}">
-            <div class="hacker-card h-100 text-center {% if forloop.counter == 2 %}border-primary{% endif %}" 
-                 style="{% if forloop.counter == 2 %}border-color: var(--hacker-blue); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);{% endif %}">
-                <div class="card-header py-3" style="border-bottom: 1px solid var(--hacker-green); background: rgba(20, 20, 20, 0.9);">
-                    <h4 class="my-0 fw-normal" style="color: {% if forloop.counter == 2 %}var(--hacker-blue){% else %}var(--hacker-green){% endif %};">
-                        {{ plan.name|upper }}
-                    </h4>
+        <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'0'|stringformat:'s00' }}">
+            <!-- The middle plan gets a primary border and shadow to make it stand out -->
+            <div class="card h-100 text-center shadow-sm {% if forloop.counter == 2 %}border-primary shadow-lg{% endif %}">
+                <div class="card-header py-3 {% if forloop.counter == 2 %}bg-primary text-white border-primary{% endif %}">
+                    <h4 class="my-0 fw-normal">{{ plan.name }}</h4>
                 </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title" style="color: var(--hacker-green);">
+                <div class="card-body d-flex flex-column">
+                    <h1 class="card-title pricing-card-title">
                         {% if plan.is_premium %}
-                            ₦XXX,XXX<small class="text-muted fw-light"></small>
+                            Let's Talk
                         {% else %}
-                            ₦{{ plan.price|floatformat:"0" }}<small class="text-muted fw-light">/ONE_TIME</small>
+                            ₦{{ plan.price|floatformat:"0" }}<small class="text-muted fw-light">/one-time</small>
                         {% endif %}
                     </h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start mx-auto" style="max-width: 250px;">
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
                         {% for feature in plan.get_features_list %}
-                            <li class="mb-2">
-                                <span class="prompt">></span> <span style="color: var(--hacker-green);">{{ feature|upper }}</span>
-                            </li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{{ feature }}</li>
                         {% endfor %}
                     </ul>
-                    <a href="{% url plan.button_url_name %}" 
-                       class="w-100 btn btn-lg {% if forloop.counter == 2 %}btn-hacker-primary{% else %}btn-hacker{% endif %}">
-                        <i class="fas fa-terminal me-2"></i>{{ plan.button_text|upper }}
+                    <a href="{% url plan.button_url_name %}" class="w-100 btn btn-lg {% if forloop.counter == 2 %}btn-primary{% else %}btn-outline-primary{% endif %} mt-auto">
+                        {{ plan.button_text }}
                     </a>
                 </div>
             </div>
@@ -44,81 +41,49 @@
         {% endfor %}
     </div>
 
-    <hr class="my-5" style="border-color: var(--hacker-green);">
-
-    <h2 class="text-center my-5" style="color: var(--hacker-blue);">
-        <span class="prompt">faq</span> FREQUENTLY_ASKED_QUESTIONS
-    </h2>
-    <div class="accordion" id="faqAccordion">
-        <div class="accordion-item hacker-card mb-3" data-aos="fade-up" data-aos-delay="100">
-            <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button collapsed terminal-text" type="button" data-bs-toggle="collapse" 
-                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
-                        style="background: rgba(20, 20, 20, 0.8); color: var(--hacker-green);">
-                    <span class="prompt">q1</span> WHAT_IS_INCLUDED_IN_"DOMAIN_&_HOSTING_(1_YEAR)"?
-                </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" 
-                 data-bs-parent="#faqAccordion" style="background: rgba(20, 20, 20, 0.8);">
-                <div class="accordion-body terminal-text">
-                    <span class="prompt">>></span> THIS_TYPICALLY_COVERS_THE_REGISTRATION_OF_YOUR_CHOSEN_DOMAIN_NAME_FOR_ONE_YEAR_AND_HOSTING_SERVICES_FOR_ONE_YEAR._AFTER_THE_FIRST_YEAR,_THESE_SERVICES_WILL_NEED_TO_BE_RENEWED.
+    <!-- FAQ Section -->
+    <div class="row justify-content-center mt-5 pt-5">
+        <div class="col-lg-8">
+            <h2 class="text-center mb-4 fw-bold">Frequently Asked Questions</h2>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item" data-aos="fade-up">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            What is included in "1 Year Domain & Hosting"?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            This covers the registration of your chosen domain name (e.g., `yourbusiness.com`) and the web hosting service required to keep your site online for one full year. After the first year, these services need to be renewed.
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="accordion-item hacker-card mb-3" data-aos="fade-up" data-aos-delay="200">
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed terminal-text" type="button" data-bs-toggle="collapse" 
-                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"
-                        style="background: rgba(20, 20, 20, 0.8); color: var(--hacker-green);">
-                    <span class="prompt">q2</span> WHAT_DOES_"CONTINUOUS_SUPPORT"_ENTAIL_FOR_THE_PREMIUM_PLAN?
-                </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" 
-                 data-bs-parent="#faqAccordion" style="background: rgba(20, 20, 20, 0.8);">
-                <div class="accordion-body terminal-text">
-                    <span class="prompt">>></span> CONTINUOUS_SUPPORT_MEANS_YOU'LL_RECEIVE_ONGOING_TECHNICAL_ASSISTANCE,_BUG_FIXES,_AND_UPDATES._THIS_INCLUDES_PRIORITY_RESPONSE_TIMES_AND_DEDICATED_ASSISTANCE._SPECIFIC_TERMS_WILL_BE_OUTLINED_IN_YOUR_SERVICE_AGREEMENT.
+                <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            What does "Continuous Support" for the Custom plan entail?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Continuous support means you'll receive ongoing technical assistance, regular updates, security monitoring, and bug fixes. This ensures your application remains in top condition long after launch. Specific terms are detailed in a service agreement.
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="accordion-item hacker-card" data-aos="fade-up" data-aos-delay="300">
-            <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed terminal-text" type="button" data-bs-toggle="collapse" 
-                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"
-                        style="background: rgba(20, 20, 20, 0.8); color: var(--hacker-green);">
-                    <span class="prompt">q3</span> HOW_DO_I_GET_A_QUOTE_FOR_THE_PREMIUM_PLAN?
-                </button>
-            </h2>
-            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" 
-                 data-bs-parent="#faqAccordion" style="background: rgba(20, 20, 20, 0.8);">
-                <div class="accordion-body terminal-text">
-                    <span class="prompt">>></span> SINCE_THE_PREMIUM_PLAN_IS_HIGHLY_CUSTOMIZED,_PLEASE_USE_THE_"CONTACT_US"_BUTTON._PROVIDE_DETAILS_ABOUT_YOUR_SPECIFIC_REQUIREMENTS,_AND_WE'LL_RETURN_WITH_A_TAILORED_QUOTE.
+                <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            How do I get a quote for the Custom Solution plan?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Since this plan is tailored to your unique needs, please click the "Request a Quote" button and get in touch. Provide as much detail as you can about your project, and I will get back to you with a detailed proposal and price.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .btn-hacker-primary {
-        background: rgba(0, 240, 255, 0.1);
-        color: var(--hacker-blue);
-        border: 1px solid var(--hacker-blue);
-        transition: all 0.3s ease;
-    }
-    
-    .btn-hacker-primary:hover {
-        background: rgba(0, 240, 255, 0.2);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-    }
-    
-    .accordion-button:not(.collapsed) {
-        background: rgba(57, 255, 20, 0.1);
-        color: var(--hacker-blue);
-    }
-    
-    .accordion-button:focus {
-        box-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
-        border-color: var(--hacker-green);
-    }
-</style>
 {% endblock %}
