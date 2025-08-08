@@ -24,7 +24,93 @@
                     <span class="prompt">description</span> PROJECT_DETAILS
                 </h4>
                 <p>{{ project.description|safe }}</p>
+            </div>{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} | Project Case Study{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Project Header -->
+            <header class="mb-4">
+                <h1 class="fw-bold display-5">{{ project.title }}</h1>
+                <p class="lead text-muted">A case study of the project, detailing the process and technologies used.</p>
+            </header>
+
+            <!-- Project Image -->
+            {% if project.image %}
+                <img src="{{ project.image.url }}" class="img-fluid rounded shadow-sm mb-5" alt="{{ project.title }}">
+            {% endif %}
+
+            <!-- Project Description -->
+            <div class="project-content">
+                <h2 class="fw-bold h3">Project Overview</h2>
+                <div class="text-muted" style="font-size: 1.1rem; line-height: 1.7;">
+                    {{ project.description|safe }}
+                </div>
             </div>
+
+            <hr class="my-5">
+
+            <!-- Back Button -->
+            <a href="{% url 'projects:project_list' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to All Projects
+            </a>
+        </div>
+
+        <!-- Sidebar with Project Info -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 120px;">
+                <div class="card-body">
+                    <h4 class="card-title fw-bold">Project Info</h4>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-3">
+                            <strong class="d-block">Technologies Used:</strong>
+                            <div class="mt-2">
+                                {% for tech in project.technologies.split %}
+                                    <span class="badge bg-light text-dark fw-normal me-1 mb-1">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="d-grid gap-2">
+                        {% if project.live_demo_url %}
+                            <a href="{{ project.live_demo_url }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-external-link-alt me-2"></i>View Live Demo
+                            </a>
+                        {% endif %}
+                        {% if project.github_url %}
+                            <a href="{{ project.github_url }}" class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-github me-2"></i>View on GitHub
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles for content coming from a text editor -->
+<style>
+    .project-content h1, .project-content h2, .project-content h3,
+    .project-content h4, .project-content h5, .project-content h6 {
+        font-weight: 700;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .project-content p {
+        margin-bottom: 1.5rem;
+    }
+    .project-content a {
+        color: var(--primary-blue);
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
 
             <div class="hacker-card p-4 mb-4">
                 <h4 class="mb-3" style="color: var(--hacker-blue);">
