@@ -1,148 +1,105 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}> CONTACT_SYSTEM{% endblock %}
+{% block title %}Contact Me | Lagos Web Developer{% endblock %}
 
 {% block content %}
-<div class="container terminal-text">
-    <h1 class="mb-4 text-center">
-        <span class="prompt">system ready</span> INITIATE_CONTACT
-    </h1>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Get in Touch</h1>
+        <p class="lead text-muted">Have a project in mind or just want to say hello? I'd love to hear from you.</p>
+    </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="hacker-card p-3 mb-4" style="border-color: {% if message.tags == 'success' %}var(--hacker-green){% else %}var(--hacker-accent){% endif %};">
-                        <span class="prompt">{% if message.tags == 'success' %}success{% else %}warning{% endif %}</span> 
-                        {{ message|upper }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+    <div class="row g-5 justify-content-center">
+        <div class="col-lg-4">
+            <h3 class="fw-bold mb-4">Contact Information</h3>
+            <p class="text-muted">You can reach me through the following channels. I'm always happy to discuss new projects and opportunities.</p>
+            
+            <div class="d-flex align-items-start mb-3">
+                <i class="fas fa-envelope fa-fw fs-4 text-primary mt-1"></i>
+                <div class="ms-3">
+                    <h5 class="mb-0">Email</h5>
+                    <a href="mailto:contact@lagoswebdev.com" class="text-decoration-none text-dark">contact@lagoswebdev.com</a>
+                </div>
+            </div>
 
-            <div class="hacker-card p-4 mb-4">
-                <h5 class="text-center mb-4" style="color: var(--hacker-blue);">
-                    <span class="prompt">input</span> SEND_MESSAGE
-                </h5>
-                <form method="post">
-                    {% csrf_token %}
+            <div class="d-flex align-items-start mb-3">
+                <i class="fab fa-whatsapp fa-fw fs-4 text-primary mt-1"></i>
+                <div class="ms-3">
+                    <h5 class="mb-0">WhatsApp</h5>
+                    <a href="https://wa.me/2349027717380" target="_blank" class="text-decoration-none text-dark">+234 902 771 7380</a>
+                </div>
+            </div>
 
-                    <div class="mb-3">
-                        <label for="{{ form.name.id_for_label }}" class="form-label" style="color: var(--hacker-green);">
-                            <span class="prompt">></span> FULL_NAME:
-                        </label>
-                        {{ form.name }}
-                        {% if form.name.errors %}
-                            {% for error in form.name.errors %}
-                                <div class="text-danger mt-1">
-                                    <span class="prompt">error</span> {{ error|upper }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+            <div class="d-flex align-items-start mb-4">
+                <i class="fas fa-map-marker-alt fa-fw fs-4 text-primary mt-1"></i>
+                <div class="ms-3">
+                    <h5 class="mb-0">Location</h5>
+                    <p class="text-dark mb-0">Lagos, Nigeria</p>
+                </div>
+            </div>
+            
+            <h4 class="fw-bold mb-3 mt-5">Connect on Social</h4>
+            <div class="fs-3">
+                <a href="https://github.com/Teejayskillz/" target="_blank" class="text-dark me-3" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/tijani-apatira-13b358367/" target="_blank" class="text-dark me-3" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
 
-                    <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label" style="color: var(--hacker-green);">
-                            <span class="prompt">></span> EMAIL_ADDRESS:
-                        </label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            {% for error in form.email.errors %}
-                                <div class="text-danger mt-1">
-                                    <span class="prompt">error</span> {{ error|upper }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.subject.id_for_label }}" class="form-label" style="color: var(--hacker-green);">
-                            <span class="prompt">></span> SUBJECT:
-                        </label>
-                        {{ form.subject }}
-                        {% if form.subject.errors %}
-                            {% for error in form.subject.errors %}
-                                <div class="text-danger mt-1">
-                                    <span class="prompt">error</span> {{ error|upper }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.phone.id_for_label }}" class="form-label" style="color: var(--hacker-green);">
-                            <span class="prompt">></span> PHONE_NUMBER:
-                        </label>
-                        {{ form.phone }}
-                        {% if form.phone.errors %}
-                            <div class="text-danger mt-1">
-                                <span class="prompt">error</span> {{ form.phone.errors|upper }}
+        <div class="col-lg-6">
+            <div class="card p-4 shadow-sm">
+                <div class="card-body">
+                    <h3 class="fw-bold mb-4">Send Me a Message</h3>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-warning{% endif %}" role="alert">
+                                {{ message }}
                             </div>
-                        {% endif %}
-                    </div>
+                        {% endfor %}
+                    {% endif %}
 
-                    <div class="mb-3">
-                        <label for="{{ form.message.id_for_label }}" class="form-label" style="color: var(--hacker-green);">
-                            <span class="prompt">></span> MESSAGE_CONTENT:
-                        </label>
-                        {{ form.message }}
-                        {% if form.message.errors %}
-                            {% for error in form.message.errors %}
-                                <div class="text-danger mt-1">
-                                    <span class="prompt">error</span> {{ error|upper }}
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ field.errors.as_text }}
                                 </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
 
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-hacker">
-                            <i class="fas fa-paper-plane me-2"></i>SEND_MESSAGE
-                        </button>
-                    </div>
-                </form>
-
-                <p class="text-center mt-4" style="color: var(--hacker-blue);">
-                    <span class="prompt">alternate</span> CONTACT_CHANNELS <br>
-                    <div class="d-flex flex-wrap justify-content-center mt-3">
-                        <a href="https://www.linkedin.com/in/tijani-apatira-13b358367/" target="_blank" class="btn btn-hacker btn-sm m-2">
-                            <i class="fab fa-linkedin me-1"></i>LINKEDIN
-                        </a>
-                        <a href="https://github.com/Teejayskillz/" target="_blank" class="btn btn-hacker btn-sm m-2">
-                            <i class="fab fa-github me-1"></i>GITHUB
-                        </a>
-                        <a href="https://wa.me/2349027717380" target="_blank" class="btn btn-hacker btn-sm m-2">
-                            <i class="fab fa-whatsapp me-1"></i>WHATSAPP
-                        </a>
-                        <a href="mailto:contact@lagoswebdev.com" class="btn btn-hacker btn-sm m-2">
-                            <i class="fas fa-envelope me-1"></i>EMAIL
-                        </a>
-                    </div>
-                </p>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<style>
-    /* Custom form styling */
-    input, textarea, select {
-        background-color: rgba(20, 20, 20, 0.8) !important;
-        border: 1px solid var(--hacker-green) !important;
-        color: var(--hacker-green) !important;
-        font-family: 'VT323', monospace !important;
-        padding: 0.5rem 1rem !important;
-    }
-    
-    input:focus, textarea:focus, select:focus {
-        box-shadow: 0 0 10px rgba(57, 255, 20, 0.5) !important;
-        border-color: var(--hacker-blue) !important;
-        background-color: rgba(30, 30, 30, 0.9) !important;
-    }
-    
-    label {
-        font-family: 'VT323', monospace;
-        letter-spacing: 1px;
-    }
-</style>
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form[method="post"]');
+        if (form) {
+            const fields = form.querySelectorAll('input, textarea, select');
+            fields.forEach(function(field) {
+                // We exclude hidden inputs (like csrf_token) and buttons/submit inputs
+                if (field.type !== 'hidden' && field.type !== 'submit' && field.type !== 'button') {
+                    field.classList.add('form-control');
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}
