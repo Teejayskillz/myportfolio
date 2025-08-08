@@ -1,32 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}> PROJECT_{{ project.title|upper }}{% endblock %}
-
-{% block content %}
-<div class="container terminal-text">
-    <h1 class="mb-4">
-        <span class="prompt">system query</span> {{ project.title|upper }}
-    </h1>
-
-    <div class="row">
-        <div class="col-md-8">
-            {% if project.image %}
-                <img src="{{ project.image.url }}" class="img-fluid mb-4" alt="{{ project.title }}" style="border: 1px solid var(--hacker-green);">
-            {% else %}
-                <div class="d-flex align-items-center justify-content-center bg-dark mb-4" style="height: 300px; border: 1px solid var(--hacker-green);">
-                    <span class="text-muted">[NO_IMAGE_AVAILABLE]</span>
-                </div>
-            {% endif %}
-
-            <div class="hacker-card p-4 mb-4">
-                <h4 class="mb-3" style="color: var(--hacker-blue);">
-                    <span class="prompt">description</span> PROJECT_DETAILS
-                </h4>
-                <p>{{ project.description|safe }}</p>
-            </div>{% extends 'base.html' %}
-{% load static %}
-
 {% block title %}{{ project.title }} | Project Case Study{% endblock %}
 
 {% block content %}
@@ -69,7 +43,8 @@
                         <li class="mb-3">
                             <strong class="d-block">Technologies Used:</strong>
                             <div class="mt-2">
-                                {% for tech in project.technologies.split %}
+                                <!-- CORRECTED THIS LINE: Changed project.technologies.split to use the Django template filter syntax -->
+                                {% for tech in project.technologies|split %}
                                     <span class="badge bg-light text-dark fw-normal me-1 mb-1">{{ tech }}</span>
                                 {% endfor %}
                             </div>
@@ -109,61 +84,4 @@
         text-decoration: underline;
     }
 </style>
-{% endblock %}
-
-
-            <div class="hacker-card p-4 mb-4">
-                <h4 class="mb-3" style="color: var(--hacker-blue);">
-                    <span class="prompt">tech</span> TECHNOLOGIES_USED
-                </h4>
-                <p>{{ project.technologies|upper }}</p>
-            </div>
-
-            <div class="mt-4">
-                {% if project.github_url %}
-                    <a href="{{ project.github_url }}" class="btn btn-hacker me-2" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-github me-1"></i>VIEW_ON_GITHUB
-                    </a>
-                {% endif %}
-                {% if project.live_demo_url %}
-                    <a href="{{ project.live_demo_url }}" class="btn btn-hacker me-2" target="_blank" rel="noopener noreferrer">
-                        <i class="fas fa-external-link-alt me-1"></i>LIVE_DEMO
-                    </a>
-                {% endif %}
-                <a href="{% url 'projects:project_list' %}" class="btn btn-hacker">
-                    <i class="fas fa-arrow-left me-1"></i>BACK_TO_PROJECTS
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="hacker-card mt-md-0 mt-4">
-                <div class="card-body">
-                    <h5 class="card-title" style="color: var(--hacker-blue);">
-                        <span class="prompt">info</span> PROJECT_METADATA
-                    </h5>
-                    <ul class="list-group list-group-flush" style="background: transparent;">
-                        <li class="list-group-item" style="background: transparent; border-color: var(--hacker-green);">
-                            <span class="prompt">></span> <strong>CATEGORY:</strong> WEB_DEVELOPMENT
-                        </li>
-                        <li class="list-group-item" style="background: transparent; border-color: var(--hacker-green);">
-                            <span class="prompt">></span> <strong>TECHNOLOGIES:</strong> {{ project.technologies|upper }}
-                        </li>
-                        {% if project.github_url %}
-                        <li class="list-group-item" style="background: transparent; border-color: var(--hacker-green);">
-                            <span class="prompt">></span> <strong>GITHUB:</strong> 
-                            <a href="{{ project.github_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--hacker-blue);">[LINK]</a>
-                        </li>
-                        {% endif %}
-                        {% if project.live_demo_url %}
-                        <li class="list-group-item" style="background: transparent; border-color: var(--hacker-green);">
-                            <span class="prompt">></span> <strong>LIVE_DEMO:</strong> 
-                            <a href="{{ project.live_demo_url }}" target="_blank" rel="noopener noreferrer" style="color: var(--hacker-blue);">[LINK]</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
