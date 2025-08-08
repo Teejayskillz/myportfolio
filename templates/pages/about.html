@@ -1,99 +1,95 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}> ABOUT_SYSTEM{% endblock %}
+{% block title %}About Me | Lagos Web Developer{% endblock %}
 
 {% block content %}
-<section class="py-5 text-center" style="border-bottom: 1px solid var(--hacker-green);">
-    <div class="container terminal-text">
-        <h1 class="display-4 fw-bold mb-3">
-            <span class="prompt">system query</span> ABOUT_LAGOS_WEB_DEV
-        </h1>
-        <p class="lead mb-5">
-            <span class="prompt">>></span> WE ARE A TEAM OF PASSIONATE DEVELOPERS BASED IN LAGOS. WE BUILD IMPACTFUL DIGITAL SOLUTIONS TO SOLVE COMPLEX PROBLEMS AND DRIVE BUSINESS GROWTH.
-        </p>
-        {% comment %}
-        <!-- Optional team photo -->
-        <img src="{% static 'img/lagos_web_dev_team.jpg' %}" alt="LAGOS_WEB_DEV_TEAM" class="img-fluid mb-4" style="max-width: 700px; border: 1px solid var(--hacker-green);">
-        {% endcomment %}
-    </div>
-</section>
 
-<section class="py-5" style="border-bottom: 1px solid var(--hacker-green);">
+<!-- 1. HERO SECTION: A personal introduction to build connection. -->
+<section class="py-5" style="background-color: var(--light-gray-bg);">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-6 order-md-2 terminal-text">
-                <h2 class="mb-4" style="color: var(--hacker-blue);">
-                    <span class="prompt">mission</span> OUR_MISSION
-                </h2>
-                <p>
-                    <span class="prompt">>></span> TO EMPOWER BUSINESSES WITH CUTTING-EDGE WEB TECHNOLOGIES. WE DELIVER SCALABLE, SECURE, AND USER-FRIENDLY APPLICATIONS THAT ARE FUTURE-READY.
-                </p>
-                <p>
-                    <span class="prompt">>></span> WE THRIVE ON CHALLENGES AND CONSTANTLY EXPLORE NEW HORIZONS IN WEB DEVELOPMENT TO PROVIDE INNOVATIVE SOLUTIONS.
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold">From Complex Code to Clear Solutions</h1>
+                <p class="lead text-muted">
+                    Hello! I'm a passionate web developer based in Lagos, dedicated to building digital solutions that are not only powerful but also easy to use. My goal is to help businesses like yours succeed online by transforming your ideas into reality.
                 </p>
             </div>
-            <div class="col-md-6 order-md-1 text-center">
-                <i class="fas fa-rocket fa-7x mb-4 mb-md-0" style="color: var(--hacker-blue);"></i>
+            <div class="col-md-4 text-center">
+                <!-- A professional headshot builds immense trust. Replace this placeholder. -->
+                <img src="https://placehold.co/400x400/EBF2FF/343a40?text=Your+Photo" 
+                     alt="A professional headshot of the developer" 
+                     class="img-fluid rounded-circle shadow-sm"
+                     onerror="this.onerror=null;this.src='https://placehold.co/400x400/EBF2FF/343a40?text=LagosWebDev';">
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5" style="background: rgba(10,10,10,0.9); border-bottom: 1px solid var(--hacker-green);">
-    <div class="container terminal-text">
-        <h2 class="text-center mb-5">
-            <span class="prompt">system scan</span> CORE_TECHNOLOGIES
-        </h2>
-        <p class="text-center lead mb-4">
-            <span class="prompt">>></span> OUR TECH STACK ENSURES PERFORMANCE, RELIABILITY, AND MODERN AESTHETICS
-        </p>
-
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="hacker-card h-100 p-4">
-                    <h4 class="mb-3" style="color: var(--hacker-blue);">
-                        <i class="fas fa-server me-2"></i>BACKEND_&_CMS
-                    </h4>
-                    <ul class="list-unstyled">
-                        <li><span class="prompt">></span> PYTHON: ROBUST FOUNDATION FOR BACKEND SYSTEMS</li>
-                        <li><span class="prompt">></span> DJANGO: SECURE AND SCALABLE WEB APPLICATIONS</li>
-                        <li><span class="prompt">></span> DRF: POWERFUL RESTFUL APIS</li>
-                        <li><span class="prompt">></span> WORDPRESS: FLEXIBLE CONTENT MANAGEMENT</li>
-                        <li><span class="prompt">></span> SHOPIFY/WOOCOMMERCE: E-COMMERCE SOLUTIONS</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="hacker-card h-100 p-4">
-                    <h4 class="mb-3" style="color: var(--hacker-blue);">
-                        <i class="fas fa-desktop me-2"></i>FRONTEND_&_TOOLS
-                    </h4>
-                    <ul class="list-unstyled">
-                        <li><span class="prompt">></span> HTML5/CSS3: MODERN RESPONSIVE DESIGN</li>
-                        <li><span class="prompt">></span> BOOTSTRAP: POWERFUL CSS FRAMEWORK</li>
-                        <li><span class="prompt">></span> JAVASCRIPT: INTERACTIVE FEATURES</li>
-                        <li><span class="prompt">></span> TYPE.JS: DYNAMIC TEXT ANIMATIONS</li>
-                        <li><span class="prompt">></span> POSTGRESQL/MYSQL: RELIABLE DATABASES</li>
-                        <li><span class="prompt">></span> GIT/GITHUB: VERSION CONTROL</li>
-                        <li><span class="prompt">></span> DEPLOYMENT: LIVE SERVER EXPERTISE</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="py-5 text-center terminal-text">
+<!-- 2. MY MISSION SECTION: Explains your "why" in a client-focused way. -->
+<section class="py-5">
     <div class="container">
-        <h2 class="mb-4">
-            <span class="prompt">system ready</span> START_YOUR_PROJECT
-        </h2>
-        <p class="lead mb-4">
-            <span class="prompt">>></span> READY TO TRANSFORM YOUR IDEAS INTO A ROBUST WEB SOLUTION?
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center">
+                <i class="fas fa-rocket fa-7x text-primary mb-4 mb-md-0"></i>
+            </div>
+            <div class="col-md-6">
+                <h2 class="fw-bold">My Mission</h2>
+                <p class="text-muted">
+                    My mission is to empower businesses by making great technology accessible. I believe a well-built website is more than just code—it's a powerful tool for growth. I am committed to delivering applications that are:
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Scalable:</strong> Built to grow with your business.</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Secure:</strong> Protecting your data and your customers.</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>User-Friendly:</strong> A great experience for every visitor.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. MY PROCESS SECTION: Simplifies your workflow for clients. -->
+<section class="py-5" style="background-color: var(--light-gray-bg);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">My Approach to Projects</h2>
+            <p class="lead text-muted">A collaborative and transparent process from start to finish.</p>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <div class="mb-3"><span class="fa-stack fa-2x"><i class="fas fa-circle fa-stack-2x text-primary"></i><i class="fas fa-comments fa-stack-1x fa-inverse"></i></span></div>
+                    <h4>1. Discover & Plan</h4>
+                    <p class="text-muted">We start by discussing your goals to create a clear roadmap for success.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <div class="mb-3"><span class="fa-stack fa-2x"><i class="fas fa-circle fa-stack-2x text-primary"></i><i class="fas fa-pencil-ruler fa-stack-1x fa-inverse"></i></span></div>
+                    <h4>2. Design & Develop</h4>
+                    <p class="text-muted">I build your project using modern technologies, with regular updates along the way.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <div class="mb-3"><span class="fa-stack fa-2x"><i class="fas fa-circle fa-stack-2x text-primary"></i><i class="fas fa-paper-plane fa-stack-1x fa-inverse"></i></span></div>
+                    <h4>3. Deliver & Support</h4>
+                    <p class="text-muted">After thorough testing, I launch your project and provide ongoing support.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. FINAL CTA SECTION: A clear call-to-action to encourage contact. -->
+<section class="py-5 text-center">
+    <div class="container">
+        <h2 class="fw-bold">Let's Build Something Great Together</h2>
+        <p class="lead text-muted mb-4">
+            Have an idea for a project or want to improve your online presence? I'd love to hear from you.
         </p>
-        <a href="{% url 'contact:contact_page' %}" class="btn btn-hacker btn-lg">
-            <i class="fas fa-terminal me-2"></i>GET_IN_TOUCH
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-primary btn-lg">
+            Get in Touch
         </a>
     </div>
 </section>

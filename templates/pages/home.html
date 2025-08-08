@@ -2,226 +2,57 @@
 {% load static %}
 
 {% block content %}
-<style>
-    /* Hacker-themed overrides */
-    :root {
-        --hacker-dark: #0A0A0A;
-        --hacker-green: #39FF14;
-        --hacker-blue: #00F0FF;
-    }
-
-    body {
-        background-color: var(--hacker-dark);
-    }
-
-    .hero-section {
-        background: var(--hacker-dark) !important;
-        border-bottom: 1px solid var(--hacker-green);
-    }
-
-    .prompt {
-        color: var(--hacker-blue);
-    }
-
-    .prompt::before {
-        content: '> ';
-    }
-
-    .terminal-text {
-        font-family: 'VT323', monospace;
-        color: var(--hacker-green);
-        line-height: 1.4;
-    }
-
-    .hacker-card {
-        background: rgba(20, 20, 20, 0.8);
-        border: 1px solid var(--hacker-green);
-        border-radius: 0;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
-        transition: all 0.3s ease;
-    }
-
-    .hacker-card:hover {
-        box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
-        transform: translateY(-3px);
-    }
-
-    .hacker-card h3 {
-        color: var(--hacker-blue);
-        border-bottom: 1px dashed var(--hacker-green);
-        padding-bottom: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .tech-icon-item {
-        background: rgba(20, 20, 20, 0.8);
-        border: 1px solid var(--hacker-green);
-        color: var(--hacker-green);
-        transition: all 0.3s ease;
-    }
-
-    .tech-icon-item:hover {
-        background: rgba(30, 30, 30, 0.9);
-        box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
-    }
-
-    .btn-hacker {
-        background: transparent;
-        color: var(--hacker-green);
-        border: 1px solid var(--hacker-green);
-        border-radius: 0;
-        padding: 0.5rem 1.5rem;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
-    }
-
-    .btn-hacker:hover {
-        background: rgba(57, 255, 20, 0.1);
-        color: var(--hacker-blue);
-        border-color: var(--hacker-blue);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-    }
-
-    /* CRT scanlines for sections */
-    .scanlines::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: repeating-linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.15),
-            rgba(0, 0, 0, 0.15) 1px,
-            transparent 1px,
-            transparent 2px
-        );
-        pointer-events: none;
-    }
-
-    /* Glitch effect */
-    .glitch {
-        position: relative;
-    }
-
-    .glitch::before, .glitch::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.8;
-    }
-
-    .glitch::before {
-        color: #0ff;
-        z-index: -1;
-        animation: glitch-effect 3s infinite;
-    }
-
-    .glitch::after {
-        color: #f0f;
-        z-index: -2;
-        animation: glitch-effect 2s infinite reverse;
-    }
-
-    @keyframes glitch-effect {
-        0% { transform: translate(0); }
-        20% { transform: translate(-3px, 3px); }
-        40% { transform: translate(-3px, -3px); }
-        60% { transform: translate(3px, 3px); }
-        80% { transform: translate(3px, -3px); }
-        100% { transform: translate(0); }
-    }
-</style>
-
-<section class="hero-section position-relative scanlines">
-    <div class="container py-5">
+<section class="text-center py-5" style="background-color: var(--light-gray-bg);">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-10 text-center">
-                <div class="mb-4" data-aos="fade-down">
-                    <span class="prompt terminal-text">system boot</span>
-                    <span class="terminal-text">[OK]</span>
-                </div>
-                
-                <h1 class="display-4 fw-bold mb-4 terminal-text glitch" data-text="LAGOSWEBDEV" data-aos="fade-up">
-                    LAGOSWEBDEV
+            <div class="col-lg-10">
+                <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
+                    Building High-Performance Websites to Grow Your Business
                 </h1>
-                
-                <div id="typing-text" class="col-md-8 mx-auto mb-5 terminal-text" data-aos="fade-up">
-                    <span class="prompt">user@terminal:~$</span> <span class="typed-text"></span><span class="cursor"></span>
-                </div>
-                
-                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center" data-aos="fade-up">
-                    <a class="btn btn-hacker px-5 me-sm-3" href="{% url 'projects:project_list' %}">
-                        <i class="fas fa-folder-open me-2"></i>view_projects
-                    </a>
-                    <a class="btn btn-hacker px-5" href="{% url 'contact:contact_page' %}">
-                        <i class="fas fa-terminal me-2"></i>connect
-                    </a>
+                <p class="lead text-muted mb-4" data-aos="fade-up" data-aos-delay="100">
+                    I'm a Lagos-based web developer specializing in creating fast, secure, and user-friendly applications that deliver tangible results for your business.
+                </p>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <a class="btn btn-primary btn-lg px-5 me-2 mb-2" href="{% url 'projects:project_list' %}">View My Work</a>
+                    <a class="btn btn-outline-primary btn-lg px-5 mb-2" href="{% url 'contact:contact_page' %}">Get in Touch</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5 scanlines position-relative">
+<section class="py-5">
     <div class="container">
-        <div class="text-center mb-5 terminal-text" data-aos="fade-up">
-            <h2 class="display-5 fw-bold mb-3">
-                <span class="prompt">system query</span> services
-            </h2>
-            <p class="lead col-lg-8 mx-auto">
-                <span class="prompt">description:</span> specialized_web_development_solutions
-            </p>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How I Can Help You</h2>
+            <p class="lead text-muted">I offer end-to-end solutions to bring your digital vision to life.</p>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="col" data-aos="fade-right">
-                <div class="hacker-card h-100">
-                    <div class="card-body p-4 terminal-text">
-                        <i class="fas fa-server fa-4x mb-3" style="color: var(--hacker-blue);"></i>
-                        <h3 class="card-title fw-bold">BACKEND_DEV</h3>
-                        <p class="card-text">
-                            <span class="prompt">>></span> Building powerful APIs and server logic with Django/Python
-                        </p>
-                        <div class="mt-3">
-                            <span class="prompt">tech:</span> Python, Django, REST, GraphQL
-                        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card h-100 text-center p-4">
+                    <div class="mb-3"><i class="fas fa-laptop-code fa-3x text-primary"></i></div>
+                    <div class="card-body">
+                        <h4 class="card-title">Custom Web Applications</h4>
+                        <p class="card-text">I build tailored applications from scratch to automate your business processes, improve efficiency, and provide a unique user experience.</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="col" data-aos="fade-right" data-aos-delay="200">
-                <div class="hacker-card h-100">
-                    <div class="card-body p-4 terminal-text">
-                        <i class="fas fa-database fa-4x mb-3" style="color: var(--hacker-blue);"></i>
-                        <h3 class="card-title fw-bold">DATA_ARCH</h3>
-                        <p class="card-text">
-                            <span class="prompt">>></span> Optimized database structures for performance and scale
-                        </p>
-                        <div class="mt-3">
-                            <span class="prompt">tech:</span> PostgreSQL, MySQL, Redis
-                        </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 text-center p-4">
+                    <div class="mb-3"><i class="fas fa-shopping-cart fa-3x text-primary"></i></div>
+                    <div class="card-body">
+                        <h4 class="card-title">E-commerce Solutions</h4>
+                        <p class="card-text">I create robust online stores with platforms like Shopify and WooCommerce that provide a seamless shopping experience for your customers and drive sales.</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="col" data-aos="fade-right" data-aos-delay="400">
-                <div class="hacker-card h-100">
-                    <div class="card-body p-4 terminal-text">
-                        <i class="fas fa-shield-alt fa-4x mb-3" style="color: var(--hacker-blue);"></i>
-                        <h3 class="card-title fw-bold">SECURITY</h3>
-                        <p class="card-text">
-                            <span class="prompt">>></span> Secure deployment and infrastructure hardening
-                        </p>
-                        <div class="mt-3">
-                            <span class="prompt">tech:</span> Docker, Nginx, Let's Encrypt
-                        </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 text-center p-4">
+                    <div class="mb-3"><i class="fas fa-tachometer-alt fa-3x text-primary"></i></div>
+                    <div class="card-body">
+                        <h4 class="card-title">Performance & Security</h4>
+                        <p class="card-text">I ensure your website is fast, reliable, and protected against common threats, giving you and your users peace of mind and better search rankings.</p>
                     </div>
                 </div>
             </div>
@@ -229,223 +60,60 @@
     </div>
 </section>
 
----
-## Technologies Section
-<section class="py-5 position-relative" style="background: rgba(10,10,10,0.9); border-top: 1px solid var(--hacker-green); border-bottom: 1px solid var(--hacker-green);">
+<section class="py-5" style="background-color: var(--light-gray-bg);">
     <div class="container">
-        <div class="text-center mb-5 terminal-text" data-aos="fade-up">
-            <h2 class="display-5 fw-bold mb-3">
-                <span class="prompt">system scan</span> tech_stack
-            </h2>
-            <p class="lead col-lg-8 mx-auto">
-                <span class="prompt">description:</span> current_technologies_utilized
-            </p>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">My Technology Toolkit</h2>
+            <p class="lead text-muted">I use modern, industry-standard technologies to build the best products.</p>
         </div>
-
-        <div class="row justify-content-center g-4">
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="50">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-python fa-3x mb-2" style="color: #3776AB;"></i>
-                    <p class="fw-bold mb-0">PYTHON</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="100">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-python fa-3x mb-2" style="color: #092E20;"></i> <p class="fw-bold mb-0">DJANGO</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="150">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-wordpress fa-3x mb-2" style="color: #21759B;"></i>
-                    <p class="fw-bold mb-0">WORDPRESS</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="200">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-shopify fa-3x mb-2" style="color: #96BF48;"></i> <p class="fw-bold mb-0">SHOPIFY</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="250">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-wordpress-simple fa-3x mb-2" style="color: #96588A;"></i> <p class="fw-bold mb-0">WOOCOMMERCE</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="300">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fas fa-database fa-3x mb-2" style="color: #4479A1;"></i>
-                    <p class="fw-bold mb-0">MYSQL</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="350">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fas fa-database fa-3x mb-2" style="color: #336791;"></i>
-                    <p class="fw-bold mb-0">POSTGRESQL</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="400">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-js-square fa-3x mb-2" style="color: #F7DF1E;"></i>
-                    <p class="fw-bold mb-0">JAVASCRIPT</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="450">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-html5 fa-3x mb-2" style="color: #E34F26;"></i>
-                    <p class="fw-bold mb-0">HTML5</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="500">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-css3-alt fa-3x mb-2" style="color: #1572B6;"></i>
-                    <p class="fw-bold mb-0">CSS3</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="550">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fab fa-bootstrap fa-3x mb-2" style="color: #7952B3;"></i>
-                    <p class="fw-bold mb-0">BOOTSTRAP</p>
-                </div>
-            </div>
-            
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2" data-aos="zoom-in" data-aos-delay="600">
-                <div class="tech-icon-item p-3 text-center terminal-text">
-                    <i class="fas fa-terminal fa-3x mb-2" style="color: #39FF14;"></i>
-                    <p class="fw-bold mb-0">TYPE.JS</p>
-                </div>
-            </div>
+        <div class="row justify-content-center align-items-center g-4 text-center">
+            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up"><i class="fab fa-python fa-3x text-muted" title="Python"></i></div>
+            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="50"><img src="{% static 'images/django-logo.svg' %}" alt="Django" height="48" class="text-muted"></div>
+            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="100"><i class="fab fa-wordpress fa-3x text-muted" title="WordPress"></i></div>
+            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="150"><i class="fab fa-shopify fa-3x text-muted" title="Shopify"></i></div>
+            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-database fa-3x text-muted" title="PostgreSQL & MySQL"></i></div>
+            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="250"><i class="fab fa-js-square fa-3x text-muted" title="JavaScript"></i></div>
         </div>
     </div>
 </section>
 
----
-
-<section class="py-5 scanlines position-relative">
+<section class="py-5">
     <div class="container">
-        <div class="text-center mb-5 terminal-text" data-aos="fade-up">
-            <h2 class="display-5 fw-bold mb-3">
-                <span class="prompt">system analysis</span> advantages
-            </h2>
-            <p class="lead col-lg-8 mx-auto">
-                <span class="prompt">description:</span> benefits_of_working_with_us
-            </p>
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">What My Clients Say</h2>
+            <p class="lead text-muted">I'm proud to have built strong relationships and successful projects.</p>
         </div>
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <div class="col" data-aos="fade-up">
-                <div class="hacker-card h-100 terminal-text">
-                    <i class="fas fa-code fa-3x mb-3" style="color: var(--hacker-blue);"></i>
-                    <h4 class="fw-bold">EXPERTISE</h4>
-                    <p>
-                        <span class="prompt">>></span> 5+ years in web development and cybersecurity
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col" data-aos="fade-up" data-aos-delay="150">
-                <div class="hacker-card h-100 terminal-text">
-                    <i class="fas fa-lock fa-3x mb-3" style="color: var(--hacker-blue);"></i>
-                    <h4 class="fw-bold">SECURITY</h4>
-                    <p>
-                        <span class="prompt">>></span> Secure by design principles in all projects
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col" data-aos="fade-up" data-aos-delay="300">
-                <div class="hacker-card h-100 terminal-text">
-                    <i class="fas fa-bolt fa-3x mb-3" style="color: var(--hacker-blue);"></i>
-                    <h4 class="fw-bold">PERFORMANCE</h4>
-                    <p>
-                        <span class="prompt">>></span> Optimized solutions for maximum speed
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col" data-aos="fade-up" data-aos-delay="450">
-                <div class="hacker-card h-100 terminal-text">
-                    <i class="fas fa-clock fa-3x mb-3" style="color: var(--hacker-blue);"></i>
-                    <h4 class="fw-bold">RELIABILITY</h4>
-                    <p>
-                        <span class="prompt">>></span> On-time delivery with 100% success rate
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="py-5 position-relative" style="background: rgba(15,15,15,0.9); border-top: 1px solid var(--hacker-green);">
-    <div class="container">
-        <div class="text-center mb-5 terminal-text" data-aos="fade-up">
-            <h2 class="display-5 fw-bold mb-3">
-                <span class="prompt">user feedback</span> testimonials
-            </h2>
-            <p class="lead col-lg-8 mx-auto">
-                <span class="prompt">description:</span> client_endorsements
-            </p>
-        </div>
-
-        <div class="row justify-content-center g-4">
-            <div class="col-md-6 col-lg-4" data-aos="fade-up">
-                <div class="hacker-card h-100 p-4 terminal-text">
-                    <i class="fas fa-quote-left fa-2x mb-3" style="color: var(--hacker-blue);"></i>
-                    <p class="fst-italic mb-3">
-                        <span class="prompt">>></span> "Delivered an outstanding e-commerce platform that boosted our sales by 300%"
-                    </p>
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="fas fa-user-circle fa-3x" style="color: var(--hacker-green);"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-0">JANE_DOE</h5>
-                            <p class="small mb-0">CEO, FASHION_CO</p>
-                        </div>
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="fst-italic">"Delivered an outstanding e-commerce platform that boosted our sales by 300%!"</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <h5 class="fw-bold mb-0">Jane Doe</h5>
+                        <small class="text-muted">CEO, Fashion Co</small>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="hacker-card h-100 p-4 terminal-text">
-                    <i class="fas fa-quote-left fa-2x mb-3" style="color: var(--hacker-blue);"></i>
-                    <p class="fst-italic mb-3">
-                        <span class="prompt">>></span> "Revolutionized our internal processes with a custom Django application"
-                    </p>
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="fas fa-user-circle fa-3x" style="color: var(--hacker-green);"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-0">JOHN_SMITH</h5>
-                            <p class="small mb-0">OPS_MGR, LOGISTICS_INC</p>
-                        </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="fst-italic">"Revolutionized our internal processes with a custom Django application. Highly recommended."</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <h5 class="fw-bold mb-0">John Smith</h5>
+                        <small class="text-muted">Operations Manager, Logistics Inc</small>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
-                <div class="hacker-card h-100 p-4 terminal-text">
-                    <i class="fas fa-quote-left fa-2x mb-3" style="color: var(--hacker-blue);"></i>
-                    <p class="fst-italic mb-3">
-                        <span class="prompt">>></span> "Transformed our outdated site into a modern, responsive platform"
-                    </p>
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="fas fa-user-circle fa-3x" style="color: var(--hacker-green);"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold mb-0">EMILY_R</h5>
-                            <p class="small mb-0">FOUNDER, CREATIVE_AGENCY</p>
-                        </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p class="fst-italic">"Transformed our outdated site into a modern, responsive platform that our users love."</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <h5 class="fw-bold mb-0">Emily Richards</h5>
+                        <small class="text-muted">Founder, Creative Agency</small>
                     </div>
                 </div>
             </div>
@@ -453,50 +121,27 @@
     </div>
 </section>
 
-<section class="py-5 position-relative" style="background: var(--hacker-dark); border-top: 1px solid var(--hacker-blue); border-bottom: 1px solid var(--hacker-blue);">
-    <div class="container text-center terminal-text" data-aos="zoom-in">
-        <h2 class="display-5 fw-bold mb-3">
-            <span class="prompt">system ready</span> initiate_contact
-        </h2>
-        <p class="lead col-lg-8 mx-auto mb-4">
-            <span class="prompt">description:</span> ready_to_collaborate
-        </p>
-        <a href="{% url 'contact:contact_page' %}" class="btn btn-hacker px-5">
-            <i class="fas fa-terminal me-2"></i>begin_connection
-        </a>
+<section class="py-5 text-center" style="background-color: var(--primary-blue);">
+    <div class="container text-white">
+        <h2 class="fw-bold">Ready to Start Your Project?</h2>
+        <p class="lead mb-4">Let's talk about how I can help you achieve your goals.</p>
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-light btn-lg px-5">Get a Free Consultation</a>
     </div>
 </section>
 
 {% endblock %}
 
-{% block extra_scripts %}
-<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
-<script>
-    // Initialize typing effect
-    document.addEventListener('DOMContentLoaded', function() {
-        new Typed('.typed-text', {
-            strings: [
-                "welcome_to_my_digital_domain.", 
-                "exploring_innovative_solutions...", 
-                "python_django_specialist.", 
-                "secure_scalable_web_apps."
-            ],
-            typeSpeed: 50,
-            backSpeed: 25,
-            backDelay: 1500,
-            loop: true,
-            showCursor: true,
-            cursorChar: '|',
-        });
 
-        // Initialize AOS (Animate On Scroll)
+{% block extra_scripts %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
         AOS.init({
-            duration: 1000,
-            once: true,
+            duration: 800, // Animation duration
+            once: true,    // Animate only once
         });
     });
-
-    // We no longer need the JavaScript array for technologies or the loadTechnologies function
-    // as the tech stack is now hardcoded directly in the HTML.
 </script>
 {% endblock %}
