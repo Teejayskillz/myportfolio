@@ -105,14 +105,31 @@
         margin-top: auto;
     }
     
-    /* Ensure the reverted button still looks good */
-    .project-card .btn-primary {
-        background-color: var(--netflix-red);
-        border-color: var(--netflix-red);
+    /* FIX: Custom class for the case study link to avoid script conflicts */
+    .case-study-button {
+        display: inline-block;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        cursor: pointer;
+        user-select: none;
+        background: var(--netflix-red);
+        border: none;
+        color: var(--netflix-white) !important;
+        font-weight: 700;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(229,9,20,0.3);
     }
-    .project-card .btn-primary:hover {
-        background-color: var(--netflix-red-hover);
-        border-color: var(--netflix-red-hover);
+    
+    .case-study-button:hover {
+        background: var(--netflix-red-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(229,9,20,0.4);
+        color: var(--netflix-white) !important;
     }
 
 
@@ -151,8 +168,8 @@
                                 {% endif %}
                                 
                                 <div class="project-footer">
-                                    <!-- FIX: Reverted to btn-primary to avoid conflict with loading script, and added styles to keep the red theme -->
-                                    <a href="{{ project.get_absolute_url }}" class="btn btn-primary w-100">View Case Study</a>
+                                    <!-- FIX: Replaced .btn and .btn-primary with a custom class to prevent script conflicts -->
+                                    <a href="{{ project.get_absolute_url }}" class="case-study-button w-100">View Case Study</a>
                                 </div>
                             </div>
                         </div>
