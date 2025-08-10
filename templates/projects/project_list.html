@@ -169,7 +169,7 @@
                                 
                                 <div class="project-footer">
                                     <!-- FIX: Replaced .btn and .btn-primary with a custom class to prevent script conflicts -->
-                                    <a href="{{ project.get_absolute_url }}" class="case-study-button w-100">View Case Study</a>
+                                    <a href="{% url 'projects:project_detail' project.slug %}" class="case-study-button w-100">View Case Study</a>
                                 </div>
                             </div>
                         </div>
