@@ -104,6 +104,17 @@
     .project-footer {
         margin-top: auto;
     }
+    
+    /* Ensure the reverted button still looks good */
+    .project-card .btn-primary {
+        background-color: var(--netflix-red);
+        border-color: var(--netflix-red);
+    }
+    .project-card .btn-primary:hover {
+        background-color: var(--netflix-red-hover);
+        border-color: var(--netflix-red-hover);
+    }
+
 
 </style>
 
@@ -140,7 +151,8 @@
                                 {% endif %}
                                 
                                 <div class="project-footer">
-                                    <a href="{{ project.get_absolute_url }}" class="btn btn-sm btn-netflix-primary w-100">View Case Study</a>
+                                    <!-- FIX: Reverted to btn-primary to avoid conflict with loading script, and added styles to keep the red theme -->
+                                    <a href="{{ project.get_absolute_url }}" class="btn btn-primary w-100">View Case Study</a>
                                 </div>
                             </div>
                         </div>
