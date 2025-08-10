@@ -3,87 +3,221 @@
 
 {% block title %}Pricing Plans | Lagos Web Developer{% endblock %}
 
+{% block meta_description %}Simple and transparent pricing for custom web development in Lagos. Choose a plan that fits your needs, from basic websites to advanced Django applications.{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <!-- Page Header -->
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">Simple, Transparent Pricing</h1>
-        <p class="lead text-muted">Choose the plan that best fits your business needs. No hidden fees.</p>
-    </div>
+<style>
+    /* --- PRICING PAGE SPECIFIC STYLES --- */
 
-    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-        {% for plan in plans %}
-        <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'0'|stringformat:'s00' }}">
-            <!-- The middle plan gets a primary border and shadow to make it stand out -->
-            <div class="card h-100 text-center shadow-sm {% if forloop.counter == 2 %}border-primary shadow-lg{% endif %}">
-                <div class="card-header py-3 {% if forloop.counter == 2 %}bg-primary text-white border-primary{% endif %}">
-                    <h4 class="my-0 fw-normal">{{ plan.name }}</h4>
+    /* Pricing Hero Section */
+    .pricing-hero {
+        padding: 5rem 0;
+        background: var(--netflix-dark-gray);
+        text-align: center;
+        border-bottom: 2px solid var(--netflix-red);
+    }
+    .pricing-hero h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--netflix-white);
+    }
+    .pricing-hero p {
+        font-size: 1.2rem;
+        color: var(--netflix-light-gray);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Main Content Area */
+    .pricing-section {
+        padding: 4rem 0;
+    }
+
+    /* Pricing Card Styling */
+    .pricing-card {
+        background: var(--netflix-dark-gray);
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 8px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+    .pricing-card.standout {
+        border-color: var(--netflix-red);
+        transform: scale(1.05);
+        box-shadow: 0 10px 40px rgba(229, 9, 20, 0.2);
+    }
+    .pricing-card:not(.standout):hover {
+        transform: translateY(-10px);
+        border-color: var(--netflix-light-gray);
+    }
+
+    .pricing-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--netflix-medium-gray);
+    }
+    .pricing-header h4 {
+        font-weight: 700;
+        color: var(--netflix-white);
+    }
+    .pricing-card.standout .pricing-header {
+        background-color: var(--netflix-red);
+        border-color: var(--netflix-red);
+    }
+
+    .pricing-body {
+        padding: 2rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .pricing-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--netflix-white);
+    }
+    .pricing-title small {
+        font-size: 1rem;
+        color: var(--netflix-light-gray);
+    }
+    .features-list {
+        text-align: left;
+        color: var(--netflix-light-gray);
+    }
+    .features-list li {
+        margin-bottom: 0.75rem;
+    }
+    .features-list i {
+        color: var(--netflix-red);
+    }
+    .pricing-button {
+        margin-top: auto; /* Pushes button to the bottom */
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        padding: 4rem 0;
+        background: var(--netflix-dark-gray);
+    }
+    .accordion-item {
+        background-color: var(--netflix-medium-gray);
+        border: 1px solid #444;
+        margin-bottom: 1rem;
+        border-radius: 8px !important;
+    }
+    .accordion-header .accordion-button {
+        background-color: var(--netflix-medium-gray);
+        color: var(--netflix-white);
+        font-weight: 700;
+        border-radius: 8px !important;
+    }
+    .accordion-header .accordion-button:not(.collapsed) {
+        background-color: var(--netflix-red);
+        color: var(--netflix-white);
+        box-shadow: none;
+    }
+    .accordion-header .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25);
+    }
+    .accordion-body {
+        color: var(--netflix-light-gray);
+    }
+    .accordion-button::after {
+        filter: brightness(0) invert(1);
+    }
+
+</style>
+
+<!-- PRICING HERO -->
+<header class="pricing-hero">
+    <div class="container">
+        <h1 class="display-5 fw-bold">Clear & Transparent Pricing</h1>
+        <p class="lead">Choose a plan that fits your goals. No hidden fees, just powerful results for your business in Lagos and beyond.</p>
+    </div>
+</header>
+
+<section class="pricing-section">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+            {% for plan in plans %}
+            <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="pricing-card text-center {% if forloop.counter == 2 %}standout{% endif %}">
+                    <div class="pricing-header">
+                        <h4 class="my-0">{{ plan.name }}</h4>
+                    </div>
+                    <div class="pricing-body">
+                        <h2 class="pricing-title">
+                            {% if plan.is_premium %}
+                                Custom Quote
+                            {% else %}
+                                ₦{{ plan.price|floatformat:"0" }}<small class="text-white-50">/one-time</small>
+                            {% endif %}
+                        </h2>
+                        <ul class="list-unstyled mt-4 mb-5 features-list">
+                            {% for feature in plan.get_features_list %}
+                                <li class="d-flex"><i class="fas fa-check-circle me-2 mt-1"></i><span>{{ feature }}</span></li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pricing-button">
+                            <a href="{% url plan.button_url_name %}" class="w-100 btn btn-lg {% if forloop.counter == 2 %}btn-netflix-primary{% else %}btn-netflix-secondary{% endif %}">
+                                {{ plan.button_text }}
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <h1 class="card-title pricing-card-title">
-                        {% if plan.is_premium %}
-                            Let's Talk
-                        {% else %}
-                            ₦{{ plan.price|floatformat:"0" }}<small class="text-muted fw-light">/one-time</small>
-                        {% endif %}
-                    </h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start">
-                        {% for feature in plan.get_features_list %}
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>{{ feature }}</li>
-                        {% endfor %}
-                    </ul>
-                    <a href="{% url plan.button_url_name %}" class="w-100 btn btn-lg {% if forloop.counter == 2 %}btn-primary{% else %}btn-outline-primary{% endif %} mt-auto">
-                        {{ plan.button_text }}
-                    </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="text-center mb-5 text-white fw-bold">Frequently Asked Questions</h2>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item" data-aos="fade-up">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                What is included in "1 Year Domain & Hosting"?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                This covers the registration of your chosen domain name (e.g., `yourbusiness.com`) and the web hosting service required to keep your site online for one full year. After the first year, these services need to be renewed.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                What does "Continuous Support" for the Custom plan entail?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Continuous support means you'll receive ongoing technical assistance, regular updates, security monitoring, and bug fixes. This ensures your application remains in top condition long after launch. Specific terms are detailed in a service agreement.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                How do I get a quote for the Custom Solution plan?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Since this plan is tailored to your unique needs, please click the "Request a Quote" button and <a href="{% url 'contact:contact_page' %}" class="text-danger">get in touch</a>. Provide as much detail as you can about your project, and I will get back to you with a detailed proposal and price.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
-
-    <!-- FAQ Section -->
-    <div class="row justify-content-center mt-5 pt-5">
-        <div class="col-lg-8">
-            <h2 class="text-center mb-4 fw-bold">Frequently Asked Questions</h2>
-            <div class="accordion" id="faqAccordion">
-                <div class="accordion-item" data-aos="fade-up">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
-                            What is included in "1 Year Domain & Hosting"?
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">
-                            This covers the registration of your chosen domain name (e.g., `yourbusiness.com`) and the web hosting service required to keep your site online for one full year. After the first year, these services need to be renewed.
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
-                            What does "Continuous Support" for the Custom plan entail?
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">
-                            Continuous support means you'll receive ongoing technical assistance, regular updates, security monitoring, and bug fixes. This ensures your application remains in top condition long after launch. Specific terms are detailed in a service agreement.
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
-                            How do I get a quote for the Custom Solution plan?
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">
-                            Since this plan is tailored to your unique needs, please click the "Request a Quote" button and get in touch. Provide as much detail as you can about your project, and I will get back to you with a detailed proposal and price.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 {% endblock %}
