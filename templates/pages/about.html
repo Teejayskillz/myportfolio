@@ -1,97 +1,330 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}About Me | Lagos Web Developer{% endblock %}
+{% block title %}About Me | Custom Web Developer in Lagos, Nigeria{% endblock %}
+
+{% block meta_description %}Learn about the developer behind LagosWebDev. Discover my mission to build scalable, secure, and user-friendly web applications for businesses in Lagos and worldwide.{% endblock %}
 
 {% block content %}
+<style>
+    /* --- ABOUT PAGE SPECIFIC STYLES --- */
 
-<!-- 1. HERO SECTION: A personal introduction to build connection. -->
-<section class="py-5" style="background-color: var(--light-gray-bg);">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1 class="display-5 fw-bold">From Complex Code to Clear Solutions</h1>
-                <p class="lead text-muted">
-                    Hello! I'm a passionate web developer based in Lagos, dedicated to building digital solutions that are not only powerful but also easy to use. My goal is to help businesses like yours succeed online by transforming your ideas into reality.
-                </p>
-            </div>
-            <div class="col-md-4 text-center">
-                <!-- A professional headshot builds immense trust. Replace this placeholder. -->
-                <img src="https://nzdworld.com/media/media/8B0EB20D-17A9-4DE5-BD52-06B29840999E_1.png" 
-                     alt="A professional headshot of the developer" 
-                     class="img-fluid rounded-circle shadow-sm"
-                     onerror="this.onerror=null;this.src='https://placehold.co/400x400/EBF2FF/343a40?text=LagosWebDev';">
-            </div>
-        </div>
-    </div>
-</section>
+    /* Hero section with a dark, atmospheric overlay */
+    .about-hero {
+        background: linear-gradient(rgba(20, 20, 20, 0.7), rgba(20, 20, 20, 1)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+        background-size: cover;
+        padding: 8rem 0;
+        text-align: center;
+        color: var(--netflix-white);
+        animation: fadeInUp 1s ease-out;
+    }
 
-<!-- 2. MY MISSION SECTION: Explains your "why" in a client-focused way. -->
-<section class="py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6 text-center">
-                <i class="fas fa-rocket fa-7x text-primary mb-4 mb-md-0"></i>
-            </div>
-            <div class="col-md-6">
-                <h2 class="fw-bold">My Mission</h2>
-                <p class="text-muted">
-                    My mission is to empower businesses by making great technology accessible. I believe a well-built website is more than just code—it's a powerful tool for growth. I am committed to delivering applications that are:
-                </p>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Scalable:</strong> Built to grow with your business.</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Secure:</strong> Protecting your data and your customers.</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>User-Friendly:</strong> A great experience for every visitor.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+    .about-hero .profile-img {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        border: 4px solid var(--netflix-red);
+        box-shadow: 0 0 30px rgba(229, 9, 20, 0.5);
+        object-fit: cover;
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s ease;
+    }
 
-<!-- 3. MY PROCESS SECTION: Simplifies your workflow for clients. -->
-<section class="py-5" style="background-color: var(--light-gray-bg);">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">My Approach to Projects</h2>
-            <p class="lead text-muted">A collaborative and transparent process from start to finish.</p>
-        </div>
-        <div class="row text-center">
-            <div class="col-md-4 mb-4">
-                <div class="p-4">
-                    <div class="mb-3"><span class="fa-stack fa-2x"><i class="fas fa-circle fa-stack-2x text-primary"></i><i class="fas fa-comments fa-stack-1x fa-inverse"></i></span></div>
-                    <h4>1. Discover & Plan</h4>
-                    <p class="text-muted">We start by discussing your goals to create a clear roadmap for success.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="p-4">
-                    <div class="mb-3"><span class="fa-stack fa-2x"><i class="fas fa-circle fa-stack-2x text-primary"></i><i class="fas fa-pencil-ruler fa-stack-1x fa-inverse"></i></span></div>
-                    <h4>2. Design & Develop</h4>
-                    <p class="text-muted">I build your project using modern technologies, with regular updates along the way.</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="p-4">
-                    <div class="mb-3"><span class="fa-stack fa-2x"><i class="fas fa-circle fa-stack-2x text-primary"></i><i class="fas fa-paper-plane fa-stack-1x fa-inverse"></i></span></div>
-                    <h4>3. Deliver & Support</h4>
-                    <p class="text-muted">After thorough testing, I launch your project and provide ongoing support.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    .about-hero .profile-img:hover {
+        transform: scale(1.05);
+    }
 
-<!-- 4. FINAL CTA SECTION: A clear call-to-action to encourage contact. -->
-<section class="py-5 text-center">
+    .about-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 900;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+
+    .about-hero .lead {
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        color: var(--netflix-light-gray);
+    }
+    
+    /* Section styling */
+    .section-padding {
+        padding: 5rem 0;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 4rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: var(--netflix-red);
+        border-radius: 2px;
+    }
+
+    /* Process section timeline styling */
+    .process-timeline {
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .process-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        background-color: var(--netflix-medium-gray);
+        transform: translateX(-50%);
+    }
+
+    .timeline-item {
+        position: relative;
+        width: 50%;
+        padding: 1rem 40px;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-item:nth-child(odd) {
+        left: 0;
+        padding-right: 60px;
+        text-align: right;
+    }
+
+    .timeline-item:nth-child(even) {
+        left: 50%;
+        padding-left: 60px;
+        text-align: left;
+    }
+
+    .timeline-icon {
+        position: absolute;
+        top: 20px;
+        right: -25px;
+        width: 50px;
+        height: 50px;
+        background: var(--netflix-red);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        z-index: 1;
+        box-shadow: 0 0 0 4px var(--netflix-black), 0 0 15px rgba(229,9,20,0.5);
+    }
+
+    .timeline-item:nth-child(even) .timeline-icon {
+        left: -25px;
+    }
+
+    .timeline-content {
+        background: var(--netflix-dark-gray);
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px solid var(--netflix-medium-gray);
+        transition: all 0.3s ease;
+    }
+    .timeline-content:hover {
+        transform: translateY(-5px);
+        border-color: var(--netflix-red);
+    }
+
+
+    /* Tech stack section */
+    .tech-badge {
+        display: inline-flex;
+        align-items: center;
+        background: var(--netflix-medium-gray);
+        color: var(--netflix-light-gray);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .tech-badge:hover {
+        background: var(--netflix-red);
+        color: var(--netflix-white);
+        transform: translateY(-3px);
+        border-color: var(--netflix-red-hover);
+    }
+
+    .tech-badge i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    /* Final CTA section */
+    .cta-section {
+        background: var(--netflix-dark-gray);
+        padding: 5rem 0;
+        text-align: center;
+        border-top: 2px solid var(--netflix-red);
+    }
+
+    @media (max-width: 768px) {
+        .about-hero { padding: 5rem 0; }
+        .about-hero h1 { font-size: 2.5rem; }
+        .process-timeline::before { left: 25px; }
+        .timeline-item, .timeline-item:nth-child(even) {
+            width: 100%;
+            left: 0;
+            padding-left: 80px;
+            padding-right: 15px;
+            text-align: left;
+        }
+        .timeline-item:nth-child(odd) {
+            text-align: left;
+        }
+        .timeline-icon {
+            left: 0;
+        }
+    }
+</style>
+
+<!-- 1. HERO SECTION: A personal and impactful introduction. -->
+<header class="about-hero">
     <div class="container">
-        <h2 class="fw-bold">Let's Build Something Great Together</h2>
-        <p class="lead text-muted mb-4">
-            Have an idea for a project or want to improve your online presence? I'd love to hear from you.
+        <!-- A professional headshot builds immense trust. Replace this placeholder. -->
+        <img src="https://nzdworld.com/media/media/8B0EB20D-17A9-4DE5-BD52-06B29840999E_1.png" 
+             alt="A professional headshot of the developer at LagosWebDev" 
+             class="profile-img"
+             onerror="this.onerror=null;this.src='https://placehold.co/180x180/141414/e50914?text=LWD';">
+        
+        <h1 class="mb-3">Hi, I'm the Developer Behind LagosWebDev</h1>
+        <p class="lead">
+            I transform complex ideas into fast, secure, and user-friendly web applications. Based in the heart of Lagos, Nigeria, I'm passionate about crafting digital experiences that drive growth for businesses like yours.
         </p>
-        <a href="{% url 'contact:contact_page' %}" class="btn btn-primary btn-lg">
-            Get in Touch
+        <a href="#my-mission" class="btn btn-netflix-primary">Discover My Mission</a>
+    </div>
+</header>
+
+<!-- 2. MY MISSION SECTION: Explaining the "why" with client-focused values. -->
+<section id="my-mission" class="section-padding">
+    <div class="container">
+        <h2 class="section-title">My Core Philosophy</h2>
+        <div class="row g-4">
+            <div class="col-lg-4 d-flex">
+                <div class="netflix-card text-center w-100" style="animation: fadeInUp 1s ease-out 0.2s;">
+                    <i class="fas fa-expand-arrows-alt fa-3x text-danger mb-4"></i>
+                    <h3>Scalable Solutions</h3>
+                    <p class="text-white-50">I build applications that are ready for tomorrow. Your website will be architected to handle growth, ensuring it performs flawlessly as your business expands.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex">
+                <div class="netflix-card text-center w-100" style="animation: fadeInUp 1s ease-out 0.4s;">
+                    <i class="fas fa-shield-alt fa-3x text-danger mb-4"></i>
+                    <h3>Uncompromising Security</h3>
+                    <p class="text-white-50">Your digital assets and customer data are paramount. I implement industry-best security practices to protect your application from threats and build user trust.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex">
+                <div class="netflix-card text-center w-100" style="animation: fadeInUp 1s ease-out 0.6s;">
+                    <i class="fas fa-hand-pointer fa-3x text-danger mb-4"></i>
+                    <h3>Intuitive User Experience</h3>
+                    <p class="text-white-50">A great website is one that's easy to use. I focus on creating clean, logical, and enjoyable interfaces that keep your visitors engaged and converting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. MY PROCESS SECTION: A clear, transparent workflow. -->
+<section class="section-padding" style="background-color: var(--netflix-dark-gray);">
+    <div class="container">
+        <h2 class="section-title">My Collaborative Process</h2>
+        <div class="process-timeline">
+            <!-- Step 1 -->
+            <div class="timeline-item">
+                <div class="timeline-icon"><i class="fas fa-comments"></i></div>
+                <div class="timeline-content">
+                    <h4>1. Discover & Strategize</h4>
+                    <p class="text-white-50">We begin with a deep dive into your vision, goals, and target audience. This allows us to create a strategic blueprint for a successful project. This is the most crucial step for any <a href="{% url 'pages:home' %}" class="text-danger">custom web development project in Lagos</a>.</p>
+                </div>
+            </div>
+            <!-- Step 2 -->
+            <div class="timeline-item">
+                <div class="timeline-icon"><i class="fas fa-pencil-ruler"></i></div>
+                <div class="timeline-content">
+                    <h4>2. Design & Develop</h4>
+                    <p class="text-white-50">With a clear plan, I move into the design and coding phase. I use modern technologies to build your application, providing you with regular progress updates and demos.</p>
+                </div>
+            </div>
+            <!-- Step 3 -->
+            <div class="timeline-item">
+                <div class="timeline-icon"><i class="fas fa-rocket"></i></div>
+                <div class="timeline-content">
+                    <h4>3. Deliver & Support</h4>
+                    <p class="text-white-50">After rigorous testing, your project is ready for launch. I handle the deployment and remain available for ongoing support and future enhancements to ensure long-term success.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. TECH STACK SECTION: Showcasing technical expertise. -->
+<section class="section-padding">
+    <div class="container text-center">
+        <h2 class="section-title">My Technology Toolkit</h2>
+        <p class="lead text-white-50 mb-5">I use a modern, robust stack to build high-performance web applications.</p>
+        <div class="tech-badges-container">
+            <span class="tech-badge"><i class="fab fa-python" style="color: #3776AB;"></i> Python</span>
+            <span class="tech-badge"><i class="fas fa-leaf" style="color: #092E20;"></i> Django</span>
+            <span class="tech-badge"><i class="fab fa-js-square" style="color: #F7DF1E;"></i> JavaScript (ES6+)</span>
+            <span class="tech-badge"><i class="fab fa-html5" style="color: #E34F26;"></i> HTML5</span>
+            <span class="tech-badge"><i class="fab fa-css3-alt" style="color: #1572B6;"></i> CSS3</span>
+            <span class="tech-badge"><i class="fab fa-bootstrap" style="color: #7952B3;"></i> Bootstrap 5</span>
+            <span class="tech-badge"><i class="fas fa-database" style="color: #4479A1;"></i> PostgreSQL</span>
+            <span class="tech-badge"><i class="fab fa-docker" style="color: #2496ED;"></i> Docker</span>
+            <span class="tech-badge"><i class="fab fa-git-alt" style="color: #F05032;"></i> Git & GitHub</span>
+        </div>
+    </div>
+</section>
+
+<!-- 5. FINAL CTA SECTION: A clear and compelling call-to-action. -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-3">Ready to Start Your Project?</h2>
+        <p class="lead text-white-50 mb-4">
+            Whether you have a fully-formed idea or just a spark of one, I'm here to help bring it to life.<br>
+            Let's build something great together.
+        </p>
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-primary btn-lg">
+            Get a Free Consultation
         </a>
     </div>
 </section>
+
+<script>
+    // Smooth scroll for the hero button
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}

@@ -1,8 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Project 
 
-# Create your views here.
-
 def project_list_view(request):
     """"
     Display a list of projects.
@@ -13,11 +11,11 @@ def project_list_view(request):
     }
     return render(request, 'projects/project_list.html', context )
 
-def project_detail_view(request, slug): # NOW ACCEPTS 'slug'
+def project_detail_view(request, slug): 
     """
     Display details of a single project
     """
-    project = get_object_or_404(Project, slug=slug) # NOW QUERIES BY 'slug'
+    project = get_object_or_404(Project, slug=slug) 
     technologies_list = project.technologies.split() 
 
     context = {

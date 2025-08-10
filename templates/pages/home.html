@@ -1,58 +1,254 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Custom Web Development in Lagos | LagosWebDev{% endblock %}
+
+{% block meta_description %}LagosWebDev builds high-performance, secure, and scalable websites and applications. As a top web developer in Lagos, I help businesses grow with custom Django and e-commerce solutions.{% endblock %}
+
 {% block content %}
-<section class="text-center py-5" style="background-color: var(--light-gray-bg);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">
-                    Building High-Performance Websites to Grow Your Business
-                </h1>
-                <p class="lead text-muted mb-4" data-aos="fade-up" data-aos-delay="100">
-                    I'm a Lagos-based web developer specializing in creating fast, secure, and user-friendly applications that deliver tangible results for your business.
-                </p>
-                <div data-aos="fade-up" data-aos-delay="200">
-                    <a class="btn btn-primary btn-lg px-5 me-2 mb-2" href="{% url 'projects:project_list' %}">View My Work</a>
-                    <a class="btn btn-outline-primary btn-lg px-5 mb-2" href="{% url 'contact:contact_page' %}">Get in Touch</a>
-                </div>
+<style>
+    /* --- HOME PAGE SPECIFIC STYLES --- */
+
+    /* 1. Hero Section */
+    .hero-section {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 6rem 0;
+        background: linear-gradient(rgba(20, 20, 20, 0.6), rgba(20, 20, 20, 1)), url('https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=2106&auto=format&fit=crop') no-repeat center center;
+        background-size: cover;
+    }
+
+    .hero-content h1 {
+        font-size: 3.8rem;
+        font-weight: 900;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.7);
+        line-height: 1.2;
+    }
+
+    .hero-content .lead {
+        font-size: 1.3rem;
+        color: var(--netflix-light-gray);
+        max-width: 650px;
+        margin: 1.5rem auto 2.5rem;
+    }
+
+    .hero-buttons .btn {
+        margin: 0.5rem;
+    }
+    
+    /* General Section Styling */
+    .section-padding {
+        padding: 5rem 0;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 4rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background-color: var(--netflix-red);
+        border-radius: 2px;
+    }
+
+    /* 2. Featured Projects Section */
+    .project-card {
+        background: var(--netflix-dark-gray);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--netflix-medium-gray);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+    }
+
+    .project-card:hover {
+        transform: translateY(-15px) scale(1.03);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+        border-color: var(--netflix-red);
+    }
+
+    .project-thumbnail {
+        height: 250px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    
+    .project-thumbnail::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 50%);
+    }
+
+    .project-info {
+        padding: 1.5rem;
+    }
+
+    .project-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .project-tags span {
+        background: var(--netflix-medium-gray);
+        color: var(--netflix-light-gray);
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+    }
+
+    /* 3. Why Choose Me Section */
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+    }
+    .feature-icon {
+        font-size: 2rem;
+        color: var(--netflix-red);
+        margin-right: 1.5rem;
+        width: 40px;
+    }
+
+    /* 4. Testimonials Section */
+    .testimonial-card {
+        background: var(--netflix-dark-gray);
+        border-radius: 8px;
+        padding: 2rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .testimonial-quote {
+        font-size: 1.1rem;
+        font-style: italic;
+        color: var(--netflix-light-gray);
+        margin-bottom: 1.5rem;
+        border-left: 3px solid var(--netflix-red);
+        padding-left: 1.5rem;
+    }
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--netflix-red);
+        color: var(--netflix-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 1rem;
+    }
+    .author-name {
+        font-weight: 700;
+        margin: 0;
+    }
+    .author-title {
+        color: var(--netflix-light-gray);
+        font-size: 0.9rem;
+    }
+
+    /* 5. CTA Section */
+    .cta-section {
+        background: var(--netflix-dark-gray);
+        padding: 5rem 0;
+        text-align: center;
+        border-top: 2px solid var(--netflix-red);
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section { min-height: 70vh; }
+        .hero-content h1 { font-size: 2.8rem; }
+    }
+</style>
+
+<!-- 1. HERO SECTION -->
+<section class="hero-section">
+    <div class="container text-center">
+        <div class="hero-content" style="animation: fadeInUp 1s ease-out;">
+            <h1 class="mb-4">Top-Tier Web Development in Lagos to <span style="color: var(--netflix-red);">Elevate Your Brand</span></h1>
+            <p class="lead">
+                I build fast, secure, and engaging web applications that deliver measurable results. Let's turn your digital vision into a powerful asset for your business.
+            </p>
+            <div class="hero-buttons">
+                <a href="{% url 'projects:project_list' %}" class="btn btn-netflix-primary btn-lg">
+                    <i class="fas fa-play me-2"></i>Explore My Work
+                </a>
+                <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-secondary btn-lg">
+                    <i class="fas fa-info-circle me-2"></i>Get a Quote
+                </a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5">
+<!-- 2. FEATURED PROJECTS -->
+<section class="section-padding">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">How I Can Help You</h2>
-            <p class="lead text-muted">I offer end-to-end solutions to bring your digital vision to life.</p>
-        </div>
-
+        <h2 class="section-title">Featured Projects</h2>
         <div class="row g-4">
-            <div class="col-md-4" data-aos="fade-up">
-                <div class="card h-100 text-center p-4">
-                    <div class="mb-3"><i class="fas fa-laptop-code fa-3x text-primary"></i></div>
-                    <div class="card-body">
-                        <h4 class="card-title">Custom Web Applications</h4>
-                        <p class="card-text">I build tailored applications from scratch to automate your business processes, improve efficiency, and provide a unique user experience.</p>
+            <!-- Project 1 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="project-card">
+                    <div class="project-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1559028006-44a36b17a664?q=80&w=2070&auto=format&fit=crop');"></div>
+                    <div class="project-info">
+                        <h3 class="project-title">E-commerce Powerhouse</h3>
+                        <div class="project-tags mb-3">
+                            <span>Django</span><span>Shopify API</span><span>PostgreSQL</span>
+                        </div>
+                        <p class="text-white-50 mb-3">A high-performance e-commerce site that increased sales by 40% for a Lagos fashion brand.</p>
+                        <a href="#" class="btn btn-sm btn-netflix-secondary">View Case Study <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="card h-100 text-center p-4">
-                    <div class="mb-3"><i class="fas fa-shopping-cart fa-3x text-primary"></i></div>
-                    <div class="card-body">
-                        <h4 class="card-title">E-commerce Solutions</h4>
-                        <p class="card-text">I create robust online stores with platforms like Shopify and WooCommerce that provide a seamless shopping experience for your customers and drive sales.</p>
+            <!-- Project 2 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="project-card">
+                    <div class="project-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1583344654316-2d3ac14a1a6b?q=80&w=2070&auto=format&fit=crop');"></div>
+                    <div class="project-info">
+                        <h3 class="project-title">Logistics Management Portal</h3>
+                        <div class="project-tags mb-3">
+                            <span>Custom App</span><span>Python</span><span>JavaScript</span>
+                        </div>
+                        <p class="text-white-50 mb-3">A bespoke internal tool that streamlined operations and cut costs for a Nigerian logistics company.</p>
+                        <a href="#" class="btn btn-sm btn-netflix-secondary">View Case Study <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="card h-100 text-center p-4">
-                    <div class="mb-3"><i class="fas fa-tachometer-alt fa-3x text-primary"></i></div>
-                    <div class="card-body">
-                        <h4 class="card-title">Performance & Security</h4>
-                        <p class="card-text">I ensure your website is fast, reliable, and protected against common threats, giving you and your users peace of mind and better search rankings.</p>
+            <!-- Project 3 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="project-card">
+                    <div class="project-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop');"></div>
+                    <div class="project-info">
+                        <h3 class="project-title">Creative Agency Portfolio</h3>
+                        <div class="project-tags mb-3">
+                            <span>WordPress</span><span>Performance</span><span>SEO</span>
+                        </div>
+                        <p class="text-white-50 mb-3">A visually stunning and fast-loading portfolio site that improved lead generation for a creative agency.</p>
+                        <a href="#" class="btn btn-sm btn-netflix-secondary">View Case Study <i class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                 </div>
             </div>
@@ -60,60 +256,82 @@
     </div>
 </section>
 
-<section class="py-5" style="background-color: var(--light-gray-bg);">
+<!-- 3. WHY CHOOSE ME -->
+<section class="section-padding" style="background-color: var(--netflix-dark-gray);">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">My Technology Toolkit</h2>
-            <p class="lead text-muted">I use modern, industry-standard technologies to build the best products.</p>
-        </div>
-        <div class="row justify-content-center align-items-center g-4 text-center">
-            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up"><i class="fab fa-python fa-3x text-muted" title="Python"></i></div>
-            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="50"><img src="{% static 'images/django-logo.svg' %}" alt="Django" height="48" class="text-muted"></div>
-            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="100"><i class="fab fa-wordpress fa-3x text-muted" title="WordPress"></i></div>
-            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="150"><i class="fab fa-shopify fa-3x text-muted" title="Shopify"></i></div>
-            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-database fa-3x text-muted" title="PostgreSQL & MySQL"></i></div>
-            <div class="col-4 col-sm-3 col-md-2" data-aos="fade-up" data-aos-delay="250"><i class="fab fa-js-square fa-3x text-muted" title="JavaScript"></i></div>
+        <h2 class="section-title">The LagosWebDev Advantage</h2>
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <!-- Replace with an image of you working or an abstract tech graphic -->
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Developer working on a custom web application in Lagos" 
+                     class="img-fluid rounded-3 shadow-lg">
+            </div>
+            <div class="col-lg-6">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
+                    <div>
+                        <h4>Client-Focused Solutions</h4>
+                        <p class="text-white-50">I don't just build websites; I build solutions to your problems. My process starts with understanding your business goals to ensure the final product delivers real value.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
+                    <div>
+                        <h4>Modern & Robust Technology</h4>
+                        <p class="text-white-50">Leveraging powerful tools like Python, Django, and modern JavaScript, I build applications that are not only scalable and secure but also a pleasure to use.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                    <div>
+                        <h4>Transparent Communication</h4>
+                        <p class="text-white-50">Based right here in Lagos, I pride myself on clear, consistent communication. You'll be involved and informed at every stage of the project, from kickoff to launch.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="py-5">
+<!-- 4. TESTIMONIALS -->
+<section class="section-padding">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">What My Clients Say</h2>
-            <p class="lead text-muted">I'm proud to have built strong relationships and successful projects.</p>
-        </div>
+        <h2 class="section-title">What My Clients Say</h2>
         <div class="row g-4">
-            <div class="col-md-4" data-aos="fade-up">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <p class="fst-italic">"Delivered an outstanding e-commerce platform that boosted our sales by 300%!"</p>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <h5 class="fw-bold mb-0">Jane Doe</h5>
-                        <small class="text-muted">CEO, Fashion Co</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <p class="fst-italic">"Revolutionized our internal processes with a custom Django application. Highly recommended."</p>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <h5 class="fw-bold mb-0">John Smith</h5>
-                        <small class="text-muted">Operations Manager, Logistics Inc</small>
+            <div class="col-lg-4 d-flex">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"The custom Django application LagosWebDev built for us revolutionized our workflow. An exceptional developer who truly understands business needs."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JS</div>
+                        <div>
+                            <h5 class="author-name">John Smith</h5>
+                            <p class="author-title m-0">Operations Manager, Logistics Inc.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <p class="fst-italic">"Transformed our outdated site into a modern, responsive platform that our users love."</p>
+            <div class="col-lg-4 d-flex">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"Our new e-commerce site is not only beautiful but incredibly fast. Our sales have increased significantly since the launch. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div>
+                            <h5 class="author-name">Jane Doe</h5>
+                            <p class="author-title m-0">CEO, Fashion Co.</p>
+                        </div>
                     </div>
-                    <div class="card-footer bg-white border-0">
-                        <h5 class="fw-bold mb-0">Emily Richards</h5>
-                        <small class="text-muted">Founder, Creative Agency</small>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"From start to finish, the process was seamless. The attention to detail and commitment to performance was outstanding. A true professional."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ER</div>
+                        <div>
+                            <h5 class="author-name">Emily Richards</h5>
+                            <p class="author-title m-0">Founder, Creative Agency</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -121,27 +339,19 @@
     </div>
 </section>
 
-<section class="py-5 text-center" style="background-color: var(--primary-blue);">
-    <div class="container text-white">
-        <h2 class="fw-bold">Ready to Start Your Project?</h2>
-        <p class="lead mb-4">Let's talk about how I can help you achieve your goals.</p>
-        <a href="{% url 'contact:contact_page' %}" class="btn btn-light btn-lg px-5">Get a Free Consultation</a>
+
+<!-- 5. FINAL CTA SECTION -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-3">Have a Project in Mind?</h2>
+        <p class="lead text-white-50 mb-4">
+            Let's discuss how a high-performance web application can help you achieve your business goals.<br>
+            Your initial consultation is always free.
+        </p>
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-primary btn-lg">
+            Book a Free Consultation
+        </a>
     </div>
 </section>
 
-{% endblock %}
-
-
-{% block extra_scripts %}
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        AOS.init({
-            duration: 800, // Animation duration
-            once: true,    // Animate only once
-        });
-    });
-</script>
 {% endblock %}

@@ -2,111 +2,261 @@
 {% load static %}
 
 {% block title %}
-    {% if category %}{{ category.name }} Posts | LagosWebDev Blog{% else %}Blog | LagosWebDev{% endif %}
+    {% if category %}{{ category.name }} Posts | LagosWebDev Blog{% else %}Blog | Web Development Insights from Lagos{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+    {% if category %}
+        Explore articles on {{ category.name }}. Discover insights and tutorials from LagosWebDev, a leading web developer in Lagos.
+    {% else %}
+        The official blog for LagosWebDev. Read the latest articles, tutorials, and insights on web development, Django, and technology trends from Lagos, Nigeria.
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-9">
-            <div class="mb-5">
-                <h1 class="display-5 fw-bold">
-                    {% if category %}
-                        Category: {{ category.name }}
-                    {% else %}
-                        From the Blog
-                    {% endif %}
-                </h1>
-                <p class="lead text-muted">
-                    {% if category %}
-                        Articles and tutorials filed under the "{{ category.name }}" category.
-                    {% else %}
-                        My latest articles, tutorials, and thoughts on web development.
-                    {% endif %}
-                </p>
-            </div>
+<style>
+    /* --- BLOG PAGE SPECIFIC STYLES --- */
 
-            {% for post in posts %}
-            <div class="card mb-4 shadow-sm" data-aos="fade-up">
-                <div class="row g-0">
+    /* Blog Hero Section */
+    .blog-hero {
+        padding: 5rem 0;
+        background-color: var(--netflix-dark-gray);
+        text-align: center;
+        border-bottom: 2px solid var(--netflix-red);
+    }
+    .blog-hero h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--netflix-white);
+    }
+    .blog-hero p {
+        font-size: 1.2rem;
+        color: var(--netflix-light-gray);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Main Content Area */
+    .blog-content {
+        padding: 4rem 0;
+    }
+
+    /* Post Card Styling */
+    .post-card {
+        background-color: var(--netflix-dark-gray);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 2.5rem;
+        border: 1px solid var(--netflix-medium-gray);
+        transition: all 0.3s ease;
+        display: flex;
+    }
+    .post-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        border-color: var(--netflix-red);
+    }
+
+    .post-thumbnail {
+        flex: 0 0 300px; /* Fixed width for thumbnail */
+        background-size: cover;
+        background-position: center;
+        min-height: 250px;
+    }
+
+    .post-body {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+    .post-title a {
+        color: var(--netflix-white);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .post-title a:hover {
+        color: var(--netflix-red);
+    }
+    .post-meta {
+        font-size: 0.9rem;
+        color: var(--netflix-light-gray);
+        margin-bottom: 1rem;
+    }
+    .post-meta i {
+        margin-right: 0.5rem;
+    }
+    .post-excerpt {
+        color: var(--netflix-light-gray);
+        flex-grow: 1;
+    }
+    .read-more-link {
+        margin-top: 1.5rem;
+        align-self: flex-start;
+    }
+
+    /* Sidebar Widget */
+    .sidebar-widget {
+        background-color: var(--netflix-dark-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        border: 1px solid var(--netflix-medium-gray);
+    }
+    .widget-title {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--netflix-red);
+    }
+    .category-list .list-group-item {
+        background-color: transparent;
+        border: none;
+        color: var(--netflix-light-gray);
+        padding: 0.75rem 0;
+        transition: all 0.3s ease;
+    }
+    .category-list .list-group-item:hover,
+    .category-list .list-group-item.active {
+        color: var(--netflix-red);
+        background-color: rgba(229,9,20,0.1);
+        padding-left: 10px;
+        border-left: 3px solid var(--netflix-red);
+    }
+
+    /* Pagination */
+    .pagination .page-item .page-link {
+        background-color: var(--netflix-medium-gray);
+        border-color: var(--netflix-dark-gray);
+        color: var(--netflix-light-gray);
+        margin: 0 5px;
+        border-radius: 4px;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--netflix-red);
+        border-color: var(--netflix-red);
+        color: var(--netflix-white);
+    }
+    .pagination .page-item.disabled .page-link {
+        background-color: var(--netflix-dark-gray);
+        color: #6c757d;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991px) {
+        .sidebar-widget {
+            margin-top: 3rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .post-card {
+            flex-direction: column;
+        }
+        .post-thumbnail {
+            flex-basis: 200px; /* Reduce height on mobile */
+        }
+    }
+
+</style>
+
+<!-- BLOG HERO -->
+<header class="blog-hero">
+    <div class="container">
+        <h1 class="display-5 fw-bold">
+            {% if category %}
+                Category: {{ category.name }}
+            {% else %}
+                From the Developer's Desk
+            {% endif %}
+        </h1>
+        <p class="lead">
+            {% if category %}
+                Articles and tutorials filed under "{{ category.name }}".
+            {% else %}
+                My latest articles, tutorials, and thoughts on web development in Lagos and beyond.
+            {% endif %}
+        </p>
+    </div>
+</header>
+
+<div class="blog-content">
+    <div class="container">
+        <div class="row">
+            <!-- Main Blog Posts Column -->
+            <div class="col-lg-8">
+                {% for post in posts %}
+                <div class="post-card" data-aos="fade-up">
                     {% if post.image %}
-                    <div class="col-md-4">
-                        <a href="{{ post.get_absolute_url }}">
-                            <img src="{{ post.image.url }}" class="img-fluid rounded-start h-100" alt="{{ post.title }}" style="object-fit: cover;">
-                        </a>
-                    </div>
+                    <a href="{{ post.get_absolute_url }}" class="post-thumbnail" style="background-image: url('{{ post.image.url }}');"></a>
                     {% endif %}
-                    <div class="{% if post.image %}col-md-8{% else %}col-12{% endif %}">
-                        <div class="card-body d-flex flex-column h-100">
-                            <h2 class="card-title h3 fw-bold">
-                                <a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">{{ post.title }}</a>
-                            </h2>
-                            <small class="text-muted mb-2">
-                                Published on {{ post.publish|date:"F j, Y" }} by {{ post.author.get_full_name|default:post.author.username }}
-                            </small>
-                            <p class="card-text">{{ post.content|striptags|truncatewords:30 }}</p>
-                            <div class="mt-auto">
-                                <a href="{{ post.get_absolute_url }}" class="fw-bold text-decoration-none">Read More &rarr;</a>
-                            </div>
+                    <div class="post-body">
+                        <h2 class="h3 fw-bold post-title">
+                            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                        </h2>
+                        <div class="post-meta">
+                            <span><i class="fas fa-calendar-alt text-danger"></i>{{ post.publish|date:"F j, Y" }}</span>
+                            <span class="ms-3"><i class="fas fa-user text-danger"></i>{{ post.author.get_full_name|default:post.author.username }}</span>
+                        </div>
+                        <p class="post-excerpt">{{ post.content|striptags|truncatewords:35 }}</p>
+                        <div class="read-more-link">
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-sm btn-netflix-secondary">Read More <i class="fas fa-arrow-right ms-1"></i></a>
                         </div>
                     </div>
                 </div>
-            </div>
-            {% empty %}
-                <div class="alert alert-info" role="alert">
-                    There are no blog posts here yet. Please check back later!
-                </div>
-            {% endfor %}
+                {% empty %}
+                    <div class="netflix-card p-5 text-center">
+                        <h4 class="text-white">No Posts Found</h4>
+                        <p class="text-white-50">There are no blog posts here yet. Please check back later for insightful articles on <a href="{% url 'pages:home' %}" class="text-danger">custom web development in Lagos</a>!</p>
+                    </div>
+                {% endfor %}
 
-            {% if posts.has_other_pages %}
-            <nav aria-label="Page navigation" class="mt-5">
-                <ul class="pagination justify-content-center">
-                    {% if posts.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ posts.previous_page_number }}{% if category %}&category_slug={{ category.slug }}{% endif %}">&laquo; Previous</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo; Previous</span>
-                    </li>
-                    {% endif %}
-                    
-                    {% for i in posts.paginator.page_range %}
-                        <li class="page-item {% if posts.number == i %}active{% endif %}">
-                            <a class="page-link" href="?page={{ i }}{% if category %}&category_slug={{ category.slug }}{% endif %}">{{ i }}</a>
+                <!-- Pagination -->
+                {% if posts.has_other_pages %}
+                <nav aria-label="Page navigation" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if posts.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ posts.previous_page_number }}{% if category %}&category_slug={{ category.slug }}{% endif %}">&laquo;</a>
                         </li>
-                    {% endfor %}
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in posts.paginator.page_range %}
+                            <li class="page-item {% if posts.number == i %}active{% endif %}">
+                                <a class="page-link" href="?page={{ i }}{% if category %}&category_slug={{ category.slug }}{% endif %}">{{ i }}</a>
+                            </li>
+                        {% endfor %}
 
-                    {% if posts.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ posts.next_page_number }}{% if category %}&category_slug={{ category.slug }}{% endif %}">Next &raquo;</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Next &raquo;</span>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-            {% endif %}
+                        {% if posts.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ posts.next_page_number }}{% if category %}&category_slug={{ category.slug }}{% endif %}">&raquo;</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
 
-        </div>
-
-        <div class="col-lg-3">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5 class="mb-0 fw-bold">Categories</h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'blog:post_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
-                        All Posts
-                    </a>
-                    {% for cat in all_categories %}
-                    <a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" class="list-group-item list-group-item-action {% if category.slug == cat.slug %}active{% endif %}">
-                        {{ cat.name }}
-                    </a>
-                    {% endfor %}
-                </div>
+            <!-- Sidebar Column -->
+            <div class="col-lg-4">
+                <aside class="sidebar-widget position-sticky" style="top: 120px;">
+                    <h4 class="widget-title">Categories</h4>
+                    <div class="list-group list-group-flush category-list">
+                        <a href="{% url 'blog:post_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
+                            All Posts
+                        </a>
+                        {% for cat in all_categories %}
+                        <a href="{% url 'blog:post_list_by_category' category_slug=cat.slug %}" class="list-group-item list-group-item-action {% if category.slug == cat.slug %}active{% endif %}">
+                            {{ cat.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </aside>
             </div>
         </div>
     </div>
