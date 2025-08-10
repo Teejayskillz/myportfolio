@@ -3,85 +3,171 @@
 
 {% block title %}{{ project.title }} | Project Case Study{% endblock %}
 
+{% block meta_description %}A case study for {{ project.title }}. Learn about the process, technologies, and solutions delivered by LagosWebDev, a top web developer in Lagos.{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Project Header -->
-            <header class="mb-4">
-                <h1 class="fw-bold display-5">{{ project.title }}</h1>
-                <p class="lead text-muted">A case study of the project, detailing the process and technologies used.</p>
-            </header>
-
-            <!-- Project Image -->
-            {% if project.image %}
-                <img src="{{ project.image.url }}" class="img-fluid rounded shadow-sm mb-5" alt="{{ project.title }}">
-            {% endif %}
-
-            <!-- Project Description -->
-            <div class="project-content">
-                <h2 class="fw-bold h3">Project Overview</h2>
-                <div class="text-muted" style="font-size: 1.1rem; line-height: 1.7;">
-                    {{ project.description|safe }}
-                </div>
-            </div>
-
-            <hr class="my-5">
-
-            <!-- Back Button -->
-            <a href="{% url 'projects:project_list' %}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back to All Projects
-            </a>
-        </div>
-
-        <!-- Sidebar with Project Info -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm sticky-top" style="top: 120px;">
-                <div class="card-body">
-                    <h4 class="card-title fw-bold">Project Info</h4>
-                    <ul class="list-unstyled mt-3">
-                        <li class="mb-3">
-                            <strong class="d-block">Technologies Used:</strong>
-                            <!-- 
-                                CORRECTION: The invalid '|split' filter was removed. 
-                                The technologies are now displayed as a single string to prevent the server error.
-                                For individual badges, this string should be split into a list within your Django view.
-                            -->
-                            <p class="text-muted mt-2">{{ project.technologies }}</p>
-                        </li>
-                    </ul>
-                    <div class="d-grid gap-2">
-                        {% if project.live_demo_url %}
-                            <a href="{{ project.live_demo_url }}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
-                                <i class="fas fa-external-link-alt me-2"></i>View Live Demo
-                            </a>
-                        {% endif %}
-                        {% if project.github_url %}
-                            <a href="{{ project.github_url }}" class="btn btn-outline-dark" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-github me-2"></i>View on GitHub
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Styles for content coming from a text editor -->
 <style>
-    .project-content h1, .project-content h2, .project-content h3,
-    .project-content h4, .project-content h5, .project-content h6 {
+    /* --- PROJECT DETAIL PAGE SPECIFIC STYLES --- */
+
+    /* Project Header Section */
+    .project-header {
+        padding: 6rem 0;
+        position: relative;
+        text-align: center;
+        color: var(--netflix-white);
+        background-size: cover;
+        background-position: center;
+        border-bottom: 2px solid var(--netflix-red);
+    }
+    .project-header::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(rgba(20,20,20,0.6) 0%, rgba(20,20,20,1) 100%);
+        z-index: 1;
+    }
+    .project-header .container {
+        position: relative;
+        z-index: 2;
+    }
+    .project-title-main {
+        font-size: 3.5rem;
+        font-weight: 900;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.7);
+    }
+    .project-subtitle-main {
+        font-size: 1.2rem;
+        color: var(--netflix-light-gray);
+        max-width: 700px;
+        margin: 1rem auto 0;
+    }
+
+    /* Main Content Area */
+    .project-section {
+        padding: 4rem 0;
+    }
+
+    /* Project Content Styling */
+    .project-content {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: var(--netflix-light-gray);
+    }
+    .project-content h2, .project-content h3, .project-content h4 {
+        color: var(--netflix-white);
         font-weight: 700;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.4;
+        border-left: 4px solid var(--netflix-red);
+        padding-left: 1rem;
     }
     .project-content p {
         margin-bottom: 1.5rem;
     }
     .project-content a {
-        color: var(--primary-blue);
-        text-decoration: underline;
+        color: var(--netflix-red);
+        text-decoration: none;
+        border-bottom: 1px dotted var(--netflix-red);
     }
+    .project-content a:hover {
+        background-color: var(--netflix-red);
+        color: var(--netflix-white);
+    }
+    .project-content ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    .project-content ul li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 1rem;
+    }
+    .project-content ul li::before {
+        content: '\f00c'; /* Font Awesome check icon */
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        top: 5px;
+        color: var(--netflix-red);
+    }
+
+    /* Sidebar Info Card */
+    .info-card {
+        background: var(--netflix-dark-gray);
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 8px;
+        padding: 2rem;
+    }
+    .info-card h4 {
+        font-weight: 700;
+        color: var(--netflix-white);
+        border-bottom: 2px solid var(--netflix-red);
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    .tech-badge {
+        display: inline-block;
+        background: var(--netflix-medium-gray);
+        color: var(--netflix-light-gray);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin: 0.25rem;
+    }
+
 </style>
+
+<!-- PROJECT HERO HEADER -->
+<header class="project-header" style="background-image: url('{% if project.image %}{{ project.image.url }}{% endif %}');">
+    <div class="container">
+        <h1 class="project-title-main">{{ project.title }}</h1>
+        <p class="project-subtitle-main">A case study detailing the project's challenges, solutions, and outcomes.</p>
+    </div>
+</header>
+
+<section class="project-section">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Left Column: Main Project Content -->
+            <div class="col-lg-8">
+                <article class="project-content">
+                    {{ project.description|safe }}
+                </article>
+                <hr style="border-color: var(--netflix-medium-gray); margin: 3rem 0;">
+                <a href="{% url 'projects:project_list' %}" class="btn btn-netflix-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to All Projects
+                </a>
+            </div>
+
+            <!-- Right Column: Sticky Sidebar -->
+            <div class="col-lg-4">
+                <aside class="info-card position-sticky" style="top: 120px;">
+                    <h4>Project Details</h4>
+                    
+                    <strong class="text-white">Technologies Used:</strong>
+                    <div class="mt-2 mb-4">
+                        {% for tech in project.get_technologies_list %}
+                            <span class="tech-badge">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        {% if project.live_demo_url %}
+                            <a href="{{ project.live_demo_url }}" class="btn btn-netflix-primary" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-external-link-alt me-2"></i>View Live Demo
+                            </a>
+                        {% endif %}
+                        {% if project.github_url %}
+                            <a href="{{ project.github_url }}" class="btn btn-netflix-secondary" target="_blank" rel="noopener noreferrer">
+                                <i class="fab fa-github me-2"></i>View on GitHub
+                            </a>
+                        {% endif %}
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

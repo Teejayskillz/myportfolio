@@ -1,74 +1,152 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Work | Lagos Web Developer{% endblock %}
+{% block title %}My Work | Project Portfolio of a Lagos Web Developer{% endblock %}
+
+{% block meta_description %}Explore the portfolio of LagosWebDev. View a selection of custom websites, e-commerce platforms, and Django applications built for clients in Lagos and worldwide.{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Page Header -->
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">My Work</h1>
-        <p class="lead text-muted">A selection of projects that showcase my skills and dedication to quality.</p>
-    </div>
+<style>
+    /* --- PROJECT LIST PAGE SPECIFIC STYLES --- */
 
-    {% if projects %}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            {% for project in projects %}
-                <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'0'|stringformat:'s00' }}">
-                    <!-- Replaced 'hacker-card' with a standard Bootstrap card -->
-                    <div class="card h-100 shadow-sm">
-                        {% if project.image %}
-                            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 220px; object-fit: cover;">
-                        {% else %}
-                            <!-- A cleaner placeholder for projects without images -->
-                            <img src="https://placehold.co/600x400/EBF2FF/343a40?text=Project+Image" class="card-img-top" alt="Project placeholder" style="height: 220px; object-fit: cover;">
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold">{{ project.title }}</h5>
-                            <p class="card-text text-muted">{{ project.description|striptags|truncatechars:120 }}</p>
-                            
-                            <!-- Technologies are now displayed as clean badges -->
-                            {% if project.technologies %}
-                                <div class="mb-3">
-                                    {% for tech in project.technologies.split|slice:":4" %}
-                                        <span class="badge bg-light text-dark fw-normal">{{ tech }}</span>
-                                    {% endfor %}
+    /* Hero Section */
+    .portfolio-hero {
+        padding: 5rem 0;
+        background: var(--netflix-dark-gray);
+        text-align: center;
+        border-bottom: 2px solid var(--netflix-red);
+    }
+    .portfolio-hero h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--netflix-white);
+    }
+    .portfolio-hero p {
+        font-size: 1.2rem;
+        color: var(--netflix-light-gray);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Main Content Area */
+    .portfolio-section {
+        padding: 4rem 0;
+    }
+
+    /* Project Card Styling */
+    .project-card {
+        background: var(--netflix-dark-gray);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--netflix-medium-gray);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .project-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        border-color: var(--netflix-red);
+    }
+
+    .project-thumbnail {
+        height: 240px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .project-thumbnail::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 60%);
+        transition: background 0.3s ease;
+    }
+    .project-card:hover .project-thumbnail::after {
+        background: linear-gradient(to top, rgba(229,9,20,0.7) 0%, rgba(20,20,20,0) 70%);
+    }
+
+    .project-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .project-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--netflix-white);
+        margin-bottom: 0.75rem;
+    }
+    .project-description {
+        color: var(--netflix-light-gray);
+        flex-grow: 1;
+        margin-bottom: 1.5rem;
+    }
+    .tech-badges .badge {
+        background: var(--netflix-medium-gray);
+        color: var(--netflix-light-gray);
+        font-weight: 500;
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+    .project-footer {
+        margin-top: auto;
+    }
+
+</style>
+
+<!-- PORTFOLIO HERO -->
+<header class="portfolio-hero">
+    <div class="container">
+        <h1 class="display-5 fw-bold">My Work</h1>
+        <p class="lead">A selection of projects that showcase my skills in creating high-quality, modern web solutions.</p>
+    </div>
+</header>
+
+<section class="portfolio-section">
+    <div class="container">
+        {% if projects %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for project in projects %}
+                    <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                        <a href="{{ project.get_absolute_url }}" class="text-decoration-none">
+                            <div class="project-card">
+                                <div class="project-thumbnail" style="background-image: url('{% if project.image %}{{ project.image.url }}{% else %}https://placehold.co/600x400/141414/e50914?text=LagosWebDev{% endif %}');"></div>
+                                <div class="project-body">
+                                    <h3 class="project-title">{{ project.title }}</h3>
+                                    <p class="project-description">{{ project.description|striptags|truncatechars:100 }}</p>
+                                    
+                                    {% if project.get_technologies_list %}
+                                        <div class="mb-4 tech-badges">
+                                            {% for tech in project.get_technologies_list|slice:":4" %}
+                                                <span class="badge">{{ tech }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="project-footer">
+                                        <span class="btn btn-sm btn-netflix-primary w-100">View Case Study</span>
+                                    </div>
                                 </div>
-                            {% endif %}
-                            
-                            <div class="mt-auto">
-                                <a href="{% url 'projects:project_detail' project.slug %}" class="btn btn-primary w-100">View Case Study</a>
                             </div>
-                        </div>
-                        {% if project.github_url or project.live_demo_url %}
-                            <div class="card-footer bg-white border-0 text-center">
-                                {% if project.github_url %}
-                                    <a href="{{ project.github_url }}" class="text-dark me-3" target="_blank" rel="noopener noreferrer" title="View on GitHub">
-                                        <i class="fab fa-github"></i> GitHub
-                                    </a>
-                                {% endif %}
-                                {% if project.live_demo_url %}
-                                    <a href="{{ project.live_demo_url }}" class="text-dark" target="_blank" rel="noopener noreferrer" title="View Live Demo">
-                                        <i class="fas fa-external-link-alt"></i> Live Demo
-                                    </a>
-                                {% endif %}
-                            </div>
-                        {% endif %}
+                        </a>
                     </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <!-- A more user-friendly message for when no projects are found -->
-        <div class="text-center py-5">
-            <h3 class="text-muted">My Portfolio is Growing!</h3>
-            <p class="text-muted">I'm currently preparing case studies of my latest work. Please check back soon.</p>
-            {% if user.is_staff %}
-                <a href="{% url 'admin:index' %}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Add a Project
-                </a>
-            {% endif %}
-        </div>
-    {% endif %}
-</div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5 netflix-card">
+                <h3 class="text-white">My Portfolio is Growing!</h3>
+                <p class="text-white-50">I'm currently preparing detailed case studies of my latest work. Please check back soon to see how I help businesses with <a href="{% url 'pages:home' %}" class="text-danger">custom web development in Lagos</a>.</p>
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="btn btn-netflix-primary mt-3">
+                        <i class="fas fa-plus me-2"></i>Add a New Project
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}
