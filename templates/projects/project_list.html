@@ -56,6 +56,7 @@
         background-position: center;
         position: relative;
         overflow: hidden;
+        display: block; /* Make the link a block element */
     }
     .project-thumbnail::after {
         content: '';
@@ -79,6 +80,14 @@
         font-weight: 700;
         color: var(--netflix-white);
         margin-bottom: 0.75rem;
+    }
+    .project-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .project-card:hover .project-title a {
+        color: var(--netflix-red);
     }
     .project-description {
         color: var(--netflix-light-gray);
@@ -112,27 +121,29 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 {% for project in projects %}
                     <div class="col" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
-                        <a href="{{ project.get_absolute_url }}" class="text-decoration-none">
-                            <div class="project-card">
-                                <div class="project-thumbnail" style="background-image: url('{% if project.image %}{{ project.image.url }}{% else %}https://placehold.co/600x400/141414/e50914?text=LagosWebDev{% endif %}');"></div>
-                                <div class="project-body">
-                                    <h3 class="project-title">{{ project.title }}</h3>
-                                    <p class="project-description">{{ project.description|striptags|truncatechars:100 }}</p>
-                                    
-                                    {% if project.get_technologies_list %}
-                                        <div class="mb-4 tech-badges">
-                                            {% for tech in project.get_technologies_list|slice:":4" %}
-                                                <span class="badge">{{ tech }}</span>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                    
-                                    <div class="project-footer">
-                                        <span class="btn btn-sm btn-netflix-primary w-100">View Case Study</span>
+                        <div class="project-card">
+                            <a href="{{ project.get_absolute_url }}" class="project-thumbnail" style="background-image: url('{% if project.image %}{{ project.image.url }}{% else %}https://placehold.co/600x400/141414/e50914?text=LagosWebDev{% endif %}');">
+                                <!-- This link now covers the thumbnail -->
+                            </a>
+                            <div class="project-body">
+                                <h3 class="project-title">
+                                    <a href="{{ project.get_absolute_url }}">{{ project.title }}</a>
+                                </h3>
+                                <p class="project-description">{{ project.description|striptags|truncatechars:100 }}</p>
+                                
+                                {% if project.get_technologies_list %}
+                                    <div class="mb-4 tech-badges">
+                                        {% for tech in project.get_technologies_list|slice:":4" %}
+                                            <span class="badge">{{ tech }}</span>
+                                        {% endfor %}
                                     </div>
+                                {% endif %}
+                                
+                                <div class="project-footer">
+                                    <a href="{{ project.get_absolute_url }}" class="btn btn-sm btn-netflix-primary w-100">View Case Study</a>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
