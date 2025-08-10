@@ -1,55 +1,183 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Contact Me | Lagos Web Developer{% endblock %}
+{% block title %}Contact Me | Lagos Web Developer for Hire{% endblock %}
+
+{% block meta_description %}Contact LagosWebDev for custom web development in Lagos, Nigeria. Reach out for a free consultation on your Django, e-commerce, or web application project.{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">Get in Touch</h1>
-        <p class="lead text-muted">Have a project in mind or just want to say hello? I'd love to hear from you.</p>
+<style>
+    /* --- CONTACT PAGE SPECIFIC STYLES --- */
+
+    /* Contact Hero Section */
+    .contact-hero {
+        padding: 5rem 0;
+        background: var(--netflix-dark-gray);
+        text-align: center;
+        border-bottom: 2px solid var(--netflix-red);
+    }
+    .contact-hero h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--netflix-white);
+    }
+    .contact-hero p {
+        font-size: 1.2rem;
+        color: var(--netflix-light-gray);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Main Content Area */
+    .contact-section {
+        padding: 4rem 0;
+    }
+
+    /* Contact Info Card */
+    .contact-info-card {
+        background: var(--netflix-dark-gray);
+        border-radius: 8px;
+        padding: 2.5rem;
+        border: 1px solid var(--netflix-medium-gray);
+        height: 100%;
+    }
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+    }
+    .contact-item i {
+        font-size: 1.5rem;
+        color: var(--netflix-red);
+        margin-top: 5px;
+        width: 30px;
+        text-align: center;
+    }
+    .contact-item-text h5 {
+        color: var(--netflix-white);
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+    .contact-item-text a, .contact-item-text p {
+        color: var(--netflix-light-gray);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .contact-item-text a:hover {
+        color: var(--netflix-red);
+    }
+    
+    .social-links-contact a {
+        color: var(--netflix-light-gray);
+        font-size: 1.8rem;
+        margin-right: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .social-links-contact a:hover {
+        color: var(--netflix-red);
+        transform: scale(1.2);
+    }
+
+    /* Contact Form Styling */
+    .contact-form-card {
+        background: var(--netflix-dark-gray);
+        border-radius: 8px;
+        padding: 2.5rem;
+        border: 1px solid var(--netflix-medium-gray);
+    }
+    .form-label {
+        color: var(--netflix-light-gray);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .form-control {
+        background-color: var(--netflix-medium-gray);
+        border: 1px solid #444;
+        color: var(--netflix-white);
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        background-color: var(--netflix-medium-gray);
+        border-color: var(--netflix-red);
+        box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25);
+        color: var(--netflix-white);
+    }
+    .form-control::placeholder {
+        color: #777;
+    }
+    .invalid-feedback {
+        color: var(--netflix-red);
+    }
+    .alert-success {
+        background-color: rgba(37, 211, 102, 0.2);
+        color: #25D366;
+        border-color: #25D366;
+    }
+    .alert-warning {
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+        border-color: #ffc107;
+    }
+
+</style>
+
+<!-- CONTACT HERO -->
+<header class="contact-hero">
+    <div class="container">
+        <h1 class="display-5 fw-bold">Let's Build Something Great</h1>
+        <p class="lead">Have a project in mind, a question, or just want to connect? I'm here to help.</p>
     </div>
+</header>
 
-    <div class="row g-5 justify-content-center">
-        <div class="col-lg-4">
-            <h3 class="fw-bold mb-4">Contact Information</h3>
-            <p class="text-muted">You can reach me through the following channels. I'm always happy to discuss new projects and opportunities.</p>
-            
-            <div class="d-flex align-items-start mb-3">
-                <i class="fas fa-envelope fa-fw fs-4 text-primary mt-1"></i>
-                <div class="ms-3">
-                    <h5 class="mb-0">Email</h5>
-                    <a href="mailto:contact@lagoswebdev.com" class="text-decoration-none text-dark">contact@lagoswebdev.com</a>
+<section class="contact-section">
+    <div class="container">
+        <div class="row g-4 g-lg-5">
+            <!-- Left Column: Contact Information -->
+            <div class="col-lg-5">
+                <div class="contact-info-card">
+                    <h3 class="text-white fw-bold mb-4">Contact Information</h3>
+                    <p class="text-white-50 mb-5">Fill out the form or use the details below to get in touch. I'm always excited to discuss new and challenging projects with a leading <a href="{% url 'pages:home' %}" class="text-danger">web developer in Lagos</a>.</p>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div class="ms-3 contact-item-text">
+                            <h5>Email Me</h5>
+                            <a href="mailto:contact@lagoswebdev.com">contact@lagoswebdev.com</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div class="ms-3 contact-item-text">
+                            <h5>Chat on WhatsApp</h5>
+                            <a href="https://wa.me/2348102712103" target="_blank">+234 810 271 2103</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div class="ms-3 contact-item-text">
+                            <h5>Location</h5>
+                            <p class="mb-0">Lagos, Nigeria (Available Worldwide)</p>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-5" style="border-color: var(--netflix-medium-gray);">
+
+                    <h4 class="text-white fw-bold mb-3">Connect With Me</h4>
+                    <div class="social-links-contact">
+                        <a href="https://github.com/Teejayskillz/" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/tijani-apatira-13b358367/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
                 </div>
             </div>
 
-            <div class="d-flex align-items-start mb-3">
-                <i class="fab fa-whatsapp fa-fw fs-4 text-primary mt-1"></i>
-                <div class="ms-3">
-                    <h5 class="mb-0">WhatsApp</h5>
-                    <a href="https://wa.me/2348102712103" target="_blank" class="text-decoration-none text-dark">+234 810 271 2103</a>
-                </div>
-            </div>
-
-            <div class="d-flex align-items-start mb-4">
-                <i class="fas fa-map-marker-alt fa-fw fs-4 text-primary mt-1"></i>
-                <div class="ms-3">
-                    <h5 class="mb-0">Location</h5>
-                    <p class="text-dark mb-0">Lagos, Nigeria</p>
-                </div>
-            </div>
-            
-            <h4 class="fw-bold mb-3 mt-5">Connect on Social</h4>
-            <div class="fs-3">
-                <a href="https://github.com/Teejayskillz/" target="_blank" class="text-dark me-3" title="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/tijani-apatira-13b358367/" target="_blank" class="text-dark me-3" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card p-4 shadow-sm">
-                <div class="card-body">
-                    <h3 class="fw-bold mb-4">Send Me a Message</h3>
+            <!-- Right Column: Contact Form -->
+            <div class="col-lg-7">
+                <div class="contact-form-card">
+                    <h3 class="text-white fw-bold mb-4">Send a Message</h3>
                     
                     {% if messages %}
                         {% for message in messages %}
@@ -61,22 +189,22 @@
 
                     <form method="post" novalidate>
                         {% csrf_token %}
-
-                        {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {{ field.errors.as_text }}
-                                </div>
-                            {% endif %}
+                        <div class="row">
+                            {% for field in form %}
+                            <div class="col-12 mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ field.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
-
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-netflix-primary btn-lg">
+                                Send Message <i class="fas fa-paper-plane ms-2"></i>
                             </button>
                         </div>
                     </form>
@@ -84,7 +212,7 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -94,9 +222,11 @@
         if (form) {
             const fields = form.querySelectorAll('input, textarea, select');
             fields.forEach(function(field) {
-                // We exclude hidden inputs (like csrf_token) and buttons/submit inputs
                 if (field.type !== 'hidden' && field.type !== 'submit' && field.type !== 'button') {
                     field.classList.add('form-control');
+                    if(field.placeholder === '') {
+                        field.placeholder = field.name.charAt(0).toUpperCase() + field.name.slice(1);
+                    }
                 }
             });
         }
