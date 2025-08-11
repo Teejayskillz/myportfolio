@@ -148,9 +148,9 @@
                     
                     <strong class="text-white">Technologies Used:</strong>
                     <div class="mt-2 mb-4">
-                        {% for tech in project.get_technologies_list %}
-                            <span class="tech-badge">{{ tech }}</span>
-                        {% endfor %}
+                        
+                            <span class="tech-badge">{{ project.technologies|upper }}</span>
+                       
                     </div>
 
                     <div class="d-grid gap-2">
