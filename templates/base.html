@@ -12,10 +12,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon.jpg' %}">
 <link rel="shortcut icon" href="{% static 'img/favicons/favicon.jpg' %}">
 
-<!-- Apple Touch Icon -->
 <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/favicon.jpg' %}">
 
-<!-- Web App Manifest -->
 <link rel="manifest" href="{% static 'img/favicons/favicon.jpg' %}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +27,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-    {% load static %}
     <style>
         /* --- NETFLIX THEME VARIABLES --- */
         :root {
@@ -145,20 +142,10 @@
             padding: 0.5rem;
         }
 
-        .navbar-toggler-icon {
-            background-image: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 24px;
-            position: relative;
-        }
-
-        .navbar-toggler-icon::before,
-        .navbar-toggler-icon::after,
-        .navbar-toggler-icon {
-            background: var(--netflix-white);
+        /* FIX: Styling for Font Awesome icon */
+        .navbar-toggler i {
+            color: var(--netflix-white);
+            font-size: 1.5rem;
         }
 
         /* --- MAIN CONTENT --- */
@@ -434,14 +421,10 @@
         <div class="container">
            <a class="navbar-brand" href="{% url 'pages:home' %}">
     <i class="fas fa-code me-2"></i>
-    <span class="" data-text="LAGOSWEBDEV">LAGOSWEBDEV</span>
+    <span data-text="LAGOSWEBDEV">LAGOSWEBDEV</span>
 </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
+                <i class="fas fa-bars text-white"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
