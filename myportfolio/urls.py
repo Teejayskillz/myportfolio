@@ -41,8 +41,5 @@ urlpatterns = [
     path('robots.txt', serve, {'path': 'robots.txt', 'document_root': settings.BASE_DIR}),
 ]
 
-    
-
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
