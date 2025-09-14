@@ -318,27 +318,6 @@
             }
         }
 
-        /* --- RESPONSIVE DESIGN --- */
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-            
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero-content .lead {
-                font-size: 1.1rem;
-            }
-            
-            .btn-netflix-primary,
-            .btn-netflix-secondary {
-                padding: 0.75rem 1.5rem;
-                font-size: 0.9rem;
-            }
-        }
-
         /* --- LOADING ANIMATION --- */
         .netflix-loading {
             display: inline-block;
@@ -413,6 +392,92 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* --- MOBILE NAV STYLES --- */
+        .mobile-nav {
+            display: none; /* Hidden by default on desktop */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030; /* Higher than other fixed elements */
+            background: rgba(20, 20, 20, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--netflix-medium-gray);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+            padding: 0.5rem 0;
+        }
+
+        .mobile-nav-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: var(--netflix-light-gray);
+            flex: 1;
+            padding: 0.5rem 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-item i {
+            font-size: 1.25rem;
+            margin-bottom: 0.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .mobile-nav-item:hover,
+        .mobile-nav-item.active {
+            color: var(--netflix-red);
+        }
+
+        .mobile-nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 768px) {
+            /* Show the mobile nav */
+            .mobile-nav {
+                display: block;
+            }
+
+            /* Hide the top navbar's collapsible menu and the toggler button */
+            .navbar-collapse, .navbar-toggler {
+                display: none !important;
+            }
+
+            /* Ensure the brand is still visible */
+            .navbar-brand {
+                display: block;
+                font-size: 1.5rem;
+                text-align: left;
+            }
+
+            /* Add padding to the body to prevent content from being hidden behind the bottom nav */
+            body {
+                padding-bottom: 70px; /* Adjust this value to match your mobile-nav height */
+            }
+        }
+
+        @media (min-width: 769px) {
+            /* Hide the mobile nav on larger screens */
+            .mobile-nav {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -455,6 +520,31 @@
         {% block content %}
         {% endblock %}
     </main>
+    
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-container">
+            <a href="{% url 'pages:home' %}" class="mobile-nav-item {% if request.path == '/' or 'home' in request.path %}active{% endif %}">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{% url 'projects:project_list' %}" class="mobile-nav-item {% if 'projects' in request.path %}active{% endif %}">
+                <i class="fas fa-folder"></i>
+                <span>Projects</span>
+            </a>
+            <a href="{% url 'blog:post_list' %}" class="mobile-nav-item {% if 'blog' in request.path %}active{% endif %}">
+                <i class="fas fa-pen-nib"></i>
+                <span>Blog</span>
+            </a>
+            <a href="{% url 'pricing:pricing_page' %}" class="mobile-nav-item {% if 'pricing' in request.path %}active{% endif %}">
+                <i class="fas fa-tag"></i>
+                <span>Pricing</span>
+            </a>
+            <a href="{% url 'contact:contact_page' %}" class="mobile-nav-item {% if 'contact' in request.path %}active{% endif %}">
+                <i class="fas fa-envelope"></i>
+                <span>Contact</span>
+            </a>
+        </div>
+    </nav>
 
     <footer class="footer">
         <div class="container">
