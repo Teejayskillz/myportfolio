@@ -78,52 +78,14 @@
         transform: scale(1.2);
     }
 
-    /* Contact Form Styling */
-    .contact-form-card {
-        background: var(--netflix-dark-gray);
-        border-radius: 8px;
-        padding: 2.5rem;
-        border: 1px solid var(--netflix-medium-gray);
-    }
-    .form-label {
-        color: var(--netflix-light-gray);
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-    .form-control {
-        background-color: var(--netflix-medium-gray);
-        border: 1px solid #444;
-        color: var(--netflix-white);
-        padding: 0.75rem 1rem;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-    }
-    .form-control:focus {
-        background-color: var(--netflix-medium-gray);
-        border-color: var(--netflix-red);
-        box-shadow: 0 0 0 0.25rem rgba(229, 9, 20, 0.25);
-        color: var(--netflix-white);
-    }
-    .form-control::placeholder {
-        color: #777;
-    }
-    .invalid-feedback {
-        color: var(--netflix-red);
-    }
-    .alert-success {
-        background-color: rgba(37, 211, 102, 0.2);
-        color: #25D366;
-        border-color: #25D366;
-    }
-    .alert-warning {
-        background-color: rgba(255, 193, 7, 0.2);
-        color: #ffc107;
-        border-color: #ffc107;
+    /* Additional styles to center the card */
+    .row.justify-content-center {
+        display: flex;
+        justify-content: center;
     }
 
 </style>
 
-<!-- CONTACT HERO -->
 <header class="contact-hero">
     <div class="container">
         <h1 class="display-5 fw-bold">Let's Build Something Great</h1>
@@ -133,12 +95,15 @@
 
 <section class="contact-section">
     <div class="container">
-        <div class="row g-4 g-lg-5">
-            <!-- Left Column: Contact Information -->
+        <div class="row justify-content-center">
             <div class="col-lg-5">
                 <div class="contact-info-card">
                     <h3 class="text-white fw-bold mb-4">Contact Information</h3>
-                    <p class="text-white-50 mb-5">Fill out the form or use the details below to get in touch. I'm always excited to discuss new and challenging projects with a leading <a href="{% url 'pages:home' %}" class="text-danger">web developer in Lagos</a>.</p>
+                    <p class="text-white-50 mb-5">
+                        <a href="{% url 'pages:home' %}" class="text-danger">
+                            I'm a leading web developer in Lagos
+                        </a> and I am always excited to discuss new and challenging projects.
+                    </p>
                     
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
@@ -173,63 +138,11 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Right Column: Contact Form -->
-            <div class="col-lg-7">
-                <div class="contact-form-card">
-                    <h3 class="text-white fw-bold mb-4">Send a Message</h3>
-                    
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-warning{% endif %}" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <form method="post" novalidate>
-                        {% csrf_token %}
-                        <div class="row">
-                            {% for field in form %}
-                            <div class="col-12 mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                {{ field }}
-                                {% if field.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ field.errors|striptags }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-netflix-primary btn-lg">
-                                Send Message <i class="fas fa-paper-plane ms-2"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            
         </div>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form[method="post"]');
-        if (form) {
-            const fields = form.querySelectorAll('input, textarea, select');
-            fields.forEach(function(field) {
-                if (field.type !== 'hidden' && field.type !== 'submit' && field.type !== 'button') {
-                    field.classList.add('form-control');
-                    if(field.placeholder === '') {
-                        field.placeholder = field.name.charAt(0).toUpperCase() + field.name.slice(1);
-                    }
-                }
-            });
-        }
-    });
-</script>
 {% endblock %}
