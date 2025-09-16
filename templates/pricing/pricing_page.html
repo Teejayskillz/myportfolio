@@ -73,7 +73,7 @@
         flex-direction: column;
     }
     .pricing-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         font-weight: 900;
         color: var(--netflix-white);
     }
@@ -92,7 +92,7 @@
         color: var(--netflix-red);
     }
     .pricing-button {
-        margin-top: auto; /* Pushes button to the bottom */
+        margin-top: auto;
     }
 
     /* FAQ Section */
@@ -126,7 +126,6 @@
     .accordion-button::after {
         filter: brightness(0) invert(1);
     }
-
 </style>
 
 <!-- PRICING HERO -->
@@ -149,9 +148,9 @@
                     <div class="pricing-body">
                         <h2 class="pricing-title">
                             {% if plan.is_premium %}
-                                Custom Quote <small class="text-white-50">(Contact Me)</small>
+                                Custom Quote <small>(Contact Me)</small>
                             {% else %}
-                                Starting from ₦{{ plan.price|floatformat:"0" }}<small class="text-white-50"> </small>
+                                Starting from ₦{{ plan.price|floatformat:"0" }}
                             {% endif %}
                         </h2>
                         <ul class="list-unstyled mt-4 mb-5 features-list">
@@ -168,6 +167,16 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+
+        <!-- Contact CTA under pricing -->
+        <div class="text-center mt-5">
+            <p class="text-white-50">Need a custom plan? Reach out directly:</p>
+            <p class="fw-bold text-white">
+                📧 CONTACT@LAGOSWEBDEV.COM <br>
+                📱 WhatsApp: <a href="https://wa.me/2348102712103" class="text-danger">+2348102712103</a> <br>
+                📞 Call: 07045902659
+            </p>
         </div>
     </div>
 </section>
