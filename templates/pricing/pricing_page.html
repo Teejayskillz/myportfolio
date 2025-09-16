@@ -132,8 +132,8 @@
 <!-- PRICING HERO -->
 <header class="pricing-hero">
     <div class="container">
-        <h1 class="display-5 fw-bold">Clear & Transparent Pricing</h1>
-        <p class="lead">Choose a plan that fits your goals. No hidden fees, just powerful results for your business in Lagos and beyond.</p>
+        <h1 class="display-5 fw-bold">Clear & Flexible Pricing</h1>
+        <p class="lead">Choose a plan that fits your goals. Pricing is transparent and tailored to your business needs in Lagos and beyond.</p>
     </div>
 </header>
 
@@ -149,9 +149,9 @@
                     <div class="pricing-body">
                         <h2 class="pricing-title">
                             {% if plan.is_premium %}
-                                Custom Quote
+                                Custom Quote <small class="text-white-50">(Contact Me)</small>
                             {% else %}
-                                ₦{{ plan.price|floatformat:"0" }}<small class="text-white-50">/one-time</small>
+                                Starting from ₦{{ plan.price|floatformat:"0" }}<small class="text-white-50"> /one-time</small>
                             {% endif %}
                         </h2>
                         <ul class="list-unstyled mt-4 mb-5 features-list">
