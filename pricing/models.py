@@ -11,6 +11,12 @@ class PricingPlan(models.Model):
     button_text = models.CharField(max_length=50, default="Order Now")
     button_url_name = models.CharField(max_length=50, default="contact:contact_page", help_text="URL name (e.g., 'contact:contact_page')")
     order = models.IntegerField(default=0, help_text="Order in which plans are displayed")
+    note = models.CharField(
+        max_length=255, 
+        blank=True, 
+        null=True, 
+        help_text="Optional note like: 'Best for enterprises, startups, and complex projects.'"
+    )
 
     class Meta:
         ordering = ['order']
