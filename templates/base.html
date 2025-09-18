@@ -5,9 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}{{ page.title|default:"Custom Web Development in Lagos | LagosWebDev" }}{% endblock %}</title>
+    <title>{% block title %}{{ page.title|default:"Website Designer Nigeria - Affordable Web Design in Lagos | LagosWebDev" }}{% endblock %}</title>
     
     <meta name="description" content="{% block meta_description %}{{ page.meta_description|default:'Hire the best website designer in Nigeria. LagosWebDev builds fast, affordable, and professional websites for businesses in Lagos & across Nigeria. Call us today!' }}{% endblock %}">
+     <!-- Open Graph (for Facebook, LinkedIn, WhatsApp previews) -->
+    <meta property="og:title" content="Website Designer Nigeria - LagosWebDev">
+    <meta property="og:description" content="We design fast, professional, and affordable websites for businesses in Lagos and across Nigeria. Contact LagosWebDev today.">
+    <meta property="og:image" content="{% static 'img/favicons/favicon.jpg' %}">
+    <meta property="og:url" content="https://www.lagoswebdev.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card (for Twitter/X previews) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Website Designer Nigeria - LagosWebDev">
+    <meta name="twitter:description" content="Affordable and professional website design in Nigeria. Contact LagosWebDev for business websites, e-commerce, and custom development.">
+    <meta name="twitter:image" content="{% static 'img/favicons/favicon.jpg' %}">
+    <meta name="keywords" content="Website Designer Nigeria, Web Design Lagos, Affordable Web Design Nigeria, WordPress Developer Nigeria, Django Developer Lagos, E-commerce Website Nigeria, Custom Web Development Lagos">   
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon.jpg' %}">
 <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon.jpg' %}">
 <link rel="shortcut icon" href="{% static 'img/favicons/favicon.jpg' %}">
