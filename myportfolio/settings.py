@@ -31,12 +31,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-7#1^7b*)c0m796z4mul^!
 )
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = [
-    "lagoswebdev.com",
-    "www.lagoswebdev.com",
-    "lagoswebdev.com.jaraflix.com",
-    "www.lagoswebdev.com.jaraflix.com",
-]
+ALLOWED_HOSTS = ["*"]
+
 
 SITE_ID = 1 
 # Application definition
