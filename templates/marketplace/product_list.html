@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Developer Scripts & Tools Marketplace | LagosWebDev{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <h2 class="section-title">Scripts & Tools Marketplace</h2>
+
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-lg-4 col-md-6">
+                <div class="netflix-card h-100">
+                    <h3 class="mb-2">{{ product.title }}</h3>
+
+                    <p class="text-white-50 mb-3">
+                        {{ product.short_description }}
+                    </p>
+
+                    <div class="mb-3">
+                        <span class="badge bg-danger me-1">{{ product.category|title }}</span>
+                        <span class="badge bg-secondary">{{ product.tech_stack }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <strong class="fs-5 text-danger">
+                            ₦{{ product.price }}
+                        </strong>
+
+                        <a href="{% url 'marketplace:product_detail' product.slug %}"
+                           class="btn btn-sm btn-netflix-secondary">
+                            View Details <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-white-50">
+                No products available yet.
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

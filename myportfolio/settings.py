@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'projects',     # We will create this app
     'contact', 
     'pricing'  ,  
-    'blog',     
+    'blog',   
+    'marketplace',  
 ]
 
 MIDDLEWARE = [
