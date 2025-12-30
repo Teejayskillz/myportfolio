@@ -5,6 +5,16 @@ import secrets
 from django.utils import timezone
 from datetime import timedelta
 
+class PaymentGateway(models.Model):
+    name = models.CharField(max_length=50)  # e.g., "Flutterwave", "Paystack"
+    is_active = models.BooleanField(default=False)
+    public_key = models.CharField(max_length=255, blank=True, null=True)
+    secret_key = models.CharField(max_length=255, blank=True, null=True)
+    callback_url = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
 
 class Product(models.Model):
     CATEGORY_CHOICES = (

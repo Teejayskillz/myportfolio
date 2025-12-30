@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Product, Order, DownloadToken
+from .models import Product, Order, DownloadToken, PaymentGateway
+
 
 
 @admin.register(Product)
@@ -22,3 +23,9 @@ class OrderAdmin(admin.ModelAdmin):
 class DownloadTokenAdmin(admin.ModelAdmin):
     list_display = ('order', 'expires_at', 'download_count')
     readonly_fields = ('token', 'created_at')
+
+
+@admin.register(PaymentGateway)
+class PaymentGatewayAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_active', 'public_key')
+    list_editable = ('is_active',)
