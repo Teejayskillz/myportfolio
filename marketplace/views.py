@@ -1,70 +1,46 @@
-
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import CheckoutForm
 from django.contrib import messages
-from .models import Product, Order, PaymentGateway,DownloadToken
+from .models import Product, Order, PaymentGateway, DownloadToken
 import requests
 import time
-from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.urls import reverse
+import os
 
 
 def product_list(request):
     products = Product.objects.filter(is_active=True)
-
-    context = {
-        "products": products
-    }
-
-    return render(request, "marketplace/product_list.html", context)
+    return render(request, "marketplace/product_list.html", {"products": products})
 
 
 def product_detail(request, slug):
-    product = get_object_or_404(
-        Product,
-        slug=slug,
-        is_active=True
-    )
-
-    context = {
-        "product": product
-    }
-
-    return render(request, "marketplace/product_detail.html", context)
-
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+    return render(request, "marketplace/product_detail.html", {"product": product})
 
 
 def checkout_view(request, slug):
-    product = get_object_or_404(
-        Product,
-        slug=slug,
-        is_active=True
-    )
-
-    # Get all currently active payment gateways
+    product = get_object_or_404(Product, slug=slug, is_active=True)
     active_gateways = PaymentGateway.objects.filter(is_active=True)
 
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
 
         if form.is_valid():
-            # Get selected gateway from form (very important!)
             selected_gateway_name = request.POST.get('gateway')
 
             if not selected_gateway_name:
                 messages.error(request, "Please select a payment method.")
-                # Re-render form with error (don't lose user input)
                 return render(request, 'marketplace/checkout.html', {
                     'product': product,
                     'form': form,
                     'active_gateways': active_gateways,
-                    'selected_gateway': selected_gateway_name,  # keep selection
                 })
 
-            if not active_gateways.filter(name=selected_gateway_name).exists():
+            gateway = active_gateways.filter(name=selected_gateway_name).first()
+            if not gateway:
                 messages.error(request, "Selected payment method is not available.")
                 return render(request, 'marketplace/checkout.html', {
                     'product': product,
@@ -72,30 +48,20 @@ def checkout_view(request, slug):
                     'active_gateways': active_gateways,
                 })
 
-            # Create the order
             order = Order.objects.create(
                 product=product,
                 buyer_name=form.cleaned_data['buyer_name'],
-                buyer_email=form.cleaned_data['buyer_email'],   
-                payment_status='pending',                 
+                buyer_email=form.cleaned_data['buyer_email'],
                 amount=product.price,
-            )            
-            # Store critical data in session
-            request.session['order_id'] = order.id
-            request.session['selected_gateway'] = selected_gateway_name
-            request.session.modified = True  # Ensure session is saved
-
-            messages.success(
-                request,
-                f"Thank you {order.buyer_name}! Proceeding to payment..."
+                payment_status='pending',
+                gateway_name=gateway.name,
             )
 
-            # Use correct named URL with namespace
+            request.session['order_id'] = order.id
+            messages.success(request, f"Thank you {order.buyer_name}! Proceeding to payment...")
             return redirect('marketplace:payment_page')
 
-        # If form invalid → show errors
-        else:
-            messages.error(request, "Please correct the errors below.")
+        messages.error(request, "Please correct the errors below.")
 
     else:
         form = CheckoutForm()
@@ -108,36 +74,24 @@ def checkout_view(request, slug):
 
 
 def payment_page(request):
-    """
-    1. Shows a summary page with user details.
-    2. On 'Proceed' (POST), initiates Paystack transaction.
-    """
-    # 1. Get order from session
     order_id = request.session.get('order_id')
     if not order_id:
-        messages.error(request, "No active order found. Please start checkout again.")
+        messages.error(request, "No active order found.")
         return redirect('marketplace:product_list')
 
-    # Note: Using your model's field 'payment_status'
     order = get_object_or_404(Order, id=order_id, payment_status='pending')
+    gateway = get_object_or_404(PaymentGateway, name=order.gateway_name, is_active=True)
 
-    # 2. Get selected gateway
-    gateway_name = request.session.get('selected_gateway')
-    if not gateway_name:
-        messages.error(request, "No payment method was selected.")
-        return redirect('marketplace:checkout', slug=order.product.slug)
-
-    gateway = get_object_or_404(PaymentGateway, name=gateway_name, is_active=True)
-
-    # 3. Handle POST request (When user clicks "Proceed to Payment")
     if request.method == 'POST':
         payload = {
-            "email": order.email,  # Corrected from buyer_email to match your model
+            "email": order.buyer_email,
             "amount": int(order.amount * 100),
             "reference": f"order-{order.id}-{int(time.time())}",
-            "callback_url": request.build_absolute_uri(reverse('marketplace:payment_callback')),
+            "callback_url": request.build_absolute_uri(
+                reverse('marketplace:payment_callback')
+            ),
             "metadata": {
-                "order_id": str(order.id),
+                "order_id": order.id,
                 "product": order.product.title,
             },
         }
@@ -147,169 +101,94 @@ def payment_page(request):
             "Content-Type": "application/json",
         }
 
-        try:
-            response = requests.post(
-                "https://api.paystack.co/transaction/initialize",
-                json=payload,
-                headers=headers,
-                timeout=30
-            )
-            resp_data = response.json()
+        response = requests.post(
+            "https://api.paystack.co/transaction/initialize",
+            json=payload,
+            headers=headers,
+            timeout=30
+        )
 
-            if resp_data.get("status") is True:
-                payment_url = resp_data["data"]["authorization_url"]
-                
-                # Update order with the specific Paystack reference
-                order.reference = payload["reference"] # Corrected field name
-                order.save(update_fields=['reference'])
+        if response.status_code != 200:
+            messages.error(request, "Paystack server error.")
+            return redirect('marketplace:checkout', slug=order.product.slug)
 
-                return redirect(payment_url)
-            else:
-                messages.error(request, f"Paystack error: {resp_data.get('message')}")
+        resp_data = response.json()
 
-        except Exception as e:
-            messages.error(request, f"Connection error: {str(e)}")
+        if resp_data.get("status"):
+            order.reference = payload["reference"]
+            order.save(update_fields=['reference'])
+            return redirect(resp_data["data"]["authorization_url"])
 
-    # 4. GET Request: Show the confirmation page first
-    # This is where the user sees their name/email before paying
+        messages.error(request, resp_data.get("message", "Payment initialization failed."))
+
     return render(request, 'marketplace/payment.html', {
         'order': order,
         'gateway': gateway,
     })
 
+
 def payment_callback(request):
-    """
-    Paystack Callback Handler:
-    - Paystack redirects user here after payment attempt
-    - We receive reference in GET params
-    - We MUST verify the transaction with Paystack API
-    - Update order only if verification passes
-    """
-    # 1. Get the reference from Paystack callback
     reference = request.GET.get('reference') or request.GET.get('trxref')
-
     if not reference:
-        messages.error(request, "Invalid payment response. No reference found.")
-        return redirect('marketplace_home')  # or your fallback page
+        messages.error(request, "Invalid payment reference.")
+        return redirect('marketplace:product_list')
 
-    # 2. We need to find the order using the reference
-    #    (assuming you saved transaction_ref during payment initiation)
-    order = Order.objects.filter(reference=reference).first()
+    gateway = PaymentGateway.objects.filter(is_active=True).first()
+    if not gateway:
+        messages.error(request, "Payment gateway not configured.")
+        return redirect('marketplace:product_list')
 
-    if not order:
-        messages.error(request, "Order not found for this payment reference.")
-        return redirect('marketplace_home')
-
-    # 3. Get the gateway used for this order
-    #    (We assume gateway_name was saved or we can get it from session/product)
-    gateway_name = request.session.get('selected_gateway') or order.gateway_name  # adjust based on your model
-
-    if not gateway_name:
-        # Fallback: if you don't store it, get first active or raise error
-        gateway = PaymentGateway.objects.filter(is_active=True).first()
-        if not gateway:
-            messages.error(request, "Payment gateway configuration missing.")
-            return redirect('marketplace:checkout', slug=order.product.slug)
-    else:
-        gateway = get_object_or_404(PaymentGateway, name=gateway_name, is_active=True)
-
-    # 4. Verify transaction with Paystack
     headers = {
         "Authorization": f"Bearer {gateway.secret_key}",
-        "Cache-Control": "no-cache",
     }
 
     verify_url = f"https://api.paystack.co/transaction/verify/{reference}"
+    response = requests.get(verify_url, headers=headers, timeout=20)
 
-    try:
-        response = requests.get(verify_url, headers=headers, timeout=15)
-        resp_data = response.json()
+    if response.status_code != 200:
+        messages.error(request, "Unable to verify payment.")
+        return redirect('marketplace:product_list')
 
-        if resp_data.get("status") is True:
-            transaction = resp_data["data"]
+    resp_data = response.json()
+    if not resp_data.get("status"):
+        messages.error(request, "Verification failed.")
+        return redirect('marketplace:product_list')
 
-            # Important checks
-            if (transaction["status"] == "success" and
-                int(transaction["amount"]) == int(order.amount * 100) and  # in kobo
-                transaction["currency"] == "NGN"):  # add more checks if needed
+    data = resp_data["data"]
+    order = get_object_or_404(Order, id=data["metadata"]["order_id"])
 
-                # Payment is valid → update order
-                order.status = 'paid'
-                order.transaction_status = 'success'  # optional extra field
-                order.save(update_fields=['status', 'transaction_status'])
+    if data["status"] == "success" and int(data["amount"]) == int(order.amount * 100):
+        order.payment_status = 'paid'
+        order.save(update_fields=['payment_status'])
+        request.session.pop('order_id', None)
+        return redirect('marketplace:payment_success', order_id=order.id)
 
-                # Clear session
-                for key in ['order_id', 'selected_gateway']:
-                    request.session.pop(key, None)
-
-                messages.success(request, "Payment verified successfully! Thank you.")
-                return redirect('marketplace:payment_success', order_id=order.id)
-
-            else:
-                # Suspicious - amount/currency mismatch
-                order.status = 'failed'  # or 'suspicious'
-                order.save(update_fields=['status'])
-                messages.error(request, "Payment verification failed (mismatch).")
-
-        else:
-            messages.error(request, f"Payment verification failed: {resp_data.get('message', 'Unknown error')}")
-
-    except requests.exceptions.RequestException as e:
-        messages.error(request, f"Could not verify payment: Network error - {str(e)}")
-    except Exception as e:
-        messages.error(request, f"Verification error: {str(e)}")
-
-    # Default fallback - payment failed/cancelled/not verified
-    order.status = 'failed'
-    order.save(update_fields=['status'])
-
+    order.payment_status = 'failed'
+    order.save(update_fields=['payment_status'])
+    messages.error(request, "Payment failed.")
     return redirect('marketplace:checkout', slug=order.product.slug)
 
 
 def payment_success(request, order_id):
-    order = get_object_or_404(Order, id=order_id, status='paid')
+    order = get_object_or_404(Order, id=order_id, payment_status='paid')
+    token, _ = DownloadToken.objects.get_or_create(order=order)
 
-    # Create download token if not exists
-    token, created = DownloadToken.objects.get_or_create(order=order)
-
-    # Generate download URL
     download_url = request.build_absolute_uri(
         reverse('marketplace:download_product', kwargs={'token': str(token.token)})
     )
 
-    # SEO & Site Promotion Links
-    site_url = "https://yourwebsite.com" # Replace with your actual SEO site link
-    
-    # Send email with download link
     try:
-        subject = f"Your Purchase: {order.product.title}"
-        body = (
-            f"Dear {order.buyer_name},\n\n"
-            f"Thank you for your purchase! Your digital product is ready.\n\n"
-            f"Download here: {download_url}\n\n"
-            f"This link expires on {token.expiration.strftime('%Y-%m-%d %H:%M')} UTC.\n"
-            f"You can download up to {token.max_uses} times.\n\n"
-            f"For more high-quality products, visit our main site: {site_url}\n\n"
-            f"Best regards,\nYour Marketplace Team"
-        )
-        
-        email = EmailMessage(
-            subject=subject,
-            body=body,
+        EmailMessage(
+            subject=f"Your Purchase: {order.product.title}",
+            body=f"Download your product here:\n\n{download_url}",
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[order.buyer_email],
-        )
-        email.content_subtype = 'html'
-        email.send(fail_silently=False)
-        messages.success(request, "Email sent with download instructions!")
-        
-    except Exception as e:
-        messages.error(request, f"Email sending failed: {str(e)}. Please contact support.")
+        ).send()
 
-    return render(request, 'marketplace/success.html', {
-        'order': order,
-        'seo_tags': 'digital download, marketplace, secure payment, ' + order.product.title # SEO Tags
-    })
+    except Exception as e:
+        messages.error(request, f"Email failed: {e}")
+
+    return render(request, 'marketplace/success.html', {"order": order})
 
 
 def download_product(request, token):
@@ -318,19 +197,23 @@ def download_product(request, token):
     if not download_token.is_valid():
         raise Http404("Invalid or expired download link.")
 
-    # Increment use count
     download_token.increment_use()
-
-    # Serve the file (assuming Product has a FileField named 'file')
     file_path = download_token.order.product.file.path
+    file_name = os.path.basename(file_path)
 
-    # Simple streaming response (for small files)
-    response = HttpResponse(content_type='application/octet-stream')
-    response['Content-Disposition'] = f'attachment; filename="{download_token.order.product.file.name}"'
+    # ===== OPTION 2: Apache X-Sendfile =====
+    response = HttpResponse()
+    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+    response['X-Sendfile'] = file_path
+
+    # ===== FALLBACK: Django streaming if X-Sendfile is not enabled =====
+    if not settings.DEBUG:
+        return response
+
     with open(file_path, 'rb') as f:
-        response.write(f.read())
-
-    # OR for large files: Use sendfile with Nginx/Apache
-    # return sendfile(request, file_path, attachment=True)
-
-    return response
+        stream_response = HttpResponse(
+            f.read(),
+            content_type='application/octet-stream'
+        )
+        stream_response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+        return stream_response

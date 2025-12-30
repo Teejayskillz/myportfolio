@@ -1,17 +1,26 @@
-{% extends 'base.html' %}  <!-- Assuming you have a base template -->
-
-{% block title %}Payment Success{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="alert alert-success text-center">
-        <h2>Payment Successful!</h2>
-        <p>Thank you for your purchase, {{ order.buyer_name }}!</p>
-        <p>Your order for <strong>{{ order.product.title }}</strong> has been processed.</p>
-        <p>We've sent a secure download link to your email: <strong>{{ order.buyer_email }}</strong>.</p>
-        <p>Please check your inbox (and spam folder). The link expires in 7 days.</p>
-        <p>If you don't receive it, contact support at support@yourmarketplace.com.</p>
-        <a href="{% url 'marketplace:product_list' %}" class="btn btn-primary">Back to Marketplace</a>
+<div class="container text-center py-5">
+    <div class="netflix-card d-inline-block p-5" style="border-top: 4px solid #25D366;">
+        <i class="fas fa-check-circle mb-3" style="font-size: 4rem; color: #25D366;"></i>
+        <h1 class="glitch" data-text="PAYMENT SUCCESSFUL">PAYMENT SUCCESSFUL</h1>
+        <p class="text-light-gray">Thank you for choosing <strong>LagosWebDev</strong>.</p>
+        
+        <div class="mt-4 p-3" style="background: var(--netflix-medium-gray); border-radius: 8px;">
+            <p>Your order for <strong>{{ order.product.title }}</strong> is confirmed.</p>
+            <p class="mb-0">Check your email ({{ order.email }}) for the download link.</p>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'projects:project_list' %}" class="btn-netflix-primary">Back to Marketplace</a>
+        </div>
+        
+        <hr style="border-color: var(--netflix-medium-gray);">
+        <p style="font-size: 0.8rem;">
+            Need a custom solution? Hire the best 
+            <a href="https://www.lagoswebdev.com" class="text-danger">Website Designer in Nigeria</a> today.
+        </p>
     </div>
 </div>
 {% endblock %}

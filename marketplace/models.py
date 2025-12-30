@@ -62,6 +62,8 @@ class Product(models.Model):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+
+
 class Order(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Pending'),
@@ -69,14 +71,27 @@ class Order(models.Model):
         ('failed', 'Failed'),
     )
 
+    GATEWAY_CHOICES = (
+        ('paystack', 'Paystack'),
+        ('flutterwave', 'Flutterwave'),
+        ('manual', 'Manual'),
+    )
+
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
         related_name='orders'
     )
+
     buyer_name = models.CharField(max_length=255)
     buyer_email = models.EmailField()
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    gateway_name = models.CharField(
+        max_length=20,
+        choices=GATEWAY_CHOICES,
+        default='paystack'
+    )
 
     reference = models.CharField(
         max_length=100,
@@ -98,7 +113,7 @@ class Order(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.product.title} - {self.email}"
+        return f"{self.product.title} - {self.buyer_email}"
 
 
 
