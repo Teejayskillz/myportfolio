@@ -9,8 +9,8 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.http import HttpResponse, Http404
-from django.core.serving import sendfile  # For efficient large file serving (optional)
-import reverse
+from django.urls import reverse
+
 
 def product_list(request):
     products = Product.objects.filter(is_active=True)
@@ -76,12 +76,10 @@ def checkout_view(request, slug):
             order = Order.objects.create(
                 product=product,
                 buyer_name=form.cleaned_data['buyer_name'],
-                buyer_email=form.cleaned_data['buyer_email'],
-                status='pending',
-                # Important: store price at time of purchase (protect against price changes)
-                amount=product.price,  # ← make sure Product has price field!
-            )
-
+                buyer_email=form.cleaned_data['buyer_email'],   
+                payment_status='pending',                 
+                amount=product.price,
+            )            
             # Store critical data in session
             request.session['order_id'] = order.id
             request.session['selected_gateway'] = selected_gateway_name
@@ -111,92 +109,72 @@ def checkout_view(request, slug):
 
 def payment_page(request):
     """
-    Initiates a Paystack payment:
-    1. Retrieves pending order from session
-    2. Gets selected gateway from session
-    3. Calls Paystack Initialize Transaction API
-    4. Redirects user to Paystack checkout page on success
-    5. Shows error page if anything fails
+    1. Shows a summary page with user details.
+    2. On 'Proceed' (POST), initiates Paystack transaction.
     """
     # 1. Get order from session
     order_id = request.session.get('order_id')
     if not order_id:
         messages.error(request, "No active order found. Please start checkout again.")
-        return redirect('marketplace_home')  # or your home/product list
+        return redirect('marketplace:product_list')
 
-    order = get_object_or_404(Order, id=order_id, status='pending')
+    # Note: Using your model's field 'payment_status'
+    order = get_object_or_404(Order, id=order_id, payment_status='pending')
 
-    # 2. Get selected gateway from session (set in checkout_view)
+    # 2. Get selected gateway
     gateway_name = request.session.get('selected_gateway')
     if not gateway_name:
-        messages.error(request, "No payment method was selected. Please try again.")
+        messages.error(request, "No payment method was selected.")
         return redirect('marketplace:checkout', slug=order.product.slug)
 
     gateway = get_object_or_404(PaymentGateway, name=gateway_name, is_active=True)
 
-    # 3. Prepare Paystack payload
-    # IMPORTANT REQUIREMENTS:
-    # - amount must be in **kobo** (NGN * 100) → e.g. ₦5000 = 500000
-    # - Make sure Order has 'amount' field (or use product.price)
-    # - Reference should be unique (we use order.id + timestamp)
-    payload = {
-        "email": order.buyer_email,
-        "amount": int(order.amount * 100),  # Convert to kobo (required!)
-        "reference": f"order-{order.id}-{int(time.time())}",  # unique ref
-        "currency": "NGN",  # change if using other supported currency
-        "callback_url": request.build_absolute_uri(
-            reverse('marketplace:payment_callback')
-        ),
-        "metadata": {
-            "order_id": str(order.id),
-            "product": order.product.title,
-            # You can add more custom data here if needed
-        },
-        # Optional but recommended fields:
-        # "channels": ["card", "bank", "ussd", "qr", "mobile_money"],
-        # "bearer": "subaccount"  # or "account" depending on your setup
-    }
+    # 3. Handle POST request (When user clicks "Proceed to Payment")
+    if request.method == 'POST':
+        payload = {
+            "email": order.email,  # Corrected from buyer_email to match your model
+            "amount": int(order.amount * 100),
+            "reference": f"order-{order.id}-{int(time.time())}",
+            "callback_url": request.build_absolute_uri(reverse('marketplace:payment_callback')),
+            "metadata": {
+                "order_id": str(order.id),
+                "product": order.product.title,
+            },
+        }
 
-    headers = {
-        "Authorization": f"Bearer {gateway.secret_key}",
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-    }
+        headers = {
+            "Authorization": f"Bearer {gateway.secret_key}",
+            "Content-Type": "application/json",
+        }
 
-    # 4. Send request to Paystack
-    try:
-        response = requests.post(
-            "https://api.paystack.co/transaction/initialize",
-            json=payload,
-            headers=headers,
-            timeout=30
-        )
+        try:
+            response = requests.post(
+                "https://api.paystack.co/transaction/initialize",
+                json=payload,
+                headers=headers,
+                timeout=30
+            )
+            resp_data = response.json()
 
-        resp_data = response.json()
+            if resp_data.get("status") is True:
+                payment_url = resp_data["data"]["authorization_url"]
+                
+                # Update order with the specific Paystack reference
+                order.reference = payload["reference"] # Corrected field name
+                order.save(update_fields=['reference'])
 
-        if resp_data.get("status") is True:  # Paystack uses True for success
-            payment_url = resp_data["data"]["authorization_url"]
-            
-            # Optional: store reference for easier verification later
-            order.transaction_ref = payload["reference"]
-            order.save(update_fields=['transaction_ref'])
+                return redirect(payment_url)
+            else:
+                messages.error(request, f"Paystack error: {resp_data.get('message')}")
 
-            return redirect(payment_url)
+        except Exception as e:
+            messages.error(request, f"Connection error: {str(e)}")
 
-        else:
-            error_message = resp_data.get('message', 'Payment initiation failed')
-            messages.error(request, f"Paystack error: {error_message}")
-
-    except requests.exceptions.RequestException as e:
-        messages.error(request, f"Could not connect to Paystack: {str(e)}")
-    except Exception as e:
-        messages.error(request, f"Unexpected error: {str(e)}")
-
-    # 5. Fallback: show error in template if initiation fails
+    # 4. GET Request: Show the confirmation page first
+    # This is where the user sees their name/email before paying
     return render(request, 'marketplace/payment.html', {
         'order': order,
         'gateway': gateway,
-        'error_message': "We couldn't start the payment process. Please try again or choose another method."
     })
 
 def payment_callback(request):
@@ -216,7 +194,7 @@ def payment_callback(request):
 
     # 2. We need to find the order using the reference
     #    (assuming you saved transaction_ref during payment initiation)
-    order = Order.objects.filter(transaction_ref=reference).first()
+    order = Order.objects.filter(reference=reference).first()
 
     if not order:
         messages.error(request, "Order not found for this payment reference.")

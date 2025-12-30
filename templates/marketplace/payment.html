@@ -1,25 +1,86 @@
 {% extends 'base.html' %}
-{% block title %}Payment - {{ order.product.name }}{% endblock %}
 
-<section class="checkout-section">
-    <div class="checkout-card">
-        <h2>Pay with {{ gateway.name }}</h2>
-        <p>Order: {{ order.product.name }} | ₦{{ order.product.price|floatformat:2 }}</p>
-        <p>Buyer: {{ order.buyer_name }} | {{ order.buyer_email }}</p>
+{% block title %}Confirm Order - LagosWebDev Marketplace{% endblock %}
 
-        <button id="payButton" class="btn btn-netflix-primary w-100">
-            Proceed to Payment
-        </button>
+{% block content %}
+<section class="payment-confirmation-wrapper" style="padding: 100px 0; min-height: 80vh; background: radial-gradient(circle, rgba(40,40,40,1) 0%, rgba(20,20,20,1) 100%);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                
+                <div class="netflix-card p-5" style="border-top: 4px solid var(--netflix-red);">
+                    <h2 class="text-center mb-4" style="letter-spacing: 1px;">Confirm Your Details</h2>
+                    
+                    <div class="order-details-summary mb-4" style="background: var(--netflix-medium-gray); padding: 20px; border-radius: 4px;">
+                        <h5 style="color: var(--netflix-red); font-size: 0.9rem; text-transform: uppercase;">Product Detail</h5>
+                        <h3 style="font-size: 1.4rem;">{{ order.product.title }}</h3>
+                        <p class="mb-0" style="font-size: 1.5rem; font-weight: 700;">₦{{ order.amount|floatformat:2 }}</p>
+                    </div>
 
-        <p class="mt-3 text-warning">
-            If payment fails, you will be redirected to: <a href="{{ gateway.fallback_url }}">{{ gateway.fallback_url }}</a>
-        </p>
+                    <div class="user-info-section mb-4">
+                        <div class="mb-3">
+                            <label style="color: var(--netflix-light-gray); font-size: 0.8rem; text-transform: uppercase;">Buyer Name</label>
+                            <p style="font-size: 1.1rem; border-bottom: 1px solid var(--netflix-medium-gray); padding-bottom: 5px;">
+                                {{ order.buyer_name|default:"LagosWebDev Customer" }}
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: var(--netflix-light-gray); font-size: 0.8rem; text-transform: uppercase;">Email Address</label>
+                            <p style="font-size: 1.1rem; border-bottom: 1px solid var(--netflix-medium-gray); padding-bottom: 5px;">
+                                {{ order.buyer_email }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-netflix-primary w-100" id="submit-button">
+    <i class="fas fa-lock me-2"></i> Proceed to Pay with {{ gateway.name|title }}
+</button>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'projects:project_list' %}" style="color: var(--netflix-light-gray); text-decoration: none; font-size: 0.9rem;">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel and Return
+                        </a>
+                    </div>
+                </div>
+
+                <p class="text-center mt-4" style="color: var(--netflix-medium-gray); font-size: 0.8rem;">
+                    Secure transaction handled by <strong>LagosWebDev</strong> - 
+                    <a href="https://www.lagoswebdev.com" style="color: var(--netflix-red-hover);">Website Designer Nigeria</a>
+                </p>
+
+            </div>
+        </div>
     </div>
 </section>
 
+
 <script>
-document.getElementById('payButton').addEventListener('click', function() {
-    // Example: Redirect to actual gateway checkout
-    alert("Here you will integrate the gateway SDK using key: {{ gateway.public_key }}");
-});
+    // Ensure the form actually submits before the button disables
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = document.getElementById('submit-button');
+        btn.innerHTML = '<span class="netflix-loading me-2"></span>Connecting to Paystack...';
+        btn.style.opacity = "0.7";
+        btn.style.pointerEvents = "none";
+    });
 </script>
+
+<style>
+    /* Ensure the card stands out in the dark theme */
+    .netflix-card {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+    .user-info-section p {
+        color: var(--netflix-white);
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
