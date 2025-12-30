@@ -134,3 +134,30 @@ class DownloadToken(models.Model):
 
     def __str__(self):
         return f"Download for {self.order.email}"
+
+class DownloadToken(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='download_token')
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    expiration = models.DateTimeField()
+    max_uses = models.PositiveIntegerField(default=5)  # Allow up to 5 downloads
+    use_count = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.expiration:
+            self.expiration = timezone.now() + timedelta(days=7)  # Expires in 7 days
+        super().save(*args, **kwargs)
+
+    def is_valid(self):
+        if self.use_count >= self.max_uses:
+            return False
+        if timezone.now() > self.expiration:
+            return False
+        return True
+
+    def increment_use(self):
+        self.use_count += 1
+        self.save(update_fields=['use_count'])
+
+    def __str__(self):
+        return f"Token for Order {self.order.id}"

@@ -2,11 +2,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import CheckoutForm
 from django.contrib import messages
-from .models import Product, Order, PaymentGateway
+from .models import Product, Order, PaymentGateway,DownloadToken
 import requests
 import time
-
-
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.http import HttpResponse, Http404
+from django.core.serving import sendfile  # For efficient large file serving (optional)
+import reverse
 
 def product_list(request):
     products = Product.objects.filter(is_active=True)
@@ -283,6 +287,72 @@ def payment_callback(request):
 
     return redirect('marketplace:checkout', slug=order.product.slug)
 
+
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id, status='paid')
-    return render(request, 'marketplace/success.html', {'order': order})
+
+    # Create download token if not exists
+    token, created = DownloadToken.objects.get_or_create(order=order)
+
+    # Generate download URL
+    download_url = request.build_absolute_uri(
+        reverse('marketplace:download_product', kwargs={'token': str(token.token)})
+    )
+
+    # SEO & Site Promotion Links
+    site_url = "https://yourwebsite.com" # Replace with your actual SEO site link
+    
+    # Send email with download link
+    try:
+        subject = f"Your Purchase: {order.product.title}"
+        body = (
+            f"Dear {order.buyer_name},\n\n"
+            f"Thank you for your purchase! Your digital product is ready.\n\n"
+            f"Download here: {download_url}\n\n"
+            f"This link expires on {token.expiration.strftime('%Y-%m-%d %H:%M')} UTC.\n"
+            f"You can download up to {token.max_uses} times.\n\n"
+            f"For more high-quality products, visit our main site: {site_url}\n\n"
+            f"Best regards,\nYour Marketplace Team"
+        )
+        
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[order.buyer_email],
+        )
+        email.content_subtype = 'html'
+        email.send(fail_silently=False)
+        messages.success(request, "Email sent with download instructions!")
+        
+    except Exception as e:
+        messages.error(request, f"Email sending failed: {str(e)}. Please contact support.")
+
+    return render(request, 'marketplace/success.html', {
+        'order': order,
+        'seo_tags': 'digital download, marketplace, secure payment, ' + order.product.title # SEO Tags
+    })
+
+
+def download_product(request, token):
+    download_token = get_object_or_404(DownloadToken, token=token)
+
+    if not download_token.is_valid():
+        raise Http404("Invalid or expired download link.")
+
+    # Increment use count
+    download_token.increment_use()
+
+    # Serve the file (assuming Product has a FileField named 'file')
+    file_path = download_token.order.product.file.path
+
+    # Simple streaming response (for small files)
+    response = HttpResponse(content_type='application/octet-stream')
+    response['Content-Disposition'] = f'attachment; filename="{download_token.order.product.file.name}"'
+    with open(file_path, 'rb') as f:
+        response.write(f.read())
+
+    # OR for large files: Use sendfile with Nginx/Apache
+    # return sendfile(request, file_path, attachment=True)
+
+    return response

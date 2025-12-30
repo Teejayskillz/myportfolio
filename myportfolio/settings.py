@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'ckeditor',
     'ckeditor_uploader',
-    'pages',        # We will create this app
-    'projects',     # We will create this app
+    'pages',       
+    'projects',     
     'contact', 
     'pricing'  ,  
     'blog',   
@@ -160,36 +160,13 @@ STATICFILES_DIRS = [                  # Where Django will look for your app's st
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Email Configuration (for contact form)
-# Production Email Configuration for Hosting Provider SMTP
-# settings.py
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-relay.brevo.com'  # Or smtp.sendinblue.com if using an older domain
-EMAIL_PORT = 587                    # Recommended for TLS with Brevo
-EMAIL_USE_TLS = True                # Use TLS for port 587
-EMAIL_USE_SSL = False               # Disable SSL if using TLS on 587
-
-# Ensure this is the email address registered with Brevo as your sender
-EMAIL_HOST_USER = 'contact@lagoswebdev.com' # Or whatever email you set up in Brevo
-
-# This environment variable MUST hold your Brevo SMTP API Key
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-# This should also be an email address registered with Brevo
-DEFAULT_FROM_EMAIL = 'contact@lagoswebdev.com'
-
-# It's also good practice to set SERVER_EMAIL for Django's internal error reporting
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-# For Django's internal error reporting (optional, but good practice)
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
-ADMINS = [('Tijani Apatira', 'tijaniapatira@gmail.com')] # Replace with your real Gmail
-
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-7#1^7b*)c0m796z4mul^!8%h6ay7s)a0sfipkvz3aop8wcv0e)')
-
-BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
-
-
+EMAIL_HOST = 'smtp.lagoswebdev.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your@email.com'
+EMAIL_HOST_PASSWORD = 'yourpassword'
+DEFAULT_FROM_EMAIL = 'noreply@lagoswebdev.com'
 
 LOGGING = {
     'version': 1,
