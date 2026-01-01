@@ -101,6 +101,7 @@ def payment_page(request):
             "Content-Type": "application/json",
         }
 
+        # ✅ FIXED: Removed trailing spaces in URL
         response = requests.post(
             "https://api.paystack.co/transaction/initialize",
             json=payload,
@@ -142,6 +143,7 @@ def payment_callback(request):
         "Authorization": f"Bearer {gateway.secret_key}",
     }
 
+    # ✅ FIXED: Removed extra space before {reference}
     verify_url = f"https://api.paystack.co/transaction/verify/{reference}"
     response = requests.get(verify_url, headers=headers, timeout=20)
 
@@ -184,7 +186,6 @@ def payment_success(request, order_id):
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[order.buyer_email],
         ).send()
-
     except Exception as e:
         messages.error(request, f"Email failed: {e}")
 
