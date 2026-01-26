@@ -22,7 +22,6 @@ def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
     return render(request, "marketplace/product_detail.html", {"product": product})
 
-
 def checkout_view(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
     active_gateways = PaymentGateway.objects.filter(is_active=True)
@@ -61,7 +60,7 @@ def checkout_view(request, slug):
 
             request.session['order_id'] = order.id
             messages.success(request, f"Thank you {order.buyer_name}! Proceeding to payment...")
-            return redirect('marketplace:payment_page')
+            return redirect('marketplace:payment_page', order_id=order.id)  # <-- FIXED
 
         messages.error(request, "Please correct the errors below.")
 
@@ -73,6 +72,7 @@ def checkout_view(request, slug):
         'form': form,
         'active_gateways': active_gateways,
     })
+
 
 def payment_page(request, order_id):
     order = get_object_or_404(Order, id=order_id, payment_status='pending')
