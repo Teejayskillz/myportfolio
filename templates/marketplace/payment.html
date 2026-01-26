@@ -42,7 +42,7 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{% url 'marketplace:payment_page' %}">
+                    <form method="POST" action="{% url 'marketplace:payment_page' order.id %}">
 
                         {% csrf_token %}
                         <button type="submit" class="btn-netflix-primary w-100" id="submit-button">
