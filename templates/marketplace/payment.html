@@ -10,93 +10,55 @@
             <div class="col-md-6 col-lg-5">
 
                 <div class="netflix-card p-5" style="border-top: 4px solid var(--netflix-red);">
-                    <h2 class="text-center mb-4" style="letter-spacing: 1px;">Confirm Your Details</h2>
+                    <h2 class="text-center mb-4">Confirm Your Details</h2>
 
                     <div class="order-details-summary mb-4"
                         style="background: var(--netflix-medium-gray); padding: 20px; border-radius: 4px;">
-                        <h5 style="color: var(--netflix-red); font-size: 0.9rem; text-transform: uppercase;">Product
-                            Detail</h5>
-                        <h3 style="font-size: 1.4rem;">{{ order.product.title }}</h3>
-                        <p class="mb-0" style="font-size: 1.5rem; font-weight: 700;">₦{{ order.amount|floatformat:2 }}
+                        <h5 style="color: var(--netflix-red); font-size: 0.9rem;">Product Detail</h5>
+                        <h3>{{ order.product.title }}</h3>
+                        <p class="mb-0" style="font-size: 1.5rem; font-weight: 700;">
+                            ₦{{ order.amount|floatformat:2 }}
                         </p>
                     </div>
 
                     <div class="user-info-section mb-4">
                         <div class="mb-3">
-                            <label
-                                style="color: var(--netflix-light-gray); font-size: 0.8rem; text-transform: uppercase;">Buyer
-                                Name</label>
-                            <p
-                                style="font-size: 1.1rem; border-bottom: 1px solid var(--netflix-medium-gray); padding-bottom: 5px;">
-                                {{ order.buyer_name|default:"LagosWebDev Customer" }}
-                            </p>
+                            <label>Buyer Name</label>
+                            <p>{{ order.buyer_name|default:"LagosWebDev Customer" }}</p>
                         </div>
                         <div class="mb-3">
-                            <label
-                                style="color: var(--netflix-light-gray); font-size: 0.8rem; text-transform: uppercase;">Email
-                                Address</label>
-                            <p
-                                style="font-size: 1.1rem; border-bottom: 1px solid var(--netflix-medium-gray); padding-bottom: 5px;">
-                                {{ order.buyer_email }}
-                            </p>
+                            <label>Email Address</label>
+                            <p>{{ order.buyer_email }}</p>
                         </div>
                     </div>
 
-                    <form method="POST" action="">
-
+                    <!-- ✅ FIXED ACTION -->
+                    <form method="POST" action="{% url 'marketplace:payment_page' order.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn-netflix-primary w-100" id="submit-button">
-                            <i class="fas fa-lock me-2"></i> Proceed to Pay with {{ gateway.name|title }}
+                            <i class="fas fa-lock me-2"></i>
+                            Proceed to Pay with {{ gateway.name|title }}
                         </button>
-
                     </form>
-
-                    <div class="text-center mt-4">
-                        <a href="{% url 'projects:project_list' %}"
-                            style="color: var(--netflix-light-gray); text-decoration: none; font-size: 0.9rem;">
-                            <i class="fas fa-arrow-left me-1"></i> Cancel and Return
-                        </a>
-                    </div>
 
                     {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-danger">{{ message }}</div>
+                    <div class="alert alert-danger mt-3">{{ message }}</div>
                     {% endfor %}
                     {% endif %}
-
                 </div>
-
-                <p class="text-center mt-4" style="color: var(--netflix-medium-gray); font-size: 0.8rem;">
-                    Secure transaction handled by <strong>LagosWebDev</strong> -
-                    <a href="https://www.lagoswebdev.com" style="color: var(--netflix-red-hover);">Website Designer
-                        Nigeria</a>
-                </p>
 
             </div>
         </div>
     </div>
 </section>
 
-
 <script>
-    // Ensure the form actually submits before the button disables
     document.querySelector('form').addEventListener('submit', function () {
         const btn = document.getElementById('submit-button');
-        btn.innerHTML = '<span class="netflix-loading me-2"></span>Connecting to Paystack...';
+        btn.innerHTML = 'Connecting to Paystack...';
         btn.style.opacity = "0.7";
         btn.style.pointerEvents = "none";
     });
 </script>
-
-<style>
-    /* Ensure the card stands out in the dark theme */
-    .netflix-card {
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-    }
-
-    .user-info-section p {
-        color: var(--netflix-white);
-        font-weight: 500;
-    }
-</style>
 {% endblock %}
