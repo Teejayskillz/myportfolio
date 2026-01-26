@@ -21,7 +21,7 @@
         max-width: 600px;
         width: 100%;
         border: 1px solid var(--netflix-medium-gray);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     }
 
     .checkout-card h2 {
@@ -49,7 +49,7 @@
 
     .form-control:focus {
         border-color: var(--netflix-red);
-        box-shadow: 0 0 0 0.2rem rgba(229,9,20,0.25);
+        box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.25);
     }
 
     .checkout-summary {
@@ -84,46 +84,48 @@
             {% csrf_token %}
             <div class="mb-3">
                 <label for="buyerName" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="buyerName" name="buyer_name" placeholder="Your full name" required>
+                <input type="text" class="form-control" id="buyerName" name="buyer_name" placeholder="Your full name"
+                    required>
             </div>
 
             <div class="mb-3">
                 <label for="buyerEmail" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="buyerEmail" name="buyer_email" placeholder="Your email" required>
+                <input type="email" class="form-control" id="buyerEmail" name="buyer_email" placeholder="Your email"
+                    required>
             </div>
 
             <!-- Keep everything above as-is -->
 
-<div class="checkout-summary">
-    <h4>Order Summary</h4>
-    <p>Product: {{ product.name }}</p>
-    <p>Price: ₦{{ product.price|floatformat:2 }}</p>
-    {% if product.description %}
-    <p>Description: {{ product.description|truncatewords:20 }}</p>
-    {% endif %}
-</div>
+            <div class="checkout-summary">
+                <h4>Order Summary</h4>
+                <p>Product: {{ product.name }}</p>
+                <p>Price: ₦{{ product.price|floatformat:2 }}</p>
+                {% if product.description %}
+                <p>Description: {{ product.description|truncatewords:20 }}</p>
+                {% endif %}
+            </div>
 
-<!-- Payment Gateway Options -->
-{% if active_gateways %}
-<div class="mt-4">
-    <h4>Choose Payment Method</h4>
-    {% for gateway in active_gateways %}
-    <form method="POST" action="{% url 'marketplace:payment_page' %}" style="margin-top:10px;">
-        {% csrf_token %}
-        <input type="hidden" name="gateway" value="{{ gateway.name }}">
-        <button type="submit" class="btn btn-outline-light w-100">
-            Pay with {{ gateway.name }}
-        </button>
-    </form>
-    {% endfor %}
-</div>
-{% else %}
-<p class="text-warning mt-3">No payment gateways are currently active. Please try again later.</p>
-{% endif %}
+            <!-- Payment Gateway Options -->
+            {% if active_gateways %}
+            <div class="mt-4">
+                <h4>Choose Payment Method</h4>
+                {% for gateway in active_gateways %}
+                <form method="POST" action="{% url 'marketplace:payment_page' order.id %}" style="margin-top:10px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="gateway" value="{{ gateway.name }}">
+                    <button type="submit" class="btn btn-outline-light w-100">
+                        Pay with {{ gateway.name }}
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-warning mt-3">No payment gateways are currently active. Please try again later.</p>
+            {% endif %}
 
-<button type="submit" class="btn btn-netflix-primary btn-checkout mt-3">
-    Proceed to Payment
-</button>
+            <button type="submit" class="btn btn-netflix-primary btn-checkout mt-3">
+                Proceed to Payment
+            </button>
 
 
-{% endblock %}
+            {% endblock %}
