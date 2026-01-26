@@ -73,6 +73,16 @@
         margin-top: 1.5rem;
         width: 100%;
     }
+
+    .gateway-option {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .gateway-option input[type="radio"] {
+        margin-right: 6px;
+    }
 </style>
 
 <section class="checkout-section">
@@ -80,10 +90,9 @@
         <h2>Checkout</h2>
         <p>You are about to purchase <strong>{{ product.name }}</strong>.</p>
 
-        <!-- SINGLE FORM for entire checkout -->
-        <form method="POST" id="checkoutForm">
+        <!-- SINGLE FORM -->
+        <form method="POST">
             {% csrf_token %}
-
             <div class="mb-3">
                 <label for="buyerName" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="buyerName" name="buyer_name" placeholder="Your full name"
@@ -105,14 +114,14 @@
                 {% endif %}
             </div>
 
-            <!-- Payment Gateway Options (radio buttons instead of nested forms) -->
+            <!-- Payment Gateway Options (single form, radio buttons) -->
             {% if active_gateways %}
             <div class="mt-4">
                 <h4>Choose Payment Method</h4>
                 {% for gateway in active_gateways %}
-                <div style="margin-top:10px;">
+                <div class="gateway-option">
                     <input type="radio" name="gateway" value="{{ gateway.name }}" required>
-                    <label style="margin-left:6px;">Pay with {{ gateway.name }}</label>
+                    <label>Pay with {{ gateway.name }}</label>
                 </div>
                 {% endfor %}
             </div>
