@@ -9,6 +9,8 @@ from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.urls import reverse
 import os
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 def product_list(request):
