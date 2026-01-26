@@ -110,7 +110,7 @@
             <div class="mt-4">
                 <h4>Choose Payment Method</h4>
                 {% for gateway in active_gateways %}
-                <form method="POST" action="{% url 'marketplace:payment_page' order.id %}" style="margin-top:10px;">
+                <form method="POST" action="{% url 'marketplace:payment_page'%}" style="margin-top:10px;">
                     {% csrf_token %}
                     <input type="hidden" name="gateway" value="{{ gateway.name }}">
                     <button type="submit" class="btn btn-outline-light w-100">
