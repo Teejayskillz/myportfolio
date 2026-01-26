@@ -134,7 +134,12 @@ def payment_callback(request):
         messages.error(request, "Invalid payment reference.")
         return redirect('marketplace:product_list')
 
-    gateway = PaymentGateway.objects.filter(is_active=True).first()
+    # 🔐 Verify payment with Paystack FIRST
+    gateway = PaymentGateway.objects.filter(
+        name='paystack',
+        is_active=True
+    ).first()
+
     if not gateway:
         messages.error(request, "Payment gateway not configured.")
         return redirect('marketplace:product_list')
@@ -143,7 +148,6 @@ def payment_callback(request):
         "Authorization": f"Bearer {gateway.secret_key}",
     }
 
-    # ✅ FIXED: Removed extra space before {reference}
     verify_url = f"https://api.paystack.co/transaction/verify/{reference}"
     response = requests.get(verify_url, headers=headers, timeout=20)
 
@@ -157,11 +161,29 @@ def payment_callback(request):
         return redirect('marketplace:product_list')
 
     data = resp_data["data"]
-    order = get_object_or_404(Order, id=data["metadata"]["order_id"])
+    metadata = data.get("metadata", {})
 
-    if data["status"] == "success" and int(data["amount"]) == int(order.amount * 100):
-        order.payment_status = 'paid'
-        order.save(update_fields=['payment_status'])
+    order_id = metadata.get("order_id")
+    if not order_id:
+        messages.error(request, "Order metadata missing.")
+        return redirect('marketplace:product_list')
+
+    order = get_object_or_404(Order, id=order_id)
+
+    # 🔐 CRITICAL: Reference must match
+    if order.reference != reference:
+        messages.error(request, "Payment reference mismatch.")
+        return redirect('marketplace:product_list')
+
+    # ✅ Final validation
+    if (
+        data["status"] == "success"
+        and int(data["amount"]) == int(order.amount * 100)
+    ):
+        if order.payment_status != 'paid':
+            order.payment_status = 'paid'
+            order.save(update_fields=['payment_status'])
+
         request.session.pop('order_id', None)
         return redirect('marketplace:payment_success', order_id=order.id)
 
@@ -170,6 +192,37 @@ def payment_callback(request):
     messages.error(request, "Payment failed.")
     return redirect('marketplace:checkout', slug=order.product.slug)
 
+@csrf_exempt
+def paystack_webhook(request):
+    signature = request.headers.get('x-paystack-signature')
+    computed_signature = hmac.new(
+        settings.PAYSTACK_SECRET_KEY.encode(),
+        request.body,
+        hashlib.sha512
+    ).hexdigest()
+
+    if signature != computed_signature:
+        return HttpResponse(status=400)
+
+    payload = json.loads(request.body)
+    event = payload.get('event')
+    data = payload.get('data', {})
+
+    if event == 'charge.success':
+        reference = data.get('reference')
+
+        try:
+            order = Order.objects.get(reference=reference)
+
+            # ✅ Idempotent update (safe if webhook fires twice)
+            if order.payment_status != 'paid':
+                order.payment_status = 'paid'
+                order.save(update_fields=['payment_status'])
+
+        except Order.DoesNotExist:
+            pass
+
+    return HttpResponse(status=200)
 
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id, payment_status='paid')
@@ -191,7 +244,6 @@ def payment_success(request, order_id):
 
     return render(request, 'marketplace/success.html', {"order": order})
 
-
 def download_product(request, token):
     download_token = get_object_or_404(DownloadToken, token=token)
 
@@ -202,12 +254,10 @@ def download_product(request, token):
     file_path = download_token.order.product.file.path
     file_name = os.path.basename(file_path)
 
-    # ===== OPTION 2: Apache X-Sendfile =====
     response = HttpResponse()
     response['Content-Disposition'] = f'attachment; filename="{file_name}"'
     response['X-Sendfile'] = file_path
 
-    # ===== FALLBACK: Django streaming if X-Sendfile is not enabled =====
     if not settings.DEBUG:
         return response
 
