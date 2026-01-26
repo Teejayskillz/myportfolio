@@ -74,21 +74,21 @@ def checkout_view(request, slug):
         'active_gateways': active_gateways,
     })
 
-
-def payment_page(request):
-    order_id = request.session.get('order_id')
-    if not order_id:
-        messages.error(request, "No active order found.")
-        return redirect('marketplace:product_list')
-
+def payment_page(request, order_id):
     order = get_object_or_404(Order, id=order_id, payment_status='pending')
-    gateway = get_object_or_404(PaymentGateway, name=order.gateway_name, is_active=True)
+    gateway = get_object_or_404(
+        PaymentGateway,
+        name=order.gateway_name,
+        is_active=True
+    )
 
     if request.method == 'POST':
+        reference = f"order-{order.id}-{int(time.time())}"
+
         payload = {
             "email": order.buyer_email,
             "amount": int(order.amount * 100),
-            "reference": f"order-{order.id}-{int(time.time())}",
+            "reference": reference,
             "callback_url": request.build_absolute_uri(
                 reverse('marketplace:payment_callback')
             ),
@@ -103,7 +103,6 @@ def payment_page(request):
             "Content-Type": "application/json",
         }
 
-        # ✅ FIXED: Removed trailing spaces in URL
         response = requests.post(
             "https://api.paystack.co/transaction/initialize",
             json=payload,
@@ -118,11 +117,14 @@ def payment_page(request):
         resp_data = response.json()
 
         if resp_data.get("status"):
-            order.reference = payload["reference"]
+            order.reference = reference
             order.save(update_fields=['reference'])
             return redirect(resp_data["data"]["authorization_url"])
 
-        messages.error(request, resp_data.get("message", "Payment initialization failed."))
+        messages.error(
+            request,
+            resp_data.get("message", "Payment initialization failed.")
+        )
 
     return render(request, 'marketplace/payment.html', {
         'order': order,
