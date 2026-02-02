@@ -93,36 +93,46 @@
         <!-- SINGLE FORM -->
         <form method="POST" action="{% url 'marketplace:checkout' product.slug %}">
             {% csrf_token %}
-
             <div class="mb-3">
-                <label for="{{ form.buyer_name.id_for_label }}" class="form-label">Full Name</label>
-                {{ form.buyer_name }}
-                {% if form.buyer_name.errors %}
-                <div class="text-danger">{{ form.buyer_name.errors }}</div>
-                {% endif %}
+                <label for="buyerName" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="buyerName" name="buyer_name" placeholder="Your full name"
+                    required>
             </div>
 
             <div class="mb-3">
-                <label for="{{ form.buyer_email.id_for_label }}" class="form-label">Email Address</label>
-                {{ form.buyer_email }}
-                {% if form.buyer_email.errors %}
-                <div class="text-danger">{{ form.buyer_email.errors }}</div>
+                <label for="buyerEmail" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="buyerEmail" name="buyer_email" placeholder="Your email"
+                    required>
+            </div>
+
+            <div class="checkout-summary">
+                <h4>Order Summary</h4>
+                <p>Product: {{ product.name }}</p>
+                <p>Price: ₦{{ product.price|floatformat:2 }}</p>
+                {% if product.description %}
+                <p>Description: {{ product.description|truncatewords:20 }}</p>
                 {% endif %}
             </div>
 
-            <!-- Gateway options -->
-            {% for gateway in active_gateways %}
-            <div class="gateway-option">
-                <input type="radio" name="gateway" value="{{ gateway.name }}" required>
-                <label>Pay with {{ gateway.name }}</label>
+            <!-- Payment Gateway Options (single form, radio buttons) -->
+            {% if active_gateways %}
+            <div class="mt-4">
+                <h4>Choose Payment Method</h4>
+                {% for gateway in active_gateways %}
+                <div class="gateway-option">
+                    <input type="radio" name="gateway" value="{{ gateway.name }}" required>
+                    <label>Pay with {{ gateway.name }}</label>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <p class="text-warning mt-3">No payment gateways are currently active. Please try again later.</p>
+            {% endif %}
 
             <button type="submit" class="btn btn-netflix-primary btn-checkout mt-3">
                 Proceed to Payment
             </button>
         </form>
-
     </div>
 </section>
 {% endblock %}

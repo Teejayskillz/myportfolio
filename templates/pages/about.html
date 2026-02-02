@@ -3,7 +3,8 @@
 
 {% block title %}About Me | Custom Web Developer in Lagos, Nigeria{% endblock %}
 
-{% block meta_description %}Learn about the developer behind LagosWebDev. Discover my mission to build scalable, secure, and user-friendly web applications for businesses in Lagos and worldwide.{% endblock %}
+{% block meta_description %}Learn about the developer behind LagosWebDev. Discover my mission to build scalable, secure,
+and user-friendly web applications for businesses in Lagos and worldwide.{% endblock %}
 
 {% block content %}
 <style>
@@ -37,7 +38,7 @@
     .about-hero h1 {
         font-size: 3.5rem;
         font-weight: 900;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     }
 
     .about-hero .lead {
@@ -46,7 +47,7 @@
         margin: 0 auto 2rem;
         color: var(--netflix-light-gray);
     }
-    
+
     /* Section styling */
     .section-padding {
         padding: 5rem 0;
@@ -122,7 +123,7 @@
         justify-content: center;
         font-size: 1.5rem;
         z-index: 1;
-        box-shadow: 0 0 0 4px var(--netflix-black), 0 0 15px rgba(229,9,20,0.5);
+        box-shadow: 0 0 0 4px var(--netflix-black), 0 0 15px rgba(229, 9, 20, 0.5);
     }
 
     .timeline-item:nth-child(even) .timeline-icon {
@@ -136,6 +137,7 @@
         border: 1px solid var(--netflix-medium-gray);
         transition: all 0.3s ease;
     }
+
     .timeline-content:hover {
         transform: translateY(-5px);
         border-color: var(--netflix-red);
@@ -177,19 +179,31 @@
     }
 
     @media (max-width: 768px) {
-        .about-hero { padding: 5rem 0; }
-        .about-hero h1 { font-size: 2.5rem; }
-        .process-timeline::before { left: 25px; }
-        .timeline-item, .timeline-item:nth-child(even) {
+        .about-hero {
+            padding: 5rem 0;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .process-timeline::before {
+            left: 25px;
+        }
+
+        .timeline-item,
+        .timeline-item:nth-child(even) {
             width: 100%;
             left: 0;
             padding-left: 80px;
             padding-right: 15px;
             text-align: left;
         }
+
         .timeline-item:nth-child(odd) {
             text-align: left;
         }
+
         .timeline-icon {
             left: 0;
         }
@@ -200,15 +214,16 @@
 <header class="about-hero">
     <div class="container">
         <!-- A professional headshot builds immense trust. Replace this placeholder. -->
-        <img src="https://nzdworld.com/media/media/8B0EB20D-17A9-4DE5-BD52-06B29840999E_1.png" 
-             alt="A professional headshot of the developer at LagosWebDev" 
-             class="profile-img"
-             onerror="this.onerror=null;this.src='https://placehold.co/180x180/141414/e50914?text=LWD';">
-        
-        <h1 class="mb-3">Hi, I'm the Developer Behind LagosWebDev</h1>
+        <img src="https://nzdworld.com/media/media/8B0EB20D-17A9-4DE5-BD52-06B29840999E_1.png"
+            alt="A professional headshot of the developer at LagosWebDev" class="profile-img"
+            onerror="this.onerror=null;this.src='https://placehold.co/180x180/141414/e50914?text=LWD';">
+        <h1 class="mb-3">Hi, I'm Apatira Tijani Adewale</h1>
         <p class="lead">
-            I transform complex ideas into fast, secure, and user-friendly web applications. Based in the heart of Lagos, Nigeria, I'm passionate about crafting digital experiences that drive growth for businesses like yours.
+            I build custom websites tailored to your business needs, using technologies like WordPress, Django, and PHP.
+            Whether you need a simple site or a complex web application, I deliver fast, secure, and user-friendly
+            solutions for businesses.
         </p>
+
         <a href="#my-mission" class="btn btn-netflix-primary">Discover My Mission</a>
     </div>
 </header>
@@ -222,21 +237,25 @@
                 <div class="netflix-card text-center w-100" style="animation: fadeInUp 1s ease-out 0.2s;">
                     <i class="fas fa-expand-arrows-alt fa-3x text-danger mb-4"></i>
                     <h3>Scalable Solutions</h3>
-                    <p class="text-white-50">I build applications that are ready for tomorrow. Your website will be architected to handle growth, ensuring it performs flawlessly as your business expands.</p>
+                    <p class="text-white-50">I build applications that are ready for tomorrow. Your website will be
+                        architected to handle growth, ensuring it performs flawlessly as your business expands.</p>
                 </div>
             </div>
             <div class="col-lg-4 d-flex">
                 <div class="netflix-card text-center w-100" style="animation: fadeInUp 1s ease-out 0.4s;">
                     <i class="fas fa-shield-alt fa-3x text-danger mb-4"></i>
                     <h3>Uncompromising Security</h3>
-                    <p class="text-white-50">Your digital assets and customer data are paramount. I implement industry-best security practices to protect your application from threats and build user trust.</p>
+                    <p class="text-white-50">Your digital assets and customer data are paramount. I implement
+                        industry-best security practices to protect your application from threats and build user trust.
+                    </p>
                 </div>
             </div>
             <div class="col-lg-4 d-flex">
                 <div class="netflix-card text-center w-100" style="animation: fadeInUp 1s ease-out 0.6s;">
                     <i class="fas fa-hand-pointer fa-3x text-danger mb-4"></i>
                     <h3>Intuitive User Experience</h3>
-                    <p class="text-white-50">A great website is one that's easy to use. I focus on creating clean, logical, and enjoyable interfaces that keep your visitors engaged and converting.</p>
+                    <p class="text-white-50">A great website is one that's easy to use. I focus on creating clean,
+                        logical, and enjoyable interfaces that keep your visitors engaged and converting.</p>
                 </div>
             </div>
         </div>
@@ -253,7 +272,10 @@
                 <div class="timeline-icon"><i class="fas fa-comments"></i></div>
                 <div class="timeline-content">
                     <h4>1. Discover & Strategize</h4>
-                    <p class="text-white-50">We begin with a deep dive into your vision, goals, and target audience. This allows us to create a strategic blueprint for a successful project. This is the most crucial step for any <a href="{% url 'pages:home' %}" class="text-danger">custom web development project in Lagos</a>.</p>
+                    <p class="text-white-50">We begin with a deep dive into your vision, goals, and target audience.
+                        This allows us to create a strategic blueprint for a successful project. This is the most
+                        crucial step for any <a href="{% url 'pages:home' %}" class="text-danger">custom web development
+                            project in Lagos</a>.</p>
                 </div>
             </div>
             <!-- Step 2 -->
@@ -261,7 +283,9 @@
                 <div class="timeline-icon"><i class="fas fa-pencil-ruler"></i></div>
                 <div class="timeline-content">
                     <h4>2. Design & Develop</h4>
-                    <p class="text-white-50">With a clear plan, I move into the design and coding phase. I use modern technologies to build your application, providing you with regular progress updates and demos.</p>
+                    <p class="text-white-50">With a clear plan, I move into the design and coding phase. I use modern
+                        technologies to build your application, providing you with regular progress updates and demos.
+                    </p>
                 </div>
             </div>
             <!-- Step 3 -->
@@ -269,7 +293,9 @@
                 <div class="timeline-icon"><i class="fas fa-rocket"></i></div>
                 <div class="timeline-content">
                     <h4>3. Deliver & Support</h4>
-                    <p class="text-white-50">After rigorous testing, your project is ready for launch. I handle the deployment and remain available for ongoing support and future enhancements to ensure long-term success.</p>
+                    <p class="text-white-50">After rigorous testing, your project is ready for launch. I handle the
+                        deployment and remain available for ongoing support and future enhancements to ensure long-term
+                        success.</p>
                 </div>
             </div>
         </div>
@@ -311,7 +337,7 @@
 
 <script>
     // Smooth scroll for the hero button
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
