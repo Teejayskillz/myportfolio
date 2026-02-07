@@ -1,47 +1,1105 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block title %}{{ product.title }} | LagosWebDev Marketplace{% endblock %}
+{% extends 'base.html' %}
+{% block title %}{{ product.title }} - Premium Template | LagosWebDev Marketplace{% endblock %}
 
 {% block content %}
-<section class="section-padding">
-    <div class="container">
-        <div class="row align-items-start g-5">
-
-            <div class="col-lg-8">
-                <h1 class="mb-3">{{ product.title }}</h1>
-
-                <p class="lead text-white-50">
-                    {{ product.short_description }}
-                </p>
-
-                <div class="netflix-card mt-4">
-                    {{ product.description|linebreaks }}
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="netflix-card sticky-top" style="top:120px;">
-                    <h3 class="mb-3 text-danger">₦{{ product.price }}</h3>
-
-                    <ul class="list-unstyled text-white-50 mb-4">
-                        <li><i class="fas fa-code me-2"></i>{{ product.tech_stack }}</li>
-                        <li><i class="fas fa-layer-group me-2"></i>{{ product.category|title }}</li>
-                        <li><i class="fas fa-clock me-2"></i>Version {{ product.version }}</li>
-                    </ul>
-
-                    <a href="{% url 'marketplace:checkout' product.slug %}"
-                       class="btn btn-netflix-primary w-100">
-                        Buy Now
-                    </a>
-
-                    <p class="small text-white-50 mt-3">
-                        Instant download after payment.
-                    </p>
-                </div>
-            </div>
-
+<div class="product-detail-container">
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-section py-3">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'pages:home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'marketplace:product_list' %}">Marketplace</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
+                </ol>
+            </nav>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- Product Hero Section -->
+    <section class="product-hero py-5">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Product Image/Preview -->
+                <div class="col-lg-6">
+                    <div class="product-preview-section">
+                        <!-- Main Image -->
+                        <div class="product-main-image">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="img-fluid rounded">
+                            {% else %}
+                            <div class="product-placeholder-large">
+                                <i class="fas fa-laptop-code fa-5x"></i>
+                                <p class="mt-3">{{ product.title }}</p>
+                            </div>
+                            {% endif %}
+
+                            <!-- Badges -->
+                            <div class="product-badges-overlay">
+                                {% if product.is_featured %}
+                                <span class="badge bg-danger mb-2">
+                                    <i class="fas fa-star me-1"></i>Featured Product
+                                </span>
+                                {% endif %}
+                                <span class="badge bg-dark">
+                                    <i class="fas fa-code-branch me-1"></i>Version {{ product.version }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info Cards -->
+                        <div class="product-info-cards mt-4">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="info-card text-center">
+                                        <i class="fas fa-download fa-2x mb-2 text-danger"></i>
+                                        <h5 class="mb-0">{{ product.download_count|default:"150" }}+</h5>
+                                        <small class="text-muted">Downloads</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-card text-center">
+                                        <i class="fas fa-star fa-2x mb-2 text-danger"></i>
+                                        <h5 class="mb-0">{{ product.rating|default:"4.8" }}</h5>
+                                        <small class="text-muted">Rating</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-card text-center">
+                                        <i class="fas fa-shield-alt fa-2x mb-2 text-danger"></i>
+                                        <h5 class="mb-0">Secure</h5>
+                                        <small class="text-muted">Payment</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="info-card text-center">
+                                        <i class="fas fa-headset fa-2x mb-2 text-danger"></i>
+                                        <h5 class="mb-0">24/7</h5>
+                                        <small class="text-muted">Support</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="col-lg-6">
+                    <div class="product-details-section">
+                        <!-- Category Badge -->
+                        <div class="category-badge mb-3">
+                            <i class="fas fa-tag me-2"></i>{{ product.get_category_display }}
+                        </div>
+
+                        <!-- Product Title -->
+                        <h1 class="product-title display-4 fw-bold mb-3">
+                            {{ product.title }}
+                        </h1>
+
+                        <!-- Product Meta -->
+                        <div class="product-meta mb-4">
+                            <div class="meta-item">
+                                <i class="fas fa-clock me-2"></i>
+                                <span>Updated {{ product.updated_at|timesince }} ago</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-check-circle me-2 text-success"></i>
+                                <span>Instant Delivery</span>
+                            </div>
+                        </div>
+
+                        <!-- Price Section -->
+                        <div class="price-section mb-4">
+                            <div class="price-card">
+                                <div class="price-header">
+                                    <span class="price-label">Price</span>
+                                    <div class="price-value">
+                                        <span class="currency">₦</span>
+                                        <span class="amount">{{ product.price|floatformat:0 }}</span>
+                                    </div>
+                                </div>
+                                <div class="price-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Lifetime Updates
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Full Source Code
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Documentation Included
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        Commercial License
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tech Stack -->
+                        <div class="tech-stack-section mb-4">
+                            <h6 class="section-label mb-3">
+                                <i class="fas fa-layer-group me-2"></i>Tech Stack
+                            </h6>
+                            <div class="tech-tags">
+                                {% for tech in product.tech_stack.split %}
+                                <span class="tech-tag">
+                                    <i class="fas fa-code me-1"></i>{{ tech }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div class="cta-section">
+                            <a href="{% url 'marketplace:checkout_options' product.slug %}"
+                                class="btn btn-netflix-primary btn-lg w-100 mb-3">
+                                <i class="fas fa-shopping-cart me-2"></i>Buy Now - Get Instant Access
+                            </a>
+                            <div class="secondary-actions d-flex gap-3">
+                                <button class="btn btn-netflix-secondary flex-fill" id="addToWishlist">
+                                    <i class="fas fa-heart me-2"></i>Add to Wishlist
+                                </button>
+                                <button class="btn btn-netflix-secondary flex-fill" id="shareProduct">
+                                    <i class="fas fa-share-alt me-2"></i>Share
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="trust-badges mt-4">
+                            <div class="trust-item">
+                                <i class="fas fa-shield-check text-success"></i>
+                                <span>Secure Checkout</span>
+                            </div>
+                            <div class="trust-item">
+                                <i class="fas fa-lock text-success"></i>
+                                <span>SSL Encrypted</span>
+                            </div>
+                            <div class="trust-item">
+                                <i class="fas fa-undo text-success"></i>
+                                <span>7-Day Refund</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Description & Details Tabs -->
+    <section class="product-tabs-section py-5">
+        <div class="container">
+            <div class="netflix-card">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs product-tabs mb-4" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="description-tab" data-bs-toggle="tab"
+                            data-bs-target="#description" type="button" role="tab">
+                            <i class="fas fa-align-left me-2"></i>Description
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features"
+                            type="button" role="tab">
+                            <i class="fas fa-list-check me-2"></i>Features
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="requirements-tab" data-bs-toggle="tab"
+                            data-bs-target="#requirements" type="button" role="tab">
+                            <i class="fas fa-server me-2"></i>Requirements
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#support"
+                            type="button" role="tab">
+                            <i class="fas fa-headset me-2"></i>Support
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Description Tab -->
+                    <div class="tab-pane fade show active" id="description" role="tabpanel">
+                        <div class="tab-content-wrapper">
+                            <h3 class="mb-4">About This Product</h3>
+                            {% if product.description %}
+                            <div class="product-description">
+                                {{ product.description|linebreaks }}
+                            </div>
+                            {% else %}
+                            <p class="text-muted">
+                                {{ product.title }} is a premium template designed for modern businesses.
+                                Built with the latest technologies and best practices, this product offers
+                                everything you need to launch your project quickly and professionally.
+                            </p>
+                            {% endif %}
+
+                            <div class="description-highlights mt-4">
+                                <h5 class="mb-3">Why Choose This Product?</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="highlight-item">
+                                            <i class="fas fa-rocket text-danger me-3"></i>
+                                            <div>
+                                                <h6>Fast Performance</h6>
+                                                <p class="mb-0 small text-muted">Optimized for speed and efficiency</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="highlight-item">
+                                            <i class="fas fa-mobile-alt text-danger me-3"></i>
+                                            <div>
+                                                <h6>Fully Responsive</h6>
+                                                <p class="mb-0 small text-muted">Works perfectly on all devices</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="highlight-item">
+                                            <i class="fas fa-paint-brush text-danger me-3"></i>
+                                            <div>
+                                                <h6>Modern Design</h6>
+                                                <p class="mb-0 small text-muted">Clean and professional interface</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="highlight-item">
+                                            <i class="fas fa-code text-danger me-3"></i>
+                                            <div>
+                                                <h6>Clean Code</h6>
+                                                <p class="mb-0 small text-muted">Well-documented and maintainable</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Tab -->
+                    <div class="tab-pane fade" id="features" role="tabpanel">
+                        <div class="tab-content-wrapper">
+                            <h3 class="mb-4">Key Features</h3>
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <h5>Complete Package</h5>
+                                    <p>All files, assets, and resources included</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-sync"></i>
+                                    </div>
+                                    <h5>Regular Updates</h5>
+                                    <p>Lifetime updates and improvements</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <h5>Documentation</h5>
+                                    <p>Comprehensive setup and usage guide</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <h5>Customizable</h5>
+                                    <p>Easy to customize colors and layout</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <h5>SEO Optimized</h5>
+                                    <p>Built with SEO best practices</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <h5>Performance</h5>
+                                    <p>Optimized for fast loading speeds</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requirements Tab -->
+                    <div class="tab-pane fade" id="requirements" role="tabpanel">
+                        <div class="tab-content-wrapper">
+                            <h3 class="mb-4">Technical Requirements</h3>
+
+                            <div class="requirements-section mb-4">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-laptop-code me-2 text-danger"></i>Development Environment
+                                </h5>
+                                <ul class="requirements-list">
+                                    <li>
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Modern web browser (Chrome, Firefox, Safari, Edge)
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Code editor (VS Code, Sublime Text, or similar)
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Basic knowledge of {{ product.tech_stack }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="requirements-section mb-4">
+                                <h5 class="mb-3">
+                                    <i class="fas fa-server me-2 text-danger"></i>Server Requirements
+                                </h5>
+                                <ul class="requirements-list">
+                                    <li>
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Web server (Apache, Nginx, or similar)
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        SSL certificate (recommended)
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        Minimum 100MB storage space
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Note:</strong> We provide hosting services if you prefer a fully managed
+                                solution.
+                                Check our checkout options for hosting plans.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Tab -->
+                    <div class="tab-pane fade" id="support" role="tabpanel">
+                        <div class="tab-content-wrapper">
+                            <h3 class="mb-4">Customer Support</h3>
+
+                            <div class="support-options">
+                                <div class="support-card">
+                                    <div class="support-icon">
+                                        <i class="fas fa-file-alt fa-3x text-danger"></i>
+                                    </div>
+                                    <h5>Documentation</h5>
+                                    <p>Comprehensive guides and tutorials included with your purchase</p>
+                                </div>
+                                <div class="support-card">
+                                    <div class="support-icon">
+                                        <i class="fas fa-envelope fa-3x text-danger"></i>
+                                    </div>
+                                    <h5>Email Support</h5>
+                                    <p>Get help via email within 24 hours (business days)</p>
+                                </div>
+                                <div class="support-card">
+                                    <div class="support-icon">
+                                        <i class="fab fa-whatsapp fa-3x text-danger"></i>
+                                    </div>
+                                    <h5>WhatsApp Support</h5>
+                                    <p>Quick assistance through WhatsApp messaging</p>
+                                </div>
+                            </div>
+
+                            <div class="faq-section mt-5">
+                                <h4 class="mb-4">Frequently Asked Questions</h4>
+                                <div class="accordion" id="faqAccordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#faq1">
+                                                What's included in my purchase?
+                                            </button>
+                                        </h2>
+                                        <div id="faq1" class="accordion-collapse collapse show"
+                                            data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body">
+                                                You'll receive all source files, documentation, assets, and lifetime
+                                                updates
+                                                for the product version you purchase.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq2">
+                                                Do I need technical knowledge to use this?
+                                            </button>
+                                        </h2>
+                                        <div id="faq2" class="accordion-collapse collapse"
+                                            data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body">
+                                                Basic knowledge of {{ product.tech_stack }} is recommended. We provide
+                                                detailed documentation to help you get started.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq3">
+                                                Can I get a refund?
+                                            </button>
+                                        </h2>
+                                        <div id="faq3" class="accordion-collapse collapse"
+                                            data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body">
+                                                Yes! We offer a 7-day money-back guarantee if the product doesn't meet
+                                                your expectations.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#faq4">
+                                                Can I use this for commercial projects?
+                                            </button>
+                                        </h2>
+                                        <div id="faq4" class="accordion-collapse collapse"
+                                            data-bs-parent="#faqAccordion">
+                                            <div class="accordion-body">
+                                                Absolutely! All our products come with a commercial license, allowing
+                                                you
+                                                to use them in client projects.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products Section -->
+    <section class="related-products-section py-5">
+        <div class="container">
+            <div class="section-header mb-4">
+                <h2 class="mb-2">
+                    <i class="fas fa-layer-group me-2"></i>You May Also Like
+                </h2>
+                <p class="text-muted">Explore similar products that might interest you</p>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                <!-- Placeholder for related products - you can loop through actual related products -->
+                {% for i in "123" %}
+                <div class="col">
+                    <div class="related-product-card netflix-card h-100">
+                        <div class="related-product-image">
+                            <div class="related-placeholder">
+                                <i class="fas fa-laptop-code fa-3x"></i>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <h6 class="mb-2">Related Product {{ forloop.counter }}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-danger fw-bold">₦25,000</span>
+                                <a href="#" class="btn btn-sm btn-netflix-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    /* Product Detail Container */
+    .product-detail-container {
+        padding-top: 80px;
+        min-height: 100vh;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb-section {
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid var(--netflix-medium-gray);
+    }
+
+    .breadcrumb {
+        background: transparent;
+        padding: 0;
+    }
+
+    .breadcrumb-item {
+        color: var(--netflix-light-gray);
+    }
+
+    .breadcrumb-item a {
+        color: var(--netflix-light-gray);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb-item a:hover {
+        color: var(--netflix-red);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--netflix-white);
+    }
+
+    .breadcrumb-item+.breadcrumb-item::before {
+        color: var(--netflix-light-gray);
+        content: "›";
+    }
+
+    /* Product Preview */
+    .product-main-image {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--netflix-dark-gray);
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-main-image img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .product-placeholder-large {
+        text-align: center;
+        color: var(--netflix-light-gray);
+        padding: 3rem;
+    }
+
+    .product-badges-overlay {
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .product-badges-overlay .badge {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Info Cards */
+    .info-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 8px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        background: rgba(229, 9, 20, 0.1);
+        border-color: var(--netflix-red);
+        transform: translateY(-5px);
+    }
+
+    .info-card h5 {
+        color: var(--netflix-white);
+        margin-bottom: 0.25rem;
+    }
+
+    /* Product Details */
+    .category-badge {
+        display: inline-block;
+        background: rgba(229, 9, 20, 0.1);
+        color: var(--netflix-red);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .product-title {
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .product-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 1rem 0;
+        border-top: 1px solid var(--netflix-medium-gray);
+        border-bottom: 1px solid var(--netflix-medium-gray);
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        color: var(--netflix-light-gray);
+        font-size: 0.9rem;
+    }
+
+    /* Price Section */
+    .price-card {
+        background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(229, 9, 20, 0.05));
+        border: 2px solid var(--netflix-red);
+        border-radius: 12px;
+        padding: 2rem;
+    }
+
+    .price-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(229, 9, 20, 0.3);
+    }
+
+    .price-label {
+        font-size: 1rem;
+        color: var(--netflix-light-gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .price-value {
+        display: flex;
+        align-items: baseline;
+        color: var(--netflix-red);
+    }
+
+    .price-value .currency {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-right: 0.25rem;
+    }
+
+    .price-value .amount {
+        font-size: 3rem;
+        font-weight: 900;
+        line-height: 1;
+    }
+
+    .price-features {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.95rem;
+        color: var(--netflix-white);
+    }
+
+    /* Tech Stack */
+    .section-label {
+        color: var(--netflix-white);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+
+    .tech-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .tech-tag {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--netflix-medium-gray);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: var(--netflix-white);
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .tech-tag:hover {
+        background: rgba(229, 9, 20, 0.1);
+        border-color: var(--netflix-red);
+        color: var(--netflix-red);
+    }
+
+    /* Trust Badges */
+    .trust-badges {
+        display: flex;
+        justify-content: space-around;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+    }
+
+    .trust-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--netflix-light-gray);
+        text-align: center;
+    }
+
+    .trust-item i {
+        font-size: 1.5rem;
+    }
+
+    /* Product Tabs */
+    .product-tabs {
+        border-bottom: 2px solid var(--netflix-medium-gray);
+    }
+
+    .product-tabs .nav-link {
+        background: transparent;
+        border: none;
+        color: var(--netflix-light-gray);
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .product-tabs .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--netflix-red);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .product-tabs .nav-link:hover,
+    .product-tabs .nav-link.active {
+        color: var(--netflix-white);
+        background: rgba(229, 9, 20, 0.1);
+    }
+
+    .product-tabs .nav-link.active::after {
+        transform: scaleX(1);
+    }
+
+    .tab-content-wrapper {
+        padding: 2rem 0;
+    }
+
+    /* Description Highlights */
+    .highlight-item {
+        display: flex;
+        align-items: start;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .highlight-item:hover {
+        background: rgba(229, 9, 20, 0.1);
+    }
+
+    .highlight-item i {
+        font-size: 2rem;
+        margin-top: 0.25rem;
+    }
+
+    .highlight-item h6 {
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+    }
+
+    /* Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        background: rgba(229, 9, 20, 0.1);
+        border-color: var(--netflix-red);
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(229, 9, 20, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: var(--netflix-red);
+    }
+
+    .feature-card h5 {
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+    }
+
+    .feature-card p {
+        color: var(--netflix-light-gray);
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Requirements List */
+    .requirements-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .requirements-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--netflix-medium-gray);
+        display: flex;
+        align-items: center;
+    }
+
+    .requirements-list li:last-child {
+        border-bottom: none;
+    }
+
+    /* Support Cards */
+    .support-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .support-card {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .support-card:hover {
+        background: rgba(229, 9, 20, 0.1);
+        border-color: var(--netflix-red);
+        transform: translateY(-5px);
+    }
+
+    .support-icon {
+        margin-bottom: 1.5rem;
+    }
+
+    .support-card h5 {
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .support-card p {
+        color: var(--netflix-light-gray);
+        margin-bottom: 0;
+    }
+
+    /* Accordion */
+    .accordion-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--netflix-medium-gray);
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .accordion-button {
+        background: transparent;
+        color: var(--netflix-white);
+        font-weight: 600;
+        border: none;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: rgba(229, 9, 20, 0.1);
+        color: var(--netflix-white);
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border: none;
+    }
+
+    .accordion-button::after {
+        filter: brightness(0) invert(1);
+    }
+
+    .accordion-body {
+        background: rgba(0, 0, 0, 0.2);
+        color: var(--netflix-light-gray);
+        padding: 1.5rem;
+    }
+
+    /* Related Products */
+    .related-product-card {
+        overflow: hidden;
+    }
+
+    .related-product-image {
+        height: 200px;
+        background: var(--netflix-medium-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .related-placeholder {
+        color: var(--netflix-light-gray);
+    }
+
+    /* Responsive */
+    @media (max-width: 991px) {
+        .product-preview-section {
+            margin-bottom: 2rem;
+        }
+
+        .price-value .amount {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-title {
+            font-size: 2rem;
+        }
+
+        .price-value .amount {
+            font-size: 2rem;
+        }
+
+        .trust-badges {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-tabs .nav-link {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add to Wishlist
+        const wishlistBtn = document.getElementById('addToWishlist');
+        if (wishlistBtn) {
+            wishlistBtn.addEventListener('click', function () {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-heart')) {
+                    icon.classList.remove('fa-heart');
+                    icon.classList.add('fa-heart', 'fas');
+                    this.innerHTML = '<i class="fas fa-heart me-2"></i>Added to Wishlist';
+                    this.classList.remove('btn-netflix-secondary');
+                    this.classList.add('btn-netflix-primary');
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.innerHTML = '<i class="far fa-heart me-2"></i>Add to Wishlist';
+                    this.classList.remove('btn-netflix-primary');
+                    this.classList.add('btn-netflix-secondary');
+                }
+            });
+        }
+
+        // Share Product
+        const shareBtn = document.getElementById('shareProduct');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', function () {
+                if (navigator.share) {
+                    navigator.share({
+                        title: '{{ product.title|escapejs }}',
+                        text: 'Check out this amazing product!',
+                        url: window.location.href
+                    }).catch(err => console.log('Error sharing:', err));
+                } else {
+                    // Fallback: Copy URL to clipboard
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check me-2"></i>Link Copied!';
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                        }, 2000);
+                    });
+                }
+            });
+        }
+
+        // Smooth scroll animation for sections
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function (entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '0';
+                    entry.target.style.transform = 'translateY(20px)';
+
+                    setTimeout(() => {
+                        entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, 100);
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe sections
+        document.querySelectorAll('.netflix-card, .info-card, .feature-card').forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
 {% endblock %}

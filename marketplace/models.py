@@ -97,6 +97,7 @@ class PurchaseRequest(models.Model):
 
     buyer_name = models.CharField(max_length=255)
     buyer_email = models.EmailField()
+    whatsapp_number = models.CharField(max_length=30) 
 
     amount = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -115,8 +116,6 @@ class PurchaseRequest(models.Model):
     admin_note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.product.title} – {self.buyer_email}"
 
 class License(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

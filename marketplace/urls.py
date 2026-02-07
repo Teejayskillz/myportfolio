@@ -1,15 +1,15 @@
+# marketplace/urls.py
 from django.urls import path
 from . import views
 
-app_name = "marketplace"
+app_name = 'marketplace'
 
 urlpatterns = [
-   # path("", views.product_list, name="product_list"),
-  #  path("", views.marketplace_page, name="marketplace_page"),
-  #  path("checkout/<slug:slug>/", views.checkout_view, name="checkout"),
-   # path('payment/<int:order_id>/', views.payment_page, name='payment_page'),
-   # path("<slug:slug>/", views.product_detail, name="product_detail"),
-   # path('payment/callback/', views.payment_callback, name='payment_callback'),
-   # path('download/<uuid:token>/', views.download_product, name='download_product'),
+    path('', views.product_list, name='product_list'),
+    path('product/<slug:slug>/', views.product_detail, name='product_detail'),
+
+    # Checkout steps
+    path('checkout/<slug:slug>/options/', views.checkout_options, name='checkout_options'),
+    path('checkout/details/', views.checkout_details, name='checkout_details'),
+    path('checkout/payment/', views.checkout_payment, name='checkout_payment'),
 ]
-            

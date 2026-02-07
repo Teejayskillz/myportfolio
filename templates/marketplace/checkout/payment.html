@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Receipt{% endblock %}
+
+{% block content %}
+<h2>Upload Receipt for {{ checkout.product_id|add:"" }}</h2>
+
+<p><strong>Total Amount:</strong> ₦{{ checkout.amount }}</p>
+
+<p>Pay the exact amount to this account:</p>
+<ul>
+    <li>Bank: GTBank</li>
+    <li>Account Number: 1234567890</li>
+    <li>Name: Apatira Tijani</li>
+</ul>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button class="btn btn-secondary" type="submit">Back</button>
+    <button class="btn btn-success" type="submit">Submit Payment</button>
+</form>
+{% endblock %}

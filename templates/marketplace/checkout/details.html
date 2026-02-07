@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - Step 2{% endblock %}
+
+{% block content %}
+<h2>Checkout - Step 2: Your Details</h2>
+<p><strong>Product:</strong> {{ product }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+        {{ form.buyer_name.label_tag }}
+        {{ form.buyer_name }}
+    </div>
+    <div class="mb-3">
+        {{ form.buyer_email.label_tag }}
+        {{ form.buyer_email }}
+    </div>
+    <div class="mb-3">
+        {{ form.whatsapp_number.label_tag }}
+        {{ form.whatsapp_number }}
+    </div>
+    <div class="mb-3">
+        {{ form.note.label_tag }}
+        {{ form.note }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Next</button>
+</form>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'marketplace/base.html' %}
+{% block title %}Order Submitted{% endblock %}
+
+{% block content %}
+<h2>Order Submitted!</h2>
+<p>Thank you, {{ order.buyer_name }}. Your purchase request has been submitted.</p>
+<p>The admin will review your receipt and approve your order. You will receive an email once your license or hosted plan
+    is ready.</p>
+<a href="{% url 'marketplace:product_list' %}" class="btn btn-primary">Back to Products</a>
+{% endblock %}

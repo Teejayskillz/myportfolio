@@ -594,7 +594,7 @@
                         <a class="nav-link" href="{% url 'contact:contact_page' %}">Contact</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'marketplace:marketplace_page' %}">Marketplace</a>
+                        <a class="nav-link" href="{% url 'marketplace:product_list' %}">Marketplace</a>
                     </li>
                 </ul>
             </div>
@@ -633,13 +633,24 @@
                 <i class="fas fa-envelope"></i>
                 <span>Contact</span>
             </a>
-            <a href="{% url 'marketplace:marketplace_page' %}"
+            <a href="{% url 'marketplace:product_list' %}"
                 class="mobile-nav-item {% if 'marketplace' in request.path %}active{% endif %}">
                 <i class="fas fa-store"></i>
                 <span>Marketplace</span>
             </a>
         </div>
     </nav>
+
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
 
     <footer class="footer">
         <div class="container">

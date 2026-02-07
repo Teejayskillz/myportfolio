@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - Step 3{% endblock %}
+
+{% block content %}
+<h2>Checkout - Step 3: Summary & Receipt</h2>
+
+<ul class="list-group mb-3">
+    <li class="list-group-item"><strong>Product:</strong> {{ product.title }}</li>
+    <li class="list-group-item"><strong>Delivery Type:</strong> {{ checkout.delivery_type }}</li>
+    {% if hosting_plan %}
+    <li class="list-group-item"><strong>Hosting Plan:</strong> {{ hosting_plan.name }} - ${{
+        hosting_plan.price_per_month }}</li>
+    {% endif %}
+    <li class="list-group-item"><strong>Total Amount:</strong> ${{ checkout.amount }}</li>
+    <li class="list-group-item"><strong>Name:</strong> {{ checkout.buyer.name }}</li>
+    <li class="list-group-item"><strong>Email:</strong> {{ checkout.buyer.email }}</li>
+    <li class="list-group-item"><strong>WhatsApp:</strong> {{ checkout.buyer.whatsapp }}</li>
+    {% if checkout.buyer.note %}
+    <li class="list-group-item"><strong>Note:</strong> {{ checkout.buyer.note }}</li>
+    {% endif %}
+</ul>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.receipt.label_tag }}
+        {{ form.receipt }}
+    </div>
+    <a href="{% url 'marketplace:checkout_details' checkout_id=checkout_id %}" class="btn btn-secondary">Back</a>
+    <button type="submit" class="btn btn-success">Confirm & Submit Payment</button>
+</form>
+{% endblock %}
