@@ -25,8 +25,8 @@
                     <div class="product-preview-section">
                         <!-- Main Image -->
                         <div class="product-main-image">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="img-fluid rounded">
+                            {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="img-fluid rounded">
                             {% else %}
                             <div class="product-placeholder-large">
                                 <i class="fas fa-laptop-code fa-5x"></i>
@@ -109,35 +109,36 @@
                         </div>
 
                         <!-- Price Section -->
-                        <div class="price-section mb-4">
-                            <div class="price-card">
-                                <div class="price-header">
-                                    <span class="price-label">Price</span>
-                                    <div class="price-value">
-                                        <span class="currency">₦</span>
-                                        <span class="amount">{{ product.price|floatformat:0 }}</span>
-                                    </div>
-                                </div>
-                                <div class="price-features">
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Lifetime Updates
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Full Source Code
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Documentation Included
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        Commercial License
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       <div class="purchase-options mt-4">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="action-card p-4 border rounded text-center shadow-sm">
+                <i class="fas fa-code fa-2x mb-3 text-primary"></i>
+                <h3>Full Ownership</h3>
+                <p class="text-muted small">Get the complete source code and host it yourself.</p>
+                <div class="h2 mb-3">₦{{ product.price_full_ownership|floatformat:0 }}</div>
+                
+                <a href="/checkout/{{ product.slug }}/buy" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-shopping-cart me-2"></i>Buy Now
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="action-card p-4 border rounded text-center shadow-sm border-success">
+                <i class="fas fa-server fa-2x mb-3 text-success"></i>
+                <h3>Rent & Host</h3>
+                <p class="text-muted small">We handle setup and hosting. Starting from:</p>
+                <div class="h2 mb-3">₦{{ product.rental_setup_fee|floatformat:0 }} <span class="fs-6 text-muted">+ Monthly Fee</span></div>
+                
+                <a href="/plans/{{ product.slug }}/rent" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-rocket me-2"></i>Rent Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                         <!-- Tech Stack -->
                         <div class="tech-stack-section mb-4">
@@ -230,7 +231,7 @@
                             <h3 class="mb-4">About This Product</h3>
                             {% if product.description %}
                             <div class="product-description">
-                                {{ product.description|linebreaks }}
+                              {{ product.description|safe|linebreaks }}
                             </div>
                             {% else %}
                             <p class="text-muted">

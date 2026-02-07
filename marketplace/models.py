@@ -4,7 +4,24 @@ import uuid
 from django.utils import timezone
 from datetime import timedelta
 import secrets
+from ckeditor.fields import RichTextField
+from django.db import models
+from ckeditor.fields import RichTextField
+from django.utils.text import slugify
 
+class HostingPlan(models.Model):
+    PLAN_CHOICES = [
+            ('Basic', 'Basic (Low Traffic)'),
+            ('Pro', 'Pro (Medium Traffic)'),
+            ('Enterprise', 'Enterprise (High Traffic/Company)'),
+        ]
+    name = models.CharField(max_length=100, choices=PLAN_CHOICES)
+    monthly_price = models.DecimalField(max_digits=10, decimal_places=2)
+    features = models.TextField(help_text="Separate features with commas")
+
+    def __str__(self):
+        return f"{self.name} - ₦{self.monthly_price}/mo"
+        
 
 class Product(models.Model):
     CATEGORY_CHOICES = (
@@ -16,17 +33,38 @@ class Product(models.Model):
 
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField()
+    short_description = models.TextField(blank=True)
+    description = RichTextField(blank=True, help_text="Detailed product writeup / documentation")
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-
-    tech_stack = models.CharField(
-        max_length=255,
-        help_text="e.g. Django, Laravel, WordPress"
-    )
-
+    tech_stack = models.CharField(max_length=255, help_text="e.g. Django, Laravel, WordPress")
     version = models.CharField(max_length=50, default="1.0.0")
     is_active = models.BooleanField(default=True)
 
+    # Images
+    main_image = models.ImageField(upload_to="marketplace/products/", blank=True, null=True)
+    
+
+    # Source file (optional, to be used after payment)
+    source_file = models.FileField(upload_to="marketplace/products/source/", blank=True, null=True)
+
+    # Price
+    price_full_ownership = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="One-time price for full source code ownership"
+    )
+
+    rental_setup_fee = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="One-time setup fee for managed/rental version"
+    )
+
+    # Hosting options
+    available_hosting_plans = models.ManyToManyField(
+        'marketplace.HostingPlan',
+        blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -36,6 +74,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class SourceCodeOption(models.Model):
     product = models.OneToOneField(
@@ -51,24 +90,6 @@ class SourceCodeOption(models.Model):
         return f"{self.product.title} – Source Code"
 
 
-class HostingPlan(models.Model):
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='hosting_plans'
-    )
-
-    name = models.CharField(max_length=100)  # Basic, Pro, Enterprise
-    price_per_month = models.DecimalField(max_digits=10, decimal_places=2)
-
-    features = models.TextField(
-        help_text="Describe limits, features, support level"
-    )
-
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f"{self.product.title} – {self.name}"
 
 class PurchaseRequest(models.Model):
     DELIVERY_CHOICES = (

@@ -108,8 +108,8 @@
                     <div class="product-card netflix-card h-100">
                         <!-- Product Image/Icon -->
                         <div class="product-image">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.title }}" class="img-fluid">
+                            {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="img-fluid">
                             {% else %}
                             <div class="product-placeholder">
                                 <i class="fas fa-laptop-code fa-4x"></i>

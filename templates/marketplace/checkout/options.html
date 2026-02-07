@@ -3,7 +3,6 @@
 
 {% block content %}
 <div class="checkout-container">
-    <!-- Hero Section -->
     <section class="checkout-hero py-5 mt-5">
         <div class="container">
             <div class="row justify-content-center">
@@ -12,33 +11,23 @@
                         <i class="fas fa-shopping-cart me-3"></i>Checkout
                     </h1>
                     <div class="checkout-steps mb-4">
-                        <span class="step active">
-                            <i class="fas fa-cog"></i> Options
-                        </span>
+                        <span class="step active"><i class="fas fa-cog"></i> Options</span>
                         <span class="step-divider"></span>
-                        <span class="step">
-                            <i class="fas fa-user"></i> Details
-                        </span>
+                        <span class="step"><i class="fas fa-user"></i> Details</span>
                         <span class="step-divider"></span>
-                        <span class="step">
-                            <i class="fas fa-check-circle"></i> Complete
-                        </span>
+                        <span class="step"><i class="fas fa-check-circle"></i> Complete</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Checkout Form Section -->
     <section class="checkout-form-section py-5">
         <div class="container">
             <div class="row justify-content-center">
-                <!-- Product Summary Card -->
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <div class="netflix-card sticky-top" style="top: 100px;">
-                        <h4 class="mb-4">
-                            <i class="fas fa-box me-2"></i>Order Summary
-                        </h4>
+                        <h4 class="mb-4"><i class="fas fa-box me-2"></i>Order Summary</h4>
                         <div class="product-summary">
                             <div class="d-flex align-items-start mb-3">
                                 <div class="product-icon me-3">
@@ -57,21 +46,18 @@
                                     <span>Base Price:</span>
                                     <span class="fw-bold">₦{{ product.price|floatformat:0|default:"0" }}</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2" id="hosting-price-line"
-                                    style="display: none !important;">
+                                <div class="d-flex justify-content-between mb-2" id="hosting-price-line" style="display: none !important;">
                                     <span>Hosting Plan:</span>
                                     <span class="fw-bold" id="hosting-price-display">₦0</span>
                                 </div>
                                 <hr class="my-2" style="border-color: var(--netflix-medium-gray);">
                                 <div class="d-flex justify-content-between">
                                     <span class="h5 mb-0">Total:</span>
-                                    <span class="h5 mb-0 text-danger" id="total-price">₦{{
-                                        product.price|floatformat:0|default:"0" }}</span>
+                                    <span class="h5 mb-0 text-danger" id="total-price">₦{{ product.price|floatformat:0|default:"0" }}</span>
                                 </div>
                             </div>
 
-                            <div class="alert alert-info mt-4 p-3"
-                                style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px;">
+                            <div class="alert alert-info mt-4 p-3" style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 8px;">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <small>Select your delivery options to proceed</small>
                             </div>
@@ -79,34 +65,23 @@
                     </div>
                 </div>
 
-                <!-- Options Form Card -->
                 <div class="col-lg-8">
                     <div class="netflix-card">
-                        <h3 class="mb-4">
-                            <i class="fas fa-sliders-h me-2"></i>Select Your Options
-                        </h3>
+                        <h3 class="mb-4"><i class="fas fa-sliders-h me-2"></i>Select Your Options</h3>
 
                         {% if form.non_field_errors %}
-                        <div class="alert alert-danger mb-4">
-                            {{ form.non_field_errors }}
-                        </div>
+                        <div class="alert alert-danger mb-4">{{ form.non_field_errors }}</div>
                         {% endif %}
 
-                        <form method="POST" id="checkout-options-form">
+                        <form method="POST" id="checkout-options-form" action="">
                             {% csrf_token %}
 
-                            <!-- Delivery Type Selection -->
                             <div class="form-section mb-5">
-                                <h5 class="mb-4 text-danger">
-                                    <i class="fas fa-truck me-2"></i>Delivery Type
-                                </h5>
-
+                                <h5 class="mb-4 text-danger"><i class="fas fa-truck me-2"></i>Delivery Type</h5>
                                 <div class="delivery-options">
                                     {% for radio in form.delivery_type %}
                                     <div class="delivery-option-card">
-                                        <input type="radio" name="{{ radio.data.name }}" id="{{ radio.id_for_label }}"
-    value="{{ radio.data.value }}" class="delivery-radio" 
-    {% if radio.data.selected %}checked{% endif %}>
+                                        <input type="radio" name="{{ radio.data.name }}" id="{{ radio.id_for_label }}" value="{{ radio.data.value }}" class="delivery-radio" {% if radio.data.selected %}checked{% endif %}>
                                         <label for="{{ radio.id_for_label }}" class="delivery-label">
                                             <div class="delivery-content">
                                                 <div class="delivery-icon">
@@ -123,43 +98,25 @@
                                                 <div class="delivery-details">
                                                     <h6 class="mb-1">{{ radio.choice_label }}</h6>
                                                     <p class="small text-muted mb-0">
-                                                        {% if radio.data.value == 'source' %}
-                                                        Download source files immediately
-                                                        {% elif radio.data.value == 'hosted' %}
-                                                        We'll host and manage your website
-                                                        {% elif radio.data.value == 'both' %}
-                                                        Get hosted version + source files
-                                                        {% endif %}
+                                                        {% if radio.data.value == 'source' %}Available after payment
+                                                        {% elif radio.data.value == 'hosted' %}We'll host and manage your website
+                                                        {% elif radio.data.value == 'both' %}Hosted version + source files after payment{% endif %}
                                                     </p>
                                                 </div>
-                                                <div class="delivery-check">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </div>
+                                                <div class="delivery-check"><i class="fas fa-check-circle"></i></div>
                                             </div>
                                         </label>
                                     </div>
                                     {% endfor %}
                                 </div>
-
-                                {% if form.delivery_type.errors %}
-                                <div class="text-danger mt-2 small">
-                                    {{ form.delivery_type.errors }}
-                                </div>
-                                {% endif %}
                             </div>
 
-                            <!-- Hosting Plan Selection (Hidden by default) -->
                             <div class="form-section mb-5" id="hosting-plan-wrapper" style="display: none;">
-                                <h5 class="mb-4 text-danger">
-                                    <i class="fas fa-server me-2"></i>Choose Your Hosting Plan
-                                </h5>
-
+                                <h5 class="mb-4 text-danger"><i class="fas fa-server me-2"></i>Choose Your Hosting Plan</h5>
                                 <div class="hosting-options">
                                     {% for radio in form.hosting_plan %}
                                     <div class="hosting-option-card">
-                                        <input type="radio" name="{{ radio.data.name }}" id="{{ radio.id_for_label }}"
-                                            value="{{ radio.data.value }}" class="hosting-radio" {% if
-                                            radio.data.selected %}checked{% endif %}>
+                                        <input type="radio" name="{{ radio.data.name }}" id="{{ radio.id_for_label }}" value="{{ radio.data.value }}" class="hosting-radio" {% if radio.data.selected %}checked{% endif %}>
                                         <label for="{{ radio.id_for_label }}" class="hosting-label">
                                             <div class="hosting-content">
                                                 <div class="hosting-header">
@@ -169,45 +126,36 @@
                                                             {% if 'Basic' in radio.choice_label %}
                                                             <span><i class="fas fa-check me-1"></i>5GB Storage</span>
                                                             <span><i class="fas fa-check me-1"></i>Basic Support</span>
+                                                            <span><i class="fas fa-check me-1"></i>Free SSL</span>
                                                             {% elif 'Premium' in radio.choice_label %}
                                                             <span><i class="fas fa-check me-1"></i>20GB Storage</span>
-                                                            <span><i class="fas fa-check me-1"></i>Priority
-                                                                Support</span>
+                                                            <span><i class="fas fa-check me-1"></i>Priority Support</span>
+                                                            <span><i class="fas fa-check me-1"></i>Daily Backups</span>
                                                             {% elif 'Enterprise' in radio.choice_label %}
-                                                            <span><i class="fas fa-check me-1"></i>Unlimited
-                                                                Storage</span>
+                                                            <span><i class="fas fa-check me-1"></i>Unlimited Storage</span>
                                                             <span><i class="fas fa-check me-1"></i>24/7 Support</span>
+                                                            <span><i class="fas fa-check me-1"></i>Dedicated Server</span>
                                                             {% endif %}
                                                         </div>
                                                     </div>
-                                                    <div class="hosting-price" data-price="{{ radio.data.value }}">
-                                                        <span class="h5 mb-0 text-danger">₦<span
-                                                                class="price-value">0</span></span>
+                                                    <div class="hosting-price">
+                                                        <span class="h5 mb-0 text-danger">₦<span class="price-value">0</span></span>
                                                         <small class="d-block text-muted">/month</small>
                                                     </div>
                                                 </div>
-                                                <div class="hosting-check">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </div>
+                                                <div class="hosting-check"><i class="fas fa-check-circle"></i></div>
                                             </div>
                                         </label>
                                     </div>
                                     {% endfor %}
                                 </div>
-
-                                {% if form.hosting_plan.errors %}
-                                <div class="text-danger mt-2 small">
-                                    {{ form.hosting_plan.errors }}
-                                </div>
-                                {% endif %}
                             </div>
 
-                            <!-- Action Buttons -->
                             <div class="form-actions d-flex justify-content-between align-items-center mt-5">
                                 <a href="{% url 'marketplace:product_list' %}" class="btn-netflix-secondary">
                                     <i class="fas fa-arrow-left me-2"></i>Back to Marketplace
                                 </a>
-                                <button type="submit" class="btn-netflix-primary">
+                                <button type="submit" class="btn-netflix-primary" id="submit-btn">
                                     Continue to Details<i class="fas fa-arrow-right ms-2"></i>
                                 </button>
                             </div>
@@ -220,281 +168,28 @@
 </div>
 
 <style>
-    /* Checkout Specific Styles */
-    .checkout-container {
-        padding-top: 80px;
-        min-height: 100vh;
-    }
-
-    .animate-fade-in {
-        animation: fadeInUp 0.6s ease-out;
-    }
-
-    /* Checkout Steps */
-    .checkout-steps {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin: 2rem 0;
-    }
-
-    .checkout-steps .step {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: var(--netflix-medium-gray);
-        border-radius: 50px;
-        color: var(--netflix-light-gray);
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .checkout-steps .step.active {
-        background: var(--netflix-red);
-        color: var(--netflix-white);
-        transform: scale(1.05);
-    }
-
-    .checkout-steps .step-divider {
-        width: 40px;
-        height: 2px;
-        background: var(--netflix-medium-gray);
-    }
-
-    /* Product Summary */
-    .product-summary {
-        font-size: 0.95rem;
-    }
-
-    .product-icon {
-        width: 50px;
-        height: 50px;
-        background: rgba(229, 9, 20, 0.1);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Form Sections */
-    .form-section {
-        border-bottom: 1px solid var(--netflix-medium-gray);
-        padding-bottom: 2rem;
-    }
-
-    .form-section:last-of-type {
-        border-bottom: none;
-    }
-
-    /* Delivery Options */
-    .delivery-options {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .delivery-option-card {
-        position: relative;
-    }
-
-    .delivery-radio {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 10;
-        margin: 0;
-    }
-
-    .delivery-label {
-        display: block;
-        cursor: pointer;
-        margin-bottom: 0;
-    }
-
-    .delivery-content {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 2px solid var(--netflix-medium-gray);
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-
-    .delivery-radio:checked+.delivery-label .delivery-content {
-        border-color: var(--netflix-red);
-        background: rgba(229, 9, 20, 0.1);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(229, 9, 20, 0.2);
-    }
-
-    .delivery-icon {
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--netflix-light-gray);
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
-
-    .delivery-radio:checked+.delivery-label .delivery-content .delivery-icon {
-        background: var(--netflix-red);
-        color: var(--netflix-white);
-    }
-
-    .delivery-details {
-        flex: 1;
-    }
-
-    .delivery-details h6 {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--netflix-white);
-    }
-
-    .delivery-check {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        border: 2px solid var(--netflix-medium-gray);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: transparent;
-        transition: all 0.3s ease;
-        flex-shrink: 0;
-    }
-
-    .delivery-radio:checked+.delivery-label .delivery-content .delivery-check {
-        background: var(--netflix-red);
-        border-color: var(--netflix-red);
-        color: var(--netflix-white);
-    }
-
-    /* Hosting Options */
-    .hosting-options {
-        display: grid;
-        gap: 1rem;
-    }
-
-    .hosting-option-card {
-        position: relative;
-    }
-
-    .hosting-radio {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 10;
-        margin: 0;
-    }
-
-    .hosting-label {
-        display: block;
-        cursor: pointer;
-        margin-bottom: 0;
-    }
-
-    .hosting-content {
-        padding: 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 2px solid var(--netflix-medium-gray);
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-
-    .hosting-radio:checked+.hosting-label .hosting-content {
-        border-color: var(--netflix-red);
-        background: rgba(229, 9, 20, 0.1);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(229, 9, 20, 0.2);
-    }
-
-    .hosting-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .hosting-features {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-top: 0.5rem;
-    }
-
-    .hosting-price {
-        text-align: right;
-        flex-shrink: 0;
-    }
-
-    .hosting-check {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        border: 2px solid var(--netflix-medium-gray);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: transparent;
-        transition: all 0.3s ease;
-    }
-
-    .hosting-radio:checked+.hosting-label .hosting-content .hosting-check {
-        background: var(--netflix-red);
-        border-color: var(--netflix-red);
-        color: var(--netflix-white);
-    }
-
-    /* Responsive Design */
+    .checkout-container { padding-top: 80px; min-height: 100vh; }
+    .animate-fade-in { animation: fadeInUp 0.6s ease-out; }
+    .checkout-steps { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 2rem 0; }
+    .checkout-steps .step { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--netflix-medium-gray); border-radius: 50px; color: var(--netflix-light-gray); font-weight: 500; transition: all 0.3s ease; }
+    .checkout-steps .step.active { background: var(--netflix-red); color: var(--netflix-white); transform: scale(1.05); }
+    .checkout-steps .step-divider { width: 40px; height: 2px; background: var(--netflix-medium-gray); }
+    .product-icon { width: 50px; height: 50px; background: rgba(229, 9, 20, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .form-section { border-bottom: 1px solid var(--netflix-medium-gray); padding-bottom: 2rem; }
+    .delivery-options, .hosting-options { display: grid; gap: 1rem; }
+    .delivery-option-card, .hosting-option-card { position: relative; }
+    .delivery-radio, .hosting-radio { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10; margin: 0; }
+    .delivery-content, .hosting-content { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border: 2px solid var(--netflix-medium-gray); border-radius: 12px; transition: all 0.3s ease; position: relative; }
+    .delivery-radio:checked+.delivery-label .delivery-content, .hosting-radio:checked+.hosting-label .hosting-content { border-color: var(--netflix-red); background: rgba(229, 9, 20, 0.1); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(229, 9, 20, 0.2); }
+    .delivery-icon { width: 60px; height: 60px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--netflix-light-gray); transition: all 0.3s ease; flex-shrink: 0; }
+    .delivery-radio:checked+.delivery-label .delivery-content .delivery-icon { background: var(--netflix-red); color: var(--netflix-white); }
+    .delivery-check, .hosting-check { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--netflix-medium-gray); display: flex; align-items: center; justify-content: center; color: transparent; transition: all 0.3s ease; }
+    .delivery-radio:checked+.delivery-label .delivery-content .delivery-check, .hosting-radio:checked+.hosting-label .hosting-content .hosting-check { background: var(--netflix-red); border-color: var(--netflix-red); color: var(--netflix-white); }
+    .hosting-header { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; }
+    
     @media (max-width: 768px) {
-        .checkout-steps {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .checkout-steps .step-divider {
-            width: 2px;
-            height: 20px;
-        }
-
-        .delivery-content {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .hosting-header {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .hosting-price {
-            text-align: center;
-        }
-
-        .hosting-check {
-            position: static;
-            margin: 1rem auto 0;
-        }
+        .checkout-steps { flex-direction: column; }
+        .delivery-content, .hosting-header { flex-direction: column; text-align: center; }
     }
 </style>
 {% endblock %}
@@ -502,133 +197,116 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Get form elements
         const deliveryRadios = document.querySelectorAll('input[name="delivery_type"]');
         const hostingWrapper = document.getElementById('hosting-plan-wrapper');
         const hostingRadios = document.querySelectorAll('input[name="hosting_plan"]');
         const hostingPriceLine = document.getElementById('hosting-price-line');
         const hostingPriceDisplay = document.getElementById('hosting-price-display');
         const totalPriceElement = document.getElementById('total-price');
+        const form = document.getElementById('checkout-options-form');
 
-        // Product base price (from Django template)
-        const basePrice = {{ product.price|default: "0"
-    }};
+        const basePrice = parseInt("{{ product.price|default:'0' }}") || 0;
 
-    // Hosting plan prices (you can adjust these)
-    const hostingPrices = {
-        'basic': 5000,
-        'premium': 15000,
-        'enterprise': 30000
-    };
-
-    // Function to toggle hosting plan visibility
-    function toggleHosting() {
-        const selected = document.querySelector('input[name="delivery_type"]:checked');
-
-        if (!selected) {
-            hostingWrapper.style.display = 'none';
-            return;
-        }
-
-        const selectedValue = selected.value.toLowerCase();
-
-        // Show hosting if 'hosted' or 'both' is selected
-        if (selectedValue === 'hosted' || selectedValue === 'both') {
-            hostingWrapper.style.display = 'block';
-            // Add smooth animation
-            hostingWrapper.style.animation = 'fadeInUp 0.5s ease-out';
-        } else {
-            hostingWrapper.style.display = 'none';
-            // Reset hosting price when hidden
-            updateTotalPrice(0);
-        }
-    }
-
-    // Function to update total price
-    function updateTotalPrice(hostingPrice) {
-        const total = basePrice + hostingPrice;
-        totalPriceElement.textContent = '₦' + total.toLocaleString('en-NG', { maximumFractionDigits: 0 });
-
-        if (hostingPrice > 0) {
-            hostingPriceLine.style.display = 'flex';
-            hostingPriceDisplay.textContent = '₦' + hostingPrice.toLocaleString('en-NG', { maximumFractionDigits: 0 });
-        } else {
-            hostingPriceLine.style.display = 'none';
-        }
-    }
-
-    // Function to update hosting plan prices display
-    function updateHostingPriceDisplays() {
-        const hostingPriceElements = document.querySelectorAll('.hosting-price .price-value');
-        hostingPriceElements.forEach((element, index) => {
-            const planTypes = ['basic', 'premium', 'enterprise'];
-            const planType = planTypes[index] || 'basic';
-            const price = hostingPrices[planType] || 0;
-            element.textContent = price.toLocaleString('en-NG', { maximumFractionDigits: 0 });
+        // Build hosting prices map from data attributes
+        const hostingPrices = {};
+        hostingRadios.forEach((radio, index) => {
+            // Try to get price from data attribute or use default mapping
+            let price = 0;
+            const label = radio.closest('.hosting-option-card').querySelector('h6').textContent;
+            if (label.includes('Basic')) price = 5000;
+            else if (label.includes('Premium')) price = 15000;
+            else if (label.includes('Enterprise')) price = 30000;
+            
+            hostingPrices[radio.value] = price;
+            
+            // Set display price
+            const priceElement = radio.closest('.hosting-option-card').querySelector('.price-value');
+            if (priceElement) priceElement.textContent = price.toLocaleString('en-NG');
         });
-    }
 
-    // Function to handle hosting plan selection
-    function handleHostingSelection() {
-        const selectedHosting = document.querySelector('input[name="hosting_plan"]:checked');
-
-        if (selectedHosting) {
-            const planValue = selectedHosting.value.toLowerCase();
-            const hostingPrice = hostingPrices[planValue] || 0;
-            updateTotalPrice(hostingPrice);
-        } else {
-            updateTotalPrice(0);
-        }
-    }
-
-    // Add event listeners to delivery type radios
-    deliveryRadios.forEach(radio => {
-        radio.addEventListener('change', function () {
-            toggleHosting();
-            // Reset hosting selection when delivery type changes
-            hostingRadios.forEach(h => h.checked = false);
-            updateTotalPrice(0);
-        });
-    });
-
-    // Add event listeners to hosting plan radios
-    hostingRadios.forEach(radio => {
-        radio.addEventListener('change', handleHostingSelection);
-    });
-
-    // Initialize on page load
-    updateHostingPriceDisplays();
-    toggleHosting();
-
-    // Check if hosting plan is pre-selected
-    const preselectedHosting = document.querySelector('input[name="hosting_plan"]:checked');
-    if (preselectedHosting) {
-        handleHostingSelection();
-    }
-
-    // Form validation
-    const form = document.getElementById('checkout-options-form');
-    form.addEventListener('submit', function (e) {
-        const selectedDelivery = document.querySelector('input[name="delivery_type"]:checked');
-
-        if (!selectedDelivery) {
-            e.preventDefault();
-            alert('Please select a delivery type');
-            return false;
-        }
-
-        const deliveryValue = selectedDelivery.value.toLowerCase();
-
-        // If hosted or both is selected, validate hosting plan selection
-        if (deliveryValue === 'hosted' || deliveryValue === 'both') {
-            const selectedHosting = document.querySelector('input[name="hosting_plan"]:checked');
-            if (!selectedHosting) {
-                e.preventDefault();
-                alert('Please select a hosting plan');
-                return false;
+        function toggleHosting() {
+            const selected = document.querySelector('input[name="delivery_type"]:checked');
+            if (!selected) {
+                hostingWrapper.style.display = 'none';
+                return;
+            }
+            const selectedValue = selected.value.toLowerCase();
+            if (selectedValue === 'hosted' || selectedValue === 'both') {
+                hostingWrapper.style.display = 'block';
+                hostingWrapper.style.animation = 'fadeInUp 0.5s ease-out';
+            } else {
+                hostingWrapper.style.display = 'none';
+                // Uncheck all hosting radios when hidden
+                hostingRadios.forEach(h => h.checked = false);
+                updateTotalPrice(0);
             }
         }
-    });
 
+        function updateTotalPrice(hostingPrice) {
+            const total = basePrice + hostingPrice;
+            totalPriceElement.textContent = '₦' + total.toLocaleString('en-NG');
+            if (hostingPrice > 0) {
+                hostingPriceLine.style.setProperty('display', 'flex', 'important');
+                hostingPriceDisplay.textContent = '₦' + hostingPrice.toLocaleString('en-NG');
+            } else {
+                hostingPriceLine.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        function handleHostingSelection() {
+            const selectedHosting = document.querySelector('input[name="hosting_plan"]:checked');
+            if (selectedHosting) {
+                const price = hostingPrices[selectedHosting.value] || 0;
+                updateTotalPrice(price);
+            } else {
+                updateTotalPrice(0);
+            }
+        }
+
+        deliveryRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                toggleHosting();
+            });
+        });
+
+        hostingRadios.forEach(radio => {
+            radio.addEventListener('change', handleHostingSelection);
+        });
+
+        // Initialize
+        toggleHosting();
+        
+        // Check if hosting is pre-selected
+        const preselectedHosting = document.querySelector('input[name="hosting_plan"]:checked');
+        if (preselectedHosting) {
+            handleHostingSelection();
+        }
+
+        // Form submission handler
+        form.addEventListener('submit', function (e) {
+            const selectedDelivery = document.querySelector('input[name="delivery_type"]:checked');
+            
+            if (!selectedDelivery) {
+                e.preventDefault();
+                alert('Please select a delivery type');
+                return false;
+            }
+            
+            const deliveryValue = selectedDelivery.value.toLowerCase();
+            
+            // Only require hosting plan if delivery type is hosted or both
+            if (deliveryValue === 'hosted' || deliveryValue === 'both') {
+                const selectedHosting = document.querySelector('input[name="hosting_plan"]:checked');
+                if (!selectedHosting) {
+                    e.preventDefault();
+                    alert('Please select a hosting plan');
+                    return false;
+                }
+            }
+            
+            // If we get here, form is valid - allow submission
+            console.log('Form submitting...');
+        });
+    });
 </script>
 {% endblock %}

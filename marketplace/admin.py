@@ -32,8 +32,8 @@ class SourceCodeOptionAdmin(admin.ModelAdmin):
 
 @admin.register(HostingPlan)
 class HostingPlanAdmin(admin.ModelAdmin):
-    list_display = ('product', 'name', 'price_per_month', 'is_active')
-    list_filter = ('product', 'is_active')
+    list_display = ('name', 'monthly_price')
+    list_filter = ('name',)
 
 
 @admin.action(description="Approve & Fulfill Selected Purchases")
