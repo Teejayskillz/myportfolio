@@ -18,6 +18,7 @@ class HostingPlan(models.Model):
     name = models.CharField(max_length=100, choices=PLAN_CHOICES)
     monthly_price = models.DecimalField(max_digits=10, decimal_places=2)
     features = models.TextField(help_text="Separate features with commas")
+    is_active = models.BooleanField(default=True) 
 
     def __str__(self):
         return f"{self.name} - ₦{self.monthly_price}/mo"
@@ -65,6 +66,10 @@ class Product(models.Model):
         'marketplace.HostingPlan',
         blank=True
     )
+    @property
+    def starting_monthly_price(self):
+        plans = self.available_hosting_plans.filter(is_active=True)
+        return plans.order_by('monthly_price').first()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):

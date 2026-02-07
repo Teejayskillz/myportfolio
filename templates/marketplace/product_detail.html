@@ -125,18 +125,35 @@
         </div>
 
         <div class="col-md-6">
-            <div class="action-card p-4 border rounded text-center shadow-sm border-success">
-                <i class="fas fa-server fa-2x mb-3 text-success"></i>
-                <h3>Rent & Host</h3>
-                <p class="text-muted small">We handle setup and hosting. Starting from:</p>
-                <div class="h2 mb-3">₦{{ product.rental_setup_fee|floatformat:0 }} <span class="fs-6 text-muted">+ Monthly Fee</span></div>
-                
-                <a href="/plans/{{ product.slug }}/rent" class="btn btn-success btn-lg w-100">
-                    <i class="fas fa-rocket me-2"></i>Rent Now
-                </a>
-            </div>
+    <div class="action-card p-4 border rounded text-center shadow-sm border-success">
+        <i class="fas fa-server fa-2x mb-3 text-success"></i>
+        <h3>Rent & Host</h3>
+        <p class="text-muted small">We handle setup and hosting for you.</p>
+
+        <div class="h2 mb-2">
+            ₦{{ product.rental_setup_fee|floatformat:0 }}
         </div>
+
+        {% if product.starting_monthly_price %}
+            <div class="text-muted mb-3">
+                + ₦{{ product.starting_monthly_price.monthly_price|floatformat:0 }}/month
+                <small class="d-block">
+                    ({{ product.starting_monthly_price.name }} plan)
+                </small>
+            </div>
+        {% else %}
+            <div class="text-muted mb-3">
+                Hosting plan required
+            </div>
+        {% endif %}
+
+        <a href="/plans/{{ product.slug }}/rent" class="btn btn-success btn-lg w-100">
+            <i class="fas fa-rocket me-2"></i>Rent Now
+        </a>
     </div>
+</div>
+
+  
 </div>
 
 
