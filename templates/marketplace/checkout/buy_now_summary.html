@@ -1,0 +1,334 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed - {{ purchase.product.title }} | LagosWebDev{% endblock %}
+
+{% block content %}
+<div class="confirm-wrap">
+    <!-- HERO -->
+    <section class="confirm-hero">
+        <div class="container py-5 text-center">
+            <div class="confirm-icon mb-3">
+                <i class="fas fa-check"></i>
+            </div>
+            <h1 class="mb-2" style="font-weight: 900;">Order Submitted!</h1>
+            <p class="mb-0" style="color: var(--netflix-light-gray);">
+                Thanks — we’ve received your order and it’s now <span style="color: var(--netflix-white); font-weight: 600;">being reviewed</span>.
+            </p>
+
+            <div class="order-badge mt-4">
+                <span style="color: var(--netflix-light-gray); font-size: .85rem; letter-spacing: 1px;">ORDER ID</span>
+                <span class="order-id">#{{ purchase.id|stringformat:"05d" }}</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 align-items-start">
+
+                <!-- LEFT -->
+                <div class="col-lg-8 order-2 order-lg-1">
+                    <div class="netflix-card">
+                        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+                            <div>
+                                <h4 class="mb-1" style="font-weight: 800;">
+                                    <i class="fas fa-receipt me-2"></i>Order Summary
+                                </h4>
+                                <div class="small" style="color: var(--netflix-light-gray);">
+                                    Review your order details below.
+                                </div>
+                            </div>
+
+                            <span class="status-pill {{ purchase.status|lower }}">
+                                {% if purchase.status == 'pending' %}
+                                    <i class="fas fa-clock me-2"></i>Pending Review
+                                {% elif purchase.status == 'approved' %}
+                                    <i class="fas fa-check-circle me-2"></i>Approved
+                                {% elif purchase.status == 'rejected' %}
+                                    <i class="fas fa-times-circle me-2"></i>Rejected
+                                {% else %}
+                                    {{ purchase.status|title }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <hr style="border-color: var(--netflix-medium-gray); opacity: .6;">
+
+                        <!-- Product row -->
+                        <div class="d-flex gap-3 align-items-start">
+                            <div class="p-thumb">
+                                {% if purchase.product.image %}
+                                    <img src="{{ purchase.product.image.url }}" alt="{{ purchase.product.title }}">
+                                {% else %}
+                                    <div class="p-thumb-ph">
+                                        <i class="fas fa-laptop-code"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex-fill">
+                                <div class="fw-bold" style="font-size: 1.05rem;">{{ purchase.product.title }}</div>
+                                <div class="small" style="color: var(--netflix-light-gray);">
+                                    {{ purchase.product.get_category_display }}
+                                    {% if purchase.product.version %} • v{{ purchase.product.version }}{% endif %}
+                                    {% if purchase.product.tech_stack %} • {{ purchase.product.tech_stack }}{% endif %}
+                                </div>
+                            </div>
+
+                            <div class="text-end">
+                                <div class="small" style="color: var(--netflix-light-gray);">Total</div>
+                                <div style="font-size: 1.4rem; font-weight: 900; color: var(--netflix-red);">
+                                    ₦{{ purchase.amount|floatformat:0 }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-color: var(--netflix-medium-gray); opacity: .6;">
+
+                        <!-- Details grid -->
+                        <div class="details-grid">
+                            <div class="d-item">
+                                <div class="d-k">Buyer</div>
+                                <div class="d-v">{{ purchase.buyer_name }}</div>
+                            </div>
+                            <div class="d-item">
+                                <div class="d-k">Email</div>
+                                <div class="d-v">{{ purchase.buyer_email }}</div>
+                            </div>
+                            <div class="d-item">
+                                <div class="d-k">WhatsApp</div>
+                                <div class="d-v">{{ purchase.whatsapp_number }}</div>
+                            </div>
+                            <div class="d-item">
+                                <div class="d-k">Order Date</div>
+                                <div class="d-v">{{ purchase.created_at|date:"F d, Y - g:i A" }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next steps -->
+                    <div class="netflix-card mt-4">
+                        <h5 class="mb-3" style="font-weight: 800;">
+                            <i class="fas fa-tasks me-2"></i>What happens next
+                        </h5>
+
+                        <ul class="next-list">
+                            <li>
+                                <span class="dot done"></span>
+                                Receipt submitted ✅
+                            </li>
+                            <li>
+                                <span class="dot active"></span>
+                                Verification in progress (usually 1–24 hours)
+                            </li>
+                            <li>
+                                <span class="dot"></span>
+                                You’ll get an email with download access after approval
+                            </li>
+                        </ul>
+
+                        <div class="mt-3 p-3 rounded"
+                             style="background: rgba(255,255,255,0.04); border: 1px solid var(--netflix-medium-gray);">
+                            <div class="small" style="color: var(--netflix-light-gray);">
+                                <i class="fas fa-bell me-2" style="color: var(--netflix-red);"></i>
+                                Updates will be sent to <span style="color: var(--netflix-white); font-weight: 700;">{{ purchase.buyer_email }}</span>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="text-center mt-4">
+                        <a href="{% url 'marketplace:product_list' %}" class="btn btn-netflix-primary me-2 mb-2">
+                            <i class="fas fa-store me-2"></i>Browse Products
+                        </a>
+                        <a href="{% url 'pages:home' %}" class="btn btn-netflix-secondary mb-2">
+                            <i class="fas fa-home me-2"></i>Back Home
+                        </a>
+                    </div>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="col-lg-4 order-1 order-lg-2">
+                    <div class="netflix-card sticky-top" style="top: 100px;">
+                        <h5 class="mb-3" style="font-weight: 800;">
+                            <i class="fas fa-headset me-2"></i>Need help?
+                        </h5>
+
+                        <p class="small mb-3" style="color: var(--netflix-light-gray);">
+                            Message us with your Order ID for faster support.
+                        </p>
+
+                        <div class="support-box">
+                            <a class="support-link" target="_blank"
+                               href="https://wa.me/2348102712103?text=Hi,%20I%20need%20help%20with%20order%20%23{{ purchase.id }}">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp Support</span>
+                                <i class="fas fa-arrow-right ms-auto"></i>
+                            </a>
+
+                            <a class="support-link"
+                               href="mailto:support@lagoswebdev.com?subject=Order%20%23{{ purchase.id }}">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email Support</span>
+                                <i class="fas fa-arrow-right ms-auto"></i>
+                            </a>
+                        </div>
+
+                        <hr class="my-4" style="border-color: var(--netflix-medium-gray); opacity: .6;">
+
+                        <div class="small" style="color: var(--netflix-light-gray); font-weight: 600;">
+                            What you get:
+                        </div>
+                        <ul class="mini-list mt-2">
+                            <li><i class="fas fa-check-circle me-2"></i>Full Source Code</li>
+                            <li><i class="fas fa-check-circle me-2"></i>Documentation</li>
+                            <li><i class="fas fa-check-circle me-2"></i>Commercial License</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .confirm-wrap { padding-top: 80px; min-height: 100vh; }
+
+    .confirm-hero {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.10) 0%, rgba(20, 20, 20, 0.95) 55%, rgba(229, 9, 20, 0.12) 100%);
+        border-bottom: 1px solid var(--netflix-medium-gray);
+    }
+
+    .confirm-icon {
+        width: 84px; height: 84px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(40, 167, 69, 0.15);
+        border: 1px solid rgba(40, 167, 69, 0.35);
+        color: #28a745;
+        font-size: 2rem;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    .order-badge {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .35rem;
+        padding: 0.9rem 1.4rem;
+        border-radius: 12px;
+        background: rgba(229, 9, 20, 0.10);
+        border: 1px solid rgba(229, 9, 20, 0.35);
+    }
+    .order-id {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        color: var(--netflix-red);
+        font-weight: 900;
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+    }
+
+    /* product thumb */
+    .p-thumb {
+        width: 74px; height: 74px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--netflix-medium-gray);
+        flex-shrink: 0;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .p-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .p-thumb-ph {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--netflix-light-gray);
+        font-size: 1.6rem;
+        background: rgba(255,255,255,0.04);
+    }
+
+    /* status pill */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .55rem .9rem;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: .9rem;
+        border: 1px solid var(--netflix-medium-gray);
+        background: rgba(255,255,255,0.04);
+        color: var(--netflix-white);
+        white-space: nowrap;
+    }
+    .status-pill.pending { border-color: rgba(255,193,7,.35); background: rgba(255,193,7,.10); color: #ffc107; }
+    .status-pill.approved { border-color: rgba(40,167,69,.35); background: rgba(40,167,69,.10); color: #28a745; }
+    .status-pill.rejected { border-color: rgba(220,53,69,.35); background: rgba(220,53,69,.10); color: #dc3545; }
+
+    /* details */
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+    .d-item {
+        padding: 1rem;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--netflix-medium-gray);
+    }
+    .d-k {
+        font-size: .78rem;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        color: var(--netflix-light-gray);
+        margin-bottom: .25rem;
+        font-weight: 700;
+    }
+    .d-v { color: var(--netflix-white); font-weight: 600; }
+
+    /* next list */
+    .next-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .8rem; }
+    .next-list li { display: flex; align-items: center; gap: .7rem; color: var(--netflix-light-gray); }
+    .dot {
+        width: 12px; height: 12px; border-radius: 50%;
+        border: 2px solid var(--netflix-medium-gray);
+        display: inline-block;
+    }
+    .dot.done { background: #28a745; border-color: #28a745; }
+    .dot.active { background: var(--netflix-red); border-color: var(--netflix-red); box-shadow: 0 0 0 6px rgba(229,9,20,0.12); }
+
+    /* support */
+    .support-box { display: grid; gap: .75rem; }
+    .support-link {
+        display: flex;
+        align-items: center;
+        gap: .9rem;
+        padding: 1rem;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--netflix-medium-gray);
+        text-decoration: none;
+        color: var(--netflix-white);
+        transition: all .2s ease;
+    }
+    .support-link:hover {
+        background: rgba(229, 9, 20, 0.10);
+        border-color: var(--netflix-red);
+        transform: translateX(4px);
+        color: var(--netflix-white);
+    }
+    .support-link i:first-child { color: var(--netflix-red); font-size: 1.35rem; }
+
+    .mini-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+    .mini-list li { color: var(--netflix-light-gray); display: flex; align-items: center; }
+    .mini-list i { color: #28a745; }
+
+    @media (max-width: 768px) {
+        .confirm-wrap { padding-top: 70px; }
+        .details-grid { grid-template-columns: 1fr; }
+    }
+</style>
+{% endblock %}

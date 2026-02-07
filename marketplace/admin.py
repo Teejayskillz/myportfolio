@@ -10,7 +10,6 @@ import secrets
 
 from .models import (
     Product,
-    SourceCodeOption,
     HostingPlan,
     PurchaseRequest,
     License,
@@ -23,11 +22,6 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     list_filter = ('category', 'is_active')
     search_fields = ('title', 'tech_stack')
-
-
-@admin.register(SourceCodeOption)
-class SourceCodeOptionAdmin(admin.ModelAdmin):
-    list_display = ('product', 'price', 'update_duration_months')
 
 
 @admin.register(HostingPlan)

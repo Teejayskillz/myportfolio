@@ -1,721 +1,451 @@
 {% extends 'base.html' %}
-{% block title %}Marketplace - Premium Templates & Products | LagosWebDev{% endblock %}
+{% block title %}Marketplace | LagosWebDev{% endblock %}
 
 {% block content %}
-<div class="marketplace-container">
-    <!-- Hero Section -->
-    <section class="marketplace-hero">
-        <div class="hero-overlay"></div>
-        <div class="container position-relative">
-            <div class="row justify-content-center text-center">
-                <div class="col-lg-8">
-                    <h1 class="display-3 fw-bold mb-3 animate-fade-in">
-                        <i class="fas fa-store me-3"></i>Premium Marketplace
-                    </h1>
-                    <p class="lead mb-4 animate-fade-in-delay">
-                        Professional website templates and digital products ready to launch your business
-                    </p>
+<div class="mp-wrap">
 
-                    <!-- Search & Filter Bar -->
-                    <div class="search-filter-bar animate-fade-in-delay-2">
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input type="text" class="form-control" id="searchInput" placeholder="Search products...">
-                            <select class="form-select filter-select" id="categoryFilter">
-                                <option value="">All Categories</option>
-                                <option value="wordpress">WordPress</option>
-                                <option value="django">Django</option>
-                                <option value="static">Static HTML</option>
-                                <option value="ecommerce">E-commerce</option>
-                                <option value="portfolio">Portfolio</option>
-                                <option value="business">Business</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+  <!-- HERO -->
+  <section class="mp-hero">
+    <div class="container position-relative">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-9">
+          <h1 class="mp-title">
+            <i class="fas fa-store me-3"></i>Marketplace
+          </h1>
+          <p class="mp-sub">
+            Premium templates, scripts, and tools — ready to launch your next project.
+          </p>
+
+          <!-- Search + Filter -->
+          <div class="mp-search">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+              <input type="text" class="form-control" id="searchInput" placeholder="Search products...">
+
+              <select class="form-select" id="categoryFilter">
+                <option value="">All Categories</option>
+                {# Use YOUR Product CATEGORY_CHOICES #}
+                <option value="script">Script</option>
+                <option value="tool">Tool</option>
+                <option value="plugin">Plugin</option>
+                <option value="template">Template</option>
+              </select>
             </div>
+
+            <div class="mp-mini mt-3">
+              <div class="mini-pill"><i class="fas fa-bolt"></i>Instant delivery</div>
+              <div class="mini-pill"><i class="fas fa-shield-alt"></i>Secure checkout</div>
+              <div class="mini-pill"><i class="fas fa-headset"></i>Support</div>
+            </div>
+          </div>
+
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section py-4">
-        <div class="container">
-            <div class="row text-center g-4">
-                <div class="col-6 col-md-3">
-                    <div class="stat-item">
-                        <i class="fas fa-box-open fa-2x mb-2 text-danger"></i>
-                        <h3 class="mb-0">{{ products.count }}</h3>
-                        <p class="text-muted mb-0">Products</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item">
-                        <i class="fas fa-download fa-2x mb-2 text-danger"></i>
-                        <h3 class="mb-0">500+</h3>
-                        <p class="text-muted mb-0">Downloads</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item">
-                        <i class="fas fa-star fa-2x mb-2 text-danger"></i>
-                        <h3 class="mb-0">4.8</h3>
-                        <p class="text-muted mb-0">Avg Rating</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item">
-                        <i class="fas fa-shield-alt fa-2x mb-2 text-danger"></i>
-                        <h3 class="mb-0">100%</h3>
-                        <p class="text-muted mb-0">Secure</p>
-                    </div>
-                </div>
-            </div>
+  <!-- LIST HEADER -->
+  <section class="py-4">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2 class="mb-1"><i class="fas fa-th-large me-2"></i>Browse Products</h2>
+          <p class="mb-0" style="color: var(--netflix-light-gray);">
+            Showing <span id="productCount">{{ products.count }}</span> product(s)
+          </p>
         </div>
-    </section>
 
-    <!-- Products Grid Section -->
-    <section class="products-section py-5">
-        <div class="container">
-            <!-- Section Header -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <div>
-                            <h2 class="mb-1">
-                                <i class="fas fa-th-large me-2"></i>Browse Products
-                            </h2>
-                            <p class="text-muted mb-0">Found <span id="productCount">{{ products.count }}</span>
-                                products</p>
-                        </div>
-                        <div class="view-toggle">
-                            <button class="btn btn-sm btn-outline-light active" id="gridView">
-                                <i class="fas fa-th"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-light" id="listView">
-                                <i class="fas fa-list"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Products Grid -->
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="productsGrid">
-                {% for product in products %}
-                <div class="col product-item" data-category="{{ product.category|lower }}">
-                    <div class="product-card netflix-card h-100">
-                        <!-- Product Image/Icon -->
-                        <div class="product-image">
-                            {% if product.main_image %}
-                            <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="img-fluid">
-                            {% else %}
-                            <div class="product-placeholder">
-                                <i class="fas fa-laptop-code fa-4x"></i>
-                            </div>
-                            {% endif %}
-
-                            <!-- Badges -->
-                            <div class="product-badges">
-                                {% if product.is_featured %}
-                                <span class="badge bg-danger">
-                                    <i class="fas fa-star me-1"></i>Featured
-                                </span>
-                                {% endif %}
-                                {% if product.version %}
-                                <span class="badge bg-dark">v{{ product.version }}</span>
-                                {% endif %}
-                            </div>
-
-                            <!-- Quick View Overlay -->
-                            <div class="product-overlay">
-                                <a href="{% url 'marketplace:product_detail' product.slug %}"
-                                    class="btn btn-netflix-primary btn-sm">
-                                    <i class="fas fa-eye me-2"></i>Quick View
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Product Content -->
-                        <div class="product-content">
-                            <!-- Category Tag -->
-                            <div class="product-category mb-2">
-                                <span class="category-tag">
-                                    <i class="fas fa-tag me-1"></i>{{ product.get_category_display }}
-                                </span>
-                            </div>
-
-                            <!-- Product Title -->
-                            <h5 class="product-title mb-2">
-                                <a href="{% url 'marketplace:product_detail' product.slug %}">
-                                    {{ product.title }}
-                                </a>
-                            </h5>
-
-                            <!-- Product Description -->
-                            {% if product.description %}
-                            <p class="product-description text-muted small mb-3">
-                                {{ product.description|truncatewords:15 }}
-                            </p>
-                            {% endif %}
-
-                            <!-- Tech Stack -->
-                            <div class="product-tech mb-3">
-                                {% for tech in product.tech_stack.split|slice:":3" %}
-                                <span class="tech-badge">{{ tech }}</span>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Product Meta -->
-                            <div class="product-meta mb-3">
-                                <div class="meta-item">
-                                    <i class="fas fa-download me-1"></i>
-                                    <span>{{ product.download_count|default:"0" }}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-star me-1"></i>
-                                    <span>{{ product.rating|default:"5.0" }}</span>
-                                </div>
-                                {% if product.updated_at %}
-                                <div class="meta-item">
-                                    <i class="fas fa-clock me-1"></i>
-                                    <span>{{ product.updated_at|timesince }} ago</span>
-                                </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Price & Action -->
-                            <div class="product-footer">
-                                <div class="product-price">
-                                    <span class="price-label">Price:</span>
-                                    <span class="price-value">₦{{ product.price|floatformat:0 }}</span>
-                                </div>
-                                <a href="{% url 'marketplace:product_detail' product.slug %}"
-                                    class="btn btn-netflix-primary btn-sm">
-                                    View Details<i class="fas fa-arrow-right ms-2"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <div class="empty-state text-center py-5">
-                        <i class="fas fa-box-open fa-5x mb-4 text-muted"></i>
-                        <h3 class="mb-3">No Products Available</h3>
-                        <p class="text-muted mb-4">We're working on adding new products to our marketplace.</p>
-                        <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-primary">
-                            <i class="fas fa-envelope me-2"></i>Request a Custom Product
-                        </a>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- No Results Message (Hidden by default) -->
-            <div class="row d-none" id="noResults">
-                <div class="col-12">
-                    <div class="empty-state text-center py-5">
-                        <i class="fas fa-search fa-5x mb-4 text-muted"></i>
-                        <h3 class="mb-3">No Products Found</h3>
-                        <p class="text-muted mb-4">Try adjusting your search or filter to find what you're looking for.
-                        </p>
-                        <button class="btn btn-netflix-secondary" id="clearFilters">
-                            <i class="fas fa-redo me-2"></i>Clear Filters
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="mp-view">
+          <button class="btn btn-sm btn-outline-light active" id="gridView" type="button" title="Grid view">
+            <i class="fas fa-th"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-light" id="listView" type="button" title="List view">
+            <i class="fas fa-list"></i>
+          </button>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section py-5">
-        <div class="container">
-            <div class="netflix-card text-center p-5"
-                style="background: linear-gradient(135deg, var(--netflix-red), #b20710);">
-                <h2 class="mb-3">Can't Find What You Need?</h2>
-                <p class="lead mb-4">We offer custom development services tailored to your specific requirements.</p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-secondary btn-lg">
-                        <i class="fas fa-comments me-2"></i>Request Custom Project
-                    </a>
-                    <a href="{% url 'pricing:pricing_page' %}" class="btn btn-light btn-lg">
-                        <i class="fas fa-tag me-2"></i>View Pricing
-                    </a>
+  <!-- PRODUCTS -->
+  <section class="pb-5">
+    <div class="container">
+
+      <div class="mp-grid row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="productsGrid">
+        {% for product in products %}
+        <div class="col product-item" data-category="{{ product.category|lower }}">
+          <div class="mp-card h-100">
+
+            <!-- Image -->
+            <a class="mp-img" href="{% url 'marketplace:product_detail' product.slug %}">
+              {% if product.main_image %}
+                <img src="{{ product.main_image.url }}" alt="{{ product.title }}">
+              {% else %}
+                <div class="mp-ph"><i class="fas fa-laptop-code"></i></div>
+              {% endif %}
+
+              <div class="mp-badges">
+                {% if product.is_featured %}
+                  <span class="badge bg-danger"><i class="fas fa-star me-1"></i>Featured</span>
+                {% endif %}
+                {% if product.version %}
+                  <span class="badge bg-dark">v{{ product.version }}</span>
+                {% endif %}
+              </div>
+            </a>
+
+            <!-- Content -->
+            <div class="mp-body">
+              <div class="mp-cat">
+                <span class="cat-pill"><i class="fas fa-tag me-1"></i>{{ product.get_category_display }}</span>
+              </div>
+
+              <h5 class="mp-name">
+                <a href="{% url 'marketplace:product_detail' product.slug %}">{{ product.title }}</a>
+              </h5>
+
+              {% if product.short_description %}
+                <p class="mp-desc">{{ product.short_description|truncatewords:18 }}</p>
+              {% elif product.description %}
+                <p class="mp-desc">{{ product.description|striptags|truncatewords:18 }}</p>
+              {% endif %}
+
+              {% if product.tech_stack %}
+                <div class="mp-tech">
+                  <i class="fas fa-layer-group me-2"></i>{{ product.tech_stack }}
                 </div>
+              {% endif %}
+
+              <div class="mp-footer">
+                <div class="mp-price">
+                  <div class="price-label">From</div>
+                  <div class="price-value">₦{{ product.price_full_ownership|floatformat:0 }}</div>
+                </div>
+
+                <a href="{% url 'marketplace:product_detail' product.slug %}" class="btn btn-netflix-primary btn-sm">
+                  View<i class="fas fa-arrow-right ms-2"></i>
+                </a>
+              </div>
             </div>
+
+          </div>
         </div>
-    </section>
+        {% empty %}
+        <div class="col-12">
+          <div class="mp-empty text-center py-5">
+            <i class="fas fa-box-open fa-4x mb-3" style="opacity:.5;"></i>
+            <h3 class="mb-2">No products yet</h3>
+            <p class="mb-4" style="color: var(--netflix-light-gray);">
+              We’re adding new items soon. Want something custom?
+            </p>
+            <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-primary">
+              <i class="fas fa-envelope me-2"></i>Request a Custom Product
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- No results -->
+      <div class="row d-none" id="noResults">
+        <div class="col-12">
+          <div class="mp-empty text-center py-5">
+            <i class="fas fa-search fa-4x mb-3" style="opacity:.5;"></i>
+            <h3 class="mb-2">No products found</h3>
+            <p class="mb-4" style="color: var(--netflix-light-gray);">
+              Try a different search or category.
+            </p>
+            <button class="btn btn-netflix-secondary" id="clearFilters" type="button">
+              <i class="fas fa-redo me-2"></i>Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-5">
+    <div class="container">
+      <div class="netflix-card text-center p-5 mp-cta">
+        <h2 class="mb-2">Need something custom?</h2>
+        <p class="lead mb-4">We can build it exactly to your requirements.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-secondary btn-lg">
+            <i class="fas fa-comments me-2"></i>Request Custom Project
+          </a>
+          <a href="{% url 'pricing:pricing_page' %}" class="btn btn-light btn-lg">
+            <i class="fas fa-tag me-2"></i>View Pricing
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <style>
-    /* Marketplace Container */
-    .marketplace-container {
-        padding-top: 80px;
-        min-height: 100vh;
-    }
+  .mp-wrap{ padding-top:80px; min-height:100vh; }
 
-    /* Hero Section */
-    .marketplace-hero {
-        background: linear-gradient(135deg, rgba(229, 9, 20, 0.1) 0%, rgba(20, 20, 20, 0.9) 100%),
-            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23141414" width="1200" height="600"/><g fill-opacity="0.05"><circle fill="%23e50914" cx="200" cy="100" r="100"/><circle fill="%23e50914" cx="800" cy="400" r="150"/><circle fill="%23e50914" cx="1000" cy="200" r="80"/></g></svg>');
-        background-size: cover;
-        background-position: center;
-        padding: 6rem 0 4rem;
-        position: relative;
-        margin-bottom: 2rem;
-    }
+  .mp-hero{
+    position:relative;
+    padding: 5.5rem 0 3.5rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.12), rgba(20,20,20,0.92));
+    border-bottom: 1px solid var(--netflix-medium-gray);
+  }
+  .mp-title{
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 950;
+    margin-bottom: .6rem;
+  }
+  .mp-sub{
+    color: var(--netflix-light-gray);
+    font-size: 1.1rem;
+    margin-bottom: 1.6rem;
+  }
 
-    .hero-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(180deg, rgba(20, 20, 20, 0.5) 0%, rgba(20, 20, 20, 0.9) 100%);
-    }
+  .mp-search{ max-width: 820px; margin: 0 auto; }
+  .mp-search .input-group{
+    overflow:hidden;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 12px 45px rgba(0,0,0,.35);
+  }
+  .mp-search .input-group-text,
+  .mp-search .form-control,
+  .mp-search .form-select{
+    background: rgba(0,0,0,0.35);
+    border: 0;
+    color: var(--netflix-white);
+    padding: 1rem 1rem;
+  }
+  .mp-search .form-control::placeholder{ color: var(--netflix-light-gray); }
+  .mp-search .form-control:focus,
+  .mp-search .form-select:focus{ box-shadow:none; outline:none; background: rgba(255,255,255,0.06); }
 
-    /* Animations */
-    .animate-fade-in {
-        animation: fadeInUp 0.8s ease-out;
-    }
+  .mp-mini{ display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+  .mini-pill{
+    display:inline-flex; align-items:center; gap:.5rem;
+    padding: .45rem .8rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--netflix-medium-gray);
+    color: var(--netflix-light-gray);
+    font-size: .9rem;
+  }
+  .mini-pill i{ color: #28a745; }
 
-    .animate-fade-in-delay {
-        animation: fadeInUp 0.8s ease-out 0.2s backwards;
-    }
+  .mp-view button{
+    border-color: var(--netflix-medium-gray);
+    color: var(--netflix-light-gray);
+  }
+  .mp-view button.active,
+  .mp-view button:hover{
+    background: var(--netflix-red);
+    border-color: var(--netflix-red);
+    color: var(--netflix-white);
+  }
 
-    .animate-fade-in-delay-2 {
-        animation: fadeInUp 0.8s ease-out 0.4s backwards;
-    }
+  /* Card */
+  .mp-card{
+    border-radius: 16px;
+    overflow:hidden;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--netflix-medium-gray);
+    transition: transform .2s ease, border-color .2s ease;
+    display:flex;
+    flex-direction:column;
+  }
+  .mp-card:hover{ transform: translateY(-4px); border-color: rgba(229,9,20,0.35); }
 
-    /* Search & Filter Bar */
-    .search-filter-bar {
-        max-width: 700px;
-        margin: 0 auto;
-    }
+  .mp-img{
+    position:relative;
+    display:block;
+    height: 220px;
+    background: var(--netflix-dark-gray);
+    overflow:hidden;
+    text-decoration:none;
+  }
+  .mp-img img{
+    width:100%; height:100%;
+    object-fit:cover;
+    transition: transform .45s ease;
+  }
+  .mp-card:hover .mp-img img{ transform: scale(1.06); }
 
-    .search-filter-bar .input-group {
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        overflow: hidden;
-    }
+  .mp-ph{
+    height:100%;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--netflix-light-gray);
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.25));
+    font-size: 2.8rem;
+  }
 
-    .search-filter-bar .input-group-text {
-        background: var(--netflix-dark-gray);
-        border: none;
-        color: var(--netflix-light-gray);
-        padding: 1rem 1.5rem;
-    }
+  .mp-badges{
+    position:absolute;
+    top:12px; left:12px;
+    display:flex; flex-direction:column; gap:.45rem;
+  }
 
-    .search-filter-bar .form-control,
-    .search-filter-bar .form-select {
-        background: var(--netflix-dark-gray);
-        border: none;
-        color: var(--netflix-white);
-        padding: 1rem;
-        font-size: 1rem;
-    }
+  .mp-body{ padding: 1.25rem; display:flex; flex-direction:column; gap:.6rem; flex:1; }
 
-    .search-filter-bar .form-control:focus,
-    .search-filter-bar .form-select:focus {
-        background: var(--netflix-medium-gray);
-        color: var(--netflix-white);
-        box-shadow: none;
-        outline: none;
-    }
+  .cat-pill{
+    display:inline-flex; align-items:center;
+    font-size: .78rem;
+    color: var(--netflix-red);
+    background: rgba(229,9,20,0.12);
+    border: 1px solid rgba(229,9,20,0.22);
+    padding: .28rem .7rem;
+    border-radius: 999px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
 
-    .search-filter-bar .form-control::placeholder {
-        color: var(--netflix-light-gray);
-    }
+  .mp-name{ margin:0; font-weight: 900; }
+  .mp-name a{ color: var(--netflix-white); text-decoration:none; }
+  .mp-name a:hover{ color: var(--netflix-red); }
 
-    .filter-select {
-        max-width: 200px;
-    }
+  .mp-desc{
+    margin:0;
+    color: var(--netflix-light-gray);
+    line-height:1.55;
+    font-size: .95rem;
+  }
 
-    /* Stats Section */
-    .stats-section {
-        background: rgba(255, 255, 255, 0.03);
-        border-top: 1px solid var(--netflix-medium-gray);
-        border-bottom: 1px solid var(--netflix-medium-gray);
-    }
+  .mp-tech{
+    color: var(--netflix-light-gray);
+    font-size: .9rem;
+    opacity: .95;
+  }
 
-    .stat-item {
-        padding: 1rem;
-    }
+  .mp-footer{
+    margin-top:auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--netflix-medium-gray);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 1rem;
+  }
 
-    .stat-item h3 {
-        color: var(--netflix-red);
-        font-weight: 700;
-        font-size: 2rem;
-    }
+  .mp-price .price-label{
+    font-size: .75rem;
+    color: var(--netflix-light-gray);
+    text-transform: uppercase;
+    letter-spacing: .6px;
+  }
+  .mp-price .price-value{
+    font-size: 1.45rem;
+    font-weight: 950;
+    color: var(--netflix-red);
+    line-height: 1.1;
+  }
 
-    /* View Toggle */
-    .view-toggle button {
-        border-color: var(--netflix-medium-gray);
-        color: var(--netflix-light-gray);
-        margin: 0 0.25rem;
-        transition: all 0.3s ease;
-    }
+  .mp-empty{
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--netflix-medium-gray);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+  }
 
-    .view-toggle button:hover,
-    .view-toggle button.active {
-        background: var(--netflix-red);
-        border-color: var(--netflix-red);
-        color: var(--netflix-white);
-    }
+  .mp-cta{
+    background: linear-gradient(135deg, var(--netflix-red), #b20710);
+    border: none;
+  }
 
-    /* Product Card */
-    .product-card {
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
-    }
+  /* LIST VIEW */
+  .mp-grid.list-view{
+    display:flex;
+    flex-direction:column;
+    gap: 1rem;
+  }
+  .mp-grid.list-view .product-item{ width:100%; }
+  .mp-grid.list-view .mp-card{
+    flex-direction:row;
+    align-items:stretch;
+  }
+  .mp-grid.list-view .mp-img{
+    width: 280px;
+    height: 180px;
+    flex-shrink:0;
+    border-right: 1px solid var(--netflix-medium-gray);
+  }
 
-    .product-image {
-        position: relative;
-        width: 100%;
-        height: 250px;
-        overflow: hidden;
-        background: var(--netflix-medium-gray);
-        border-radius: 8px 8px 0 0;
-    }
-
-    .product-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-
-    .product-card:hover .product-image img {
-        transform: scale(1.1);
-    }
-
-    .product-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--netflix-light-gray);
-        background: linear-gradient(135deg, var(--netflix-medium-gray), var(--netflix-dark-gray));
-    }
-
-    /* Product Badges */
-    .product-badges {
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        display: flex;
-        gap: 0.5rem;
-        flex-direction: column;
-        align-items: flex-start;
-        z-index: 2;
-    }
-
-    .product-badges .badge {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.8rem;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Product Overlay */
-    .product-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(20, 20, 20, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .product-card:hover .product-overlay {
-        opacity: 1;
-    }
-
-    /* Product Content */
-    .product-content {
-        padding: 1.5rem;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .product-category {
-        margin-bottom: 0.5rem;
-    }
-
-    .category-tag {
-        display: inline-block;
-        font-size: 0.75rem;
-        color: var(--netflix-red);
-        background: rgba(229, 9, 20, 0.1);
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .product-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .product-title a {
-        color: var(--netflix-white);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .product-title a:hover {
-        color: var(--netflix-red);
-    }
-
-    .product-description {
-        line-height: 1.6;
-        flex: 1;
-    }
-
-    /* Tech Stack Badges */
-    .product-tech {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .tech-badge {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.7rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--netflix-medium-gray);
-        border-radius: 4px;
-        color: var(--netflix-light-gray);
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Product Meta */
-    .product-meta {
-        display: flex;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        padding-top: 1rem;
-        border-top: 1px solid var(--netflix-medium-gray);
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        font-size: 0.85rem;
-        color: var(--netflix-light-gray);
-    }
-
-    .meta-item i {
-        color: var(--netflix-red);
-        margin-right: 0.3rem;
-    }
-
-    /* Product Footer */
-    .product-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--netflix-medium-gray);
-        margin-top: auto;
-    }
-
-    .product-price {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .price-label {
-        font-size: 0.75rem;
-        color: var(--netflix-light-gray);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .price-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--netflix-red);
-    }
-
-    /* Empty State */
-    .empty-state {
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 12px;
-        padding: 3rem 2rem;
-    }
-
-    .empty-state i {
-        opacity: 0.5;
-    }
-
-    /* CTA Section */
-    .cta-section {
-        margin-top: 3rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .marketplace-hero {
-            padding: 4rem 0 2rem;
-        }
-
-        .filter-select {
-            max-width: 100%;
-        }
-
-        .product-image {
-            height: 200px;
-        }
-
-        .stat-item h3 {
-            font-size: 1.5rem;
-        }
-
-        .view-toggle {
-            width: 100%;
-            text-align: center;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .product-footer {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .product-footer .btn {
-            width: 100%;
-        }
-    }
+  @media (max-width: 768px){
+    .mp-wrap{ padding-top:70px; }
+    .mp-grid.list-view .mp-card{ flex-direction:column; }
+    .mp-grid.list-view .mp-img{ width:100%; height: 210px; border-right:none; }
+  }
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-        const categoryFilter = document.getElementById('categoryFilter');
-        const productsGrid = document.getElementById('productsGrid');
-        const productItems = document.querySelectorAll('.product-item');
-        const productCount = document.getElementById('productCount');
-        const noResults = document.getElementById('noResults');
-        const clearFiltersBtn = document.getElementById('clearFilters');
-        const gridViewBtn = document.getElementById('gridView');
-        const listViewBtn = document.getElementById('listView');
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const productsGrid = document.getElementById('productsGrid');
+    const productItems = document.querySelectorAll('.product-item');
+    const productCount = document.getElementById('productCount');
+    const noResults = document.getElementById('noResults');
+    const clearFiltersBtn = document.getElementById('clearFilters');
+    const gridViewBtn = document.getElementById('gridView');
+    const listViewBtn = document.getElementById('listView');
 
-        // Search and Filter Function
-        function filterProducts() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedCategory = categoryFilter.value.toLowerCase();
-            let visibleCount = 0;
+    function filterProducts() {
+      const searchTerm = (searchInput?.value || '').toLowerCase().trim();
+      const selectedCategory = (categoryFilter?.value || '').toLowerCase().trim();
+      let visibleCount = 0;
 
-            productItems.forEach(item => {
-                const productCard = item.querySelector('.product-card');
-                const title = productCard.querySelector('.product-title a').textContent.toLowerCase();
-                const description = productCard.querySelector('.product-description')?.textContent.toLowerCase() || '';
-                const category = item.dataset.category;
+      productItems.forEach(item => {
+        const title = item.querySelector('.mp-name a')?.textContent.toLowerCase() || '';
+        const desc = item.querySelector('.mp-desc')?.textContent.toLowerCase() || '';
+        const cat = item.dataset.category || '';
 
-                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-                const matchesCategory = !selectedCategory || category === selectedCategory;
+        const matchesSearch = !searchTerm || title.includes(searchTerm) || desc.includes(searchTerm);
+        const matchesCategory = !selectedCategory || cat === selectedCategory;
 
-                if (matchesSearch && matchesCategory) {
-                    item.style.display = '';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            // Update product count
-            productCount.textContent = visibleCount;
-
-            // Show/hide no results message
-            if (visibleCount === 0) {
-                productsGrid.classList.add('d-none');
-                noResults.classList.remove('d-none');
-            } else {
-                productsGrid.classList.remove('d-none');
-                noResults.classList.add('d-none');
-            }
+        if (matchesSearch && matchesCategory) {
+          item.style.display = '';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
         }
+      });
 
-        // Event Listeners
-        if (searchInput) {
-            searchInput.addEventListener('input', filterProducts);
-        }
+      if (productCount) productCount.textContent = visibleCount;
 
-        if (categoryFilter) {
-            categoryFilter.addEventListener('change', filterProducts);
-        }
+      if (visibleCount === 0) {
+        productsGrid.classList.add('d-none');
+        noResults.classList.remove('d-none');
+      } else {
+        productsGrid.classList.remove('d-none');
+        noResults.classList.add('d-none');
+      }
+    }
 
-        if (clearFiltersBtn) {
-            clearFiltersBtn.addEventListener('click', function () {
-                searchInput.value = '';
-                categoryFilter.value = '';
-                filterProducts();
-            });
-        }
+    searchInput?.addEventListener('input', filterProducts);
+    categoryFilter?.addEventListener('change', filterProducts);
 
-        // View Toggle (Grid/List)
-        if (gridViewBtn && listViewBtn) {
-            gridViewBtn.addEventListener('click', function () {
-                productsGrid.classList.remove('list-view');
-                productsGrid.classList.add('row-cols-1', 'row-cols-md-2', 'row-cols-lg-3');
-                gridViewBtn.classList.add('active');
-                listViewBtn.classList.remove('active');
-            });
-
-            listViewBtn.addEventListener('click', function () {
-                productsGrid.classList.add('list-view');
-                productsGrid.classList.remove('row-cols-1', 'row-cols-md-2', 'row-cols-lg-3');
-                listViewBtn.classList.add('active');
-                gridViewBtn.classList.remove('active');
-            });
-        }
-
-        // Smooth scroll animation for product cards
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function (entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '0';
-                    entry.target.style.transform = 'translateY(20px)';
-
-                    setTimeout(() => {
-                        entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }, 100);
-
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        productItems.forEach(item => {
-            observer.observe(item);
-        });
+    clearFiltersBtn?.addEventListener('click', function () {
+      if (searchInput) searchInput.value = '';
+      if (categoryFilter) categoryFilter.value = '';
+      filterProducts();
     });
+
+    gridViewBtn?.addEventListener('click', function () {
+      productsGrid.classList.remove('list-view');
+      productsGrid.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'row-cols-lg-3', 'g-4');
+      gridViewBtn.classList.add('active');
+      listViewBtn.classList.remove('active');
+    });
+
+    listViewBtn?.addEventListener('click', function () {
+      productsGrid.classList.add('list-view');
+      productsGrid.classList.remove('row-cols-1', 'row-cols-md-2', 'row-cols-lg-3', 'g-4');
+      listViewBtn.classList.add('active');
+      gridViewBtn.classList.remove('active');
+    });
+  });
 </script>
 {% endblock %}

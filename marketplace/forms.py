@@ -20,7 +20,7 @@ class CheckoutOptionsForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         if product:
-            self.fields['hosting_plan'].queryset = product.hosting_plans.filter(is_active=True)
+            self.fields['hosting_plan'].queryset = product.available_hosting_plans.filter(is_active=True)
 
 class BuyerDetailsForm(forms.Form):
     buyer_name = forms.CharField(max_length=255)

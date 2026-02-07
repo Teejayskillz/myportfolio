@@ -1,0 +1,467 @@
+{% extends 'base.html' %}
+{% block title %}Payment & Upload Receipt - {{ product.title }} | LagosWebDev{% endblock %}
+
+{% block content %}
+<div class="pay-wrap">
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 align-items-start">
+
+                <!-- LEFT: Payment + Upload -->
+                <div class="col-lg-8 order-2 order-lg-1">
+
+                    <!-- Payment Details -->
+                    <div class="netflix-card mb-4">
+                        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 900;">
+                                    <i class="fas fa-university me-2"></i>Make Payment
+                                </h3>
+                                <p class="mb-0" style="color: var(--netflix-light-gray);">
+                                    Transfer the exact amount, then upload your receipt below.
+                                </p>
+                            </div>
+
+                            <span class="badge px-3 py-2"
+                                  style="background: rgba(255, 193, 7, 0.12); border: 1px solid rgba(255, 193, 7, 0.35); color: #ffc107;">
+                                <i class="fas fa-clock me-2"></i>Pending Payment
+                            </span>
+                        </div>
+
+                        <hr style="border-color: var(--netflix-medium-gray); opacity:.6;">
+
+                        <!-- Bank Details -->
+                        <div class="grid-2">
+                            <div class="b-card">
+                                <div class="b-k">Bank Name</div>
+                                <div class="b-v">
+                                    <span id="bankName">GTBank</span>
+                                    <button type="button" class="copy-btn" data-copy="GTBank" title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="b-card highlight">
+                                <div class="b-k">Account Number</div>
+                                <div class="b-v">
+                                    <span id="acctNo">1234567890</span>
+                                    <button type="button" class="copy-btn" data-copy="1234567890" title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="b-card">
+                                <div class="b-k">Account Name</div>
+                                <div class="b-v">
+                                    <span id="acctName">Apatira Tijani</span>
+                                    <button type="button" class="copy-btn" data-copy="Apatira Tijani" title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="b-card highlight">
+                                <div class="b-k">Amount</div>
+                                <div class="b-v" style="color: var(--netflix-red);">
+                                    <span id="amount">₦{{ product.price_full_ownership|floatformat:0 }}</span>
+                                    <button type="button" class="copy-btn"
+                                            data-copy="{{ product.price_full_ownership|floatformat:0 }}" title="Copy">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 rounded"
+                             style="background: rgba(13,110,253,0.08); border: 1px solid rgba(13,110,253,0.25);">
+                            <div class="small" style="color: var(--netflix-light-gray);">
+                                <i class="fas fa-info-circle me-2" style="color:#5aa7ff;"></i>
+                                Use your <strong>Order ID</strong> or your email as the transfer narration if possible.
+                                Verification usually takes <strong>1–24 hours</strong>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Receipt -->
+                    <div class="netflix-card">
+                        <h4 class="mb-2" style="font-weight: 900;">
+                            <i class="fas fa-cloud-upload-alt me-2"></i>Upload Receipt
+                        </h4>
+                        <p class="mb-4" style="color: var(--netflix-light-gray);">
+                            Upload a clear screenshot/photo or PDF of your payment receipt.
+                        </p>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <form method="post" enctype="multipart/form-data" id="receiptForm">
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                                <label for="{{ field.id_for_label }}" class="form-label" style="font-weight: 600;">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span style="color: var(--netflix-red);">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {% if field.field.widget.input_type == 'file' %}
+                                    <div class="upload-box mb-2" id="uploadBox">
+                                        <div class="upload-left">
+                                            <div class="upload-ico"><i class="fas fa-file-upload"></i></div>
+                                            <div>
+                                                <div class="fw-bold">Choose receipt file</div>
+                                                <div class="small" style="color: var(--netflix-light-gray);">
+                                                    JPG / PNG / PDF • Max 5MB
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="upload-right">
+                                            <button type="button" class="btn btn-netflix-secondary btn-sm" id="pickFileBtn">
+                                                Browse
+                                            </button>
+                                        </div>
+
+                                        <!-- real input but invisible -->
+                                        {{ field }}
+                                    </div>
+
+                                    <div class="file-chip d-none" id="fileChip">
+                                        <i class="fas fa-paperclip me-2"></i>
+                                        <span id="fileName">receipt</span>
+                                        <span class="ms-auto" id="fileSize"></span>
+                                        <button type="button" class="xbtn ms-3" id="clearFile" title="Remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+
+                                {% if field.help_text %}
+                                    <div class="form-text" style="color: var(--netflix-light-gray);">
+                                        {{ field.help_text }}
+                                    </div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ field.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <div class="d-flex flex-column flex-md-row gap-3 justify-content-between mt-4">
+                                <a href="{% url 'marketplace:buy_now' product.slug %}" class="btn btn-netflix-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back
+                                </a>
+
+                                <button type="submit" class="btn btn-netflix-primary" id="submitBtn" style="min-width: 260px;">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Receipt
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Help -->
+                    <div class="netflix-card mt-4">
+                        <h5 class="mb-2" style="font-weight: 800;">
+                            <i class="fas fa-headset me-2"></i>Need help?
+                        </h5>
+                        <p class="small mb-3" style="color: var(--netflix-light-gray);">
+                            If anything looks confusing, message us with your name and the product title.
+                        </p>
+
+                        <div class="help-grid">
+                            <a class="help-link" target="_blank" href="https://wa.me/2348102712103">
+                                <i class="fab fa-whatsapp"></i><span>WhatsApp</span><i class="fas fa-arrow-right ms-auto"></i>
+                            </a>
+                            <a class="help-link" href="mailto:support@lagoswebdev.com">
+                                <i class="fas fa-envelope"></i><span>Email</span><i class="fas fa-arrow-right ms-auto"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Summary -->
+                <div class="col-lg-4 order-1 order-lg-2">
+                    <div class="netflix-card sticky-top" style="top: 100px;">
+                        <h5 class="mb-3" style="font-weight: 800;">
+                            <i class="fas fa-shopping-bag me-2"></i>Order Summary
+                        </h5>
+
+                        <div class="d-flex gap-3 align-items-start">
+                            <div class="s-thumb">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                                {% else %}
+                                    <div class="s-ph"><i class="fas fa-laptop-code"></i></div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex-fill">
+                                <div class="fw-bold">{{ product.title }}</div>
+                                <div class="small" style="color: var(--netflix-light-gray);">
+                                    {{ product.get_category_display }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" style="border-color: var(--netflix-medium-gray); opacity:.6;">
+
+                        <div class="text-center">
+                            <div class="small" style="color: var(--netflix-light-gray);">Total to Pay</div>
+                            <div style="font-size: 1.6rem; font-weight: 900; color: var(--netflix-red);">
+                                ₦{{ product.price_full_ownership|floatformat:0 }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 rounded"
+                             style="background: rgba(255,255,255,0.04); border: 1px solid var(--netflix-medium-gray);">
+                            <div class="small" style="color: var(--netflix-light-gray);">
+                                <i class="fas fa-check-circle me-2" style="color:#28a745;"></i>
+                                Upload a clear receipt so approval is faster.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+    .pay-wrap { padding-top: 80px; min-height: 100vh; }
+
+    /* Bank grid */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .b-card {
+        padding: 1.1rem;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--netflix-medium-gray);
+        transition: all .2s ease;
+    }
+    .b-card:hover { transform: translateY(-2px); border-color: rgba(229,9,20,0.35); }
+    .b-card.highlight { background: rgba(229,9,20,0.10); border-color: rgba(229,9,20,0.35); }
+
+    .b-k {
+        font-size: .78rem;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        color: var(--netflix-light-gray);
+        margin-bottom: .35rem;
+        font-weight: 800;
+    }
+
+    .b-v {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        font-weight: 800;
+        color: var(--netflix-white);
+        font-size: 1.05rem;
+    }
+
+    .copy-btn {
+        border: 1px solid var(--netflix-medium-gray);
+        background: rgba(255,255,255,0.06);
+        color: var(--netflix-light-gray);
+        border-radius: 10px;
+        padding: .45rem .65rem;
+        cursor: pointer;
+        transition: all .15s ease;
+    }
+    .copy-btn:hover { background: rgba(229,9,20,0.18); border-color: rgba(229,9,20,0.45); color: var(--netflix-white); }
+    .copy-btn.copied { background: rgba(40,167,69,0.20); border-color: rgba(40,167,69,0.50); color: #28a745; }
+
+    /* Upload box */
+    .upload-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.1rem 1.2rem;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 2px dashed var(--netflix-medium-gray);
+        transition: all .2s ease;
+        cursor: pointer;
+    }
+    .upload-box:hover { border-color: rgba(229,9,20,0.6); background: rgba(229,9,20,0.05); }
+    .upload-left { display: flex; align-items: center; gap: 1rem; }
+    .upload-ico {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(229,9,20,0.12);
+        color: var(--netflix-red);
+        font-size: 1.1rem;
+        border: 1px solid rgba(229,9,20,0.25);
+    }
+
+    /* Hide the actual file input but keep it clickable via JS */
+    .upload-box input[type="file"]{
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+
+    .file-chip {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .85rem 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--netflix-medium-gray);
+        background: rgba(255,255,255,0.03);
+        color: var(--netflix-light-gray);
+    }
+    .file-chip #fileName { color: var(--netflix-white); font-weight: 700; }
+    .xbtn {
+        border: 0;
+        background: transparent;
+        color: var(--netflix-light-gray);
+        cursor: pointer;
+    }
+    .xbtn:hover { color: var(--netflix-red); }
+
+    /* Summary thumb */
+    .s-thumb {
+        width: 70px; height: 70px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--netflix-medium-gray);
+        flex-shrink: 0;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .s-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .s-ph {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--netflix-light-gray);
+        font-size: 1.4rem;
+        background: rgba(255,255,255,0.04);
+    }
+
+    /* Help links */
+    .help-grid { display: grid; gap: .75rem; }
+    .help-link{
+        display:flex; align-items:center; gap:.9rem;
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--netflix-medium-gray);
+        background: rgba(255,255,255,0.05);
+        color: var(--netflix-white);
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+    .help-link:hover{ background: rgba(229,9,20,0.10); border-color: var(--netflix-red); transform: translateX(4px); color: var(--netflix-white); }
+    .help-link i:first-child{ color: var(--netflix-red); font-size: 1.25rem; }
+
+    @media (max-width: 768px){
+        .pay-wrap { padding-top: 70px; }
+        .grid-2 { grid-template-columns: 1fr; }
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Copy buttons
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const txt = this.dataset.copy;
+            navigator.clipboard.writeText(txt).then(() => {
+                this.classList.add("copied");
+                const old = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => { this.classList.remove("copied"); this.innerHTML = old; }, 1200);
+            });
+        });
+    });
+
+    // Receipt file preview (name + size only)
+    const fileInput = document.querySelector('input[type="file"]');
+    const fileChip = document.getElementById("fileChip");
+    const fileName = document.getElementById("fileName");
+    const fileSize = document.getElementById("fileSize");
+    const clearBtn = document.getElementById("clearFile");
+    const submitBtn = document.getElementById("submitBtn");
+    const form = document.getElementById("receiptForm");
+    const pickFileBtn = document.getElementById("pickFileBtn");
+
+    if (pickFileBtn && fileInput) {
+        pickFileBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            fileInput.click();
+        });
+    }
+
+    function fmt(bytes){
+        if (!bytes && bytes !== 0) return "";
+        const kb = 1024, mb = kb * 1024;
+        if (bytes >= mb) return (bytes/mb).toFixed(2) + " MB";
+        if (bytes >= kb) return (bytes/kb).toFixed(1) + " KB";
+        return bytes + " B";
+    }
+
+    if (fileInput) {
+        fileInput.addEventListener("change", function(){
+            const f = this.files && this.files[0];
+            if (!f) return;
+
+            // basic checks
+            const max = 5 * 1024 * 1024;
+            const ok = ["image/jpeg", "image/png", "application/pdf"];
+            if (f.size > max) { alert("File too large. Max 5MB."); this.value = ""; return; }
+            if (!ok.includes(f.type)) { alert("Only JPG, PNG, or PDF allowed."); this.value = ""; return; }
+
+            fileName.textContent = f.name;
+            fileSize.textContent = fmt(f.size);
+            fileChip.classList.remove("d-none");
+        });
+    }
+
+    if (clearBtn && fileInput) {
+        clearBtn.addEventListener("click", function(){
+            fileInput.value = "";
+            fileChip.classList.add("d-none");
+            fileName.textContent = "";
+            fileSize.textContent = "";
+        });
+    }
+
+    if (form) {
+        form.addEventListener("submit", function(e){
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                e.preventDefault();
+                alert("Please upload your receipt before submitting.");
+                return;
+            }
+            // loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="netflix-loading me-2"></span>Submitting...';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

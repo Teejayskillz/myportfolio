@@ -6,13 +6,12 @@ from django.http import HttpResponse, Http404
 import os
 from django.utils import timezone
 from .forms import ReceiptUploadForm
-
 from .models import (
     Product,
     HostingPlan,
-    SourceCodeOption,
-    PurchaseRequest
-)
+    PurchaseRequest,
+    DownloadToken
+)           
 from .forms import (
     CheckoutOptionsForm,
     BuyerDetailsForm,
@@ -50,8 +49,9 @@ def checkout_options(request, slug):
                 if not hosting_plan:
                     messages.error(request, "Please select a hosting plan.")
                     return redirect(request.path)
-                amount += hosting_plan.price_per_month
-
+                amount += product.rental_setup_fee
+                amount += hosting_plan.monthly_price
+                
             if delivery_type in ['source', 'both']:
                 source_option = getattr(product, 'source_option', None)
                 if not source_option:
@@ -220,3 +220,69 @@ def download_product(request, token):
     response = HttpResponse(open(file_path, 'rb'), content_type='application/octet-stream')
     response['Content-Disposition'] = f'attachment; filename="{file_name}"'
     return response
+
+def buy_now(request, slug):
+    product = get_object_or_404(Product, slug=slug, is_active=True)
+
+    if request.method == 'POST':
+        form = BuyerDetailsForm(request.POST)
+        if form.is_valid():
+            # Save buyer info in session temporarily
+            request.session['buy_now'] = {
+                'product_id': product.id,
+                'buyer_name': form.cleaned_data['buyer_name'],
+                'buyer_email': form.cleaned_data['buyer_email'],
+                'whatsapp_number': form.cleaned_data['whatsapp_number'],
+                'amount': str(product.price_full_ownership)
+            }
+            return redirect('marketplace:buy_now_receipt', purchase_id=product.id)
+    else:
+        form = BuyerDetailsForm()
+
+    return render(request, 'marketplace/checkout/buy_now.html', {
+        'form': form,
+        'product': product,
+        'step': 1
+    })
+
+def buy_now_receipt(request, purchase_id):
+    session_data = request.session.get('buy_now')
+    if not session_data or int(session_data['product_id']) != purchase_id:
+        messages.error(request, "Session expired. Please start again.")
+        return redirect('marketplace:product_list')
+
+    product = get_object_or_404(Product, id=purchase_id)
+
+    if request.method == 'POST':
+        form = ReceiptUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Create PurchaseRequest
+            purchase = PurchaseRequest.objects.create(
+                product=product,
+                delivery_type='source',
+                buyer_name=session_data['buyer_name'],
+                buyer_email=session_data['buyer_email'],
+                whatsapp_number=session_data['whatsapp_number'],
+                amount=session_data['amount'],
+                receipt=form.cleaned_data['receipt'],
+                status='pending'
+            )
+            # Clear session
+            del request.session['buy_now']
+            return redirect('marketplace:buy_now_summary', purchase_id=purchase.id)
+    else:
+        form = ReceiptUploadForm()
+
+    return render(request, 'marketplace/checkout/buy_now_receipt.html', {
+        'form': form,
+        'product': product,
+        'step': 2
+    })
+
+def buy_now_summary(request, purchase_id):
+    purchase = get_object_or_404(PurchaseRequest, id=purchase_id)
+
+    return render(request, 'marketplace/checkout/buy_now_summary.html', {
+        'purchase': purchase,
+        'step': 3
+    })

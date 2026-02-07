@@ -714,20 +714,25 @@
 
             // Add loading state to buttons
             document.querySelectorAll('.btn-netflix-primary, .btn-netflix-secondary').forEach(btn => {
-                btn.addEventListener('click', function (e) {
-                    if (this.href && this.href.includes('#')) return;
+    btn.addEventListener('click', function (e) {
 
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<span class="netflix-loading me-2"></span>Loading...';
-                    this.disabled = true;
+        // ✅ Don't interfere with form submit buttons
+        if (this.type === 'submit') return;
 
-                    // Reset after 3 seconds (adjust based on your needs)
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.disabled = false;
-                    }, 3000);
-                });
-            });
+        // Allow in-page anchor links
+        if (this.href && this.href.includes('#')) return;
+
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="netflix-loading me-2"></span>Loading...';
+        this.setAttribute('disabled', 'disabled');
+
+        setTimeout(() => {
+            this.innerHTML = originalText;
+            this.removeAttribute('disabled');
+        }, 3000);
+    });
+});
+
         });
     </script>
 

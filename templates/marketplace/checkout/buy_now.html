@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% block title %}Complete Your Purchase - {{ product.title }} | LagosWebDev{% endblock %}
+
+{% block content %}
+<div class="buy-now-wrap">
+    <div class="container py-5">
+        <div class="row g-4 align-items-start">
+
+            <!-- LEFT: Form -->
+            <div class="col-lg-8 order-2 order-lg-1">
+                <div class="netflix-card">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+                        <div>
+                            <h3 class="mb-1" style="font-weight: 900;">
+                                Complete Purchase
+                            </h3>
+                            <p class="mb-0" style="color: var(--netflix-light-gray);">
+                                Enter your details to continue to payment.
+                            </p>
+                        </div>
+
+                        <span class="badge px-3 py-2"
+                              style="background: rgba(229, 9, 20, 0.12); border: 1px solid rgba(229, 9, 20, 0.35); color: var(--netflix-white);">
+                            <i class="fas fa-lock me-2"></i>Secure Checkout
+                        </span>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" class="mt-3">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            {% for field in form %}
+                                <div class="col-12 {% if field.name == 'buyer_email' or field.name == 'whatsapp_number' %}col-md-6{% endif %}">
+                                    <label for="{{ field.id_for_label }}" class="form-label" style="font-weight: 600;">
+                                        {{ field.label }}
+                                        {% if field.field.required %}
+                                            <span style="color: var(--netflix-red);">*</span>
+                                        {% endif %}
+                                    </label>
+
+                                    {{ field }}
+
+                                    {% if field.help_text %}
+                                        <div class="form-text" style="color: var(--netflix-light-gray);">
+                                            {{ field.help_text }}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if field.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {{ field.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <hr class="my-4" style="border-color: var(--netflix-medium-gray); opacity: .6;">
+
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-between">
+                            <a href="{% url 'marketplace:product_detail' product.slug %}" class="btn btn-netflix-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back
+                            </a>
+
+                            <button type="submit" class="btn btn-netflix-primary" style="min-width: 260px;">
+                                Continue to Payment <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+
+                        <div class="mt-4 p-3 rounded"
+                             style="background: rgba(255,255,255,0.04); border: 1px solid var(--netflix-medium-gray);">
+                            <div class="small" style="color: var(--netflix-light-gray);">
+                                <i class="fas fa-info-circle me-2" style="color: var(--netflix-red);"></i>
+                                After you pay, you’ll upload your receipt and we’ll confirm your purchase for download access.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT: Summary -->
+            <div class="col-lg-4 order-1 order-lg-2">
+                <div class="netflix-card sticky-top" style="top: 100px;">
+                    <h5 class="mb-3" style="font-weight: 800;">
+                        <i class="fas fa-receipt me-2"></i>Order Summary
+                    </h5>
+
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="summary-thumb">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                            {% else %}
+                                <div class="summary-thumb-placeholder">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="flex-fill">
+                            <div class="fw-bold">{{ product.title }}</div>
+                            <div class="small" style="color: var(--netflix-light-gray);">
+                                {{ product.get_category_display }}
+                                {% if product.version %} • v{{ product.version }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" style="border-color: var(--netflix-medium-gray); opacity: .6;">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span style="color: var(--netflix-light-gray);">Total</span>
+                        <span style="font-size: 1.4rem; font-weight: 900; color: var(--netflix-red);">
+                            ₦{{ product.price_full_ownership|floatformat:0 }}
+                        </span>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="small mb-2" style="color: var(--netflix-light-gray); font-weight: 600;">
+                            What you get:
+                        </div>
+                        <ul class="summary-list">
+                            <li><i class="fas fa-check-circle me-2"></i>Full Source Code</li>
+                            <li><i class="fas fa-check-circle me-2"></i>Documentation</li>
+                            <li><i class="fas fa-check-circle me-2"></i>Commercial License</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .buy-now-wrap { padding-top: 80px; min-height: 100vh; }
+
+    /* Form fields match your theme */
+    .netflix-card input,
+    .netflix-card select,
+    .netflix-card textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--netflix-medium-gray);
+        color: var(--netflix-white);
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .netflix-card input:focus,
+    .netflix-card select:focus,
+    .netflix-card textarea:focus {
+        border-color: var(--netflix-red);
+        box-shadow: 0 0 0 0.2rem rgba(229, 9, 20, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .netflix-card ::placeholder { color: rgba(255,255,255,0.45); }
+
+    /* Summary thumbnail */
+    .summary-thumb {
+        width: 74px; height: 74px; border-radius: 10px;
+        overflow: hidden;
+        background: var(--netflix-medium-gray);
+        flex-shrink: 0;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .summary-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .summary-thumb-placeholder {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--netflix-light-gray);
+        font-size: 1.6rem;
+        background: rgba(255,255,255,0.04);
+    }
+
+    .summary-list {
+        list-style: none;
+        padding: 0; margin: 0;
+        display: grid;
+        gap: .6rem;
+    }
+    .summary-list li {
+        color: var(--netflix-light-gray);
+        display: flex;
+        align-items: center;
+        font-size: .92rem;
+    }
+    .summary-list i { color: #28a745; } /* subtle green check */
+
+    @media (max-width: 768px) {
+        .buy-now-wrap { padding-top: 70px; }
+    }
+</style>
+{% endblock %}

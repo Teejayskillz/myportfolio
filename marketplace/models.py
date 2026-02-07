@@ -81,21 +81,6 @@ class Product(models.Model):
         return self.title
 
 
-class SourceCodeOption(models.Model):
-    product = models.OneToOneField(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='source_option'
-    )
-
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    update_duration_months = models.PositiveIntegerField(default=12)
-
-    def __str__(self):
-        return f"{self.product.title} – Source Code"
-
-
-
 class PurchaseRequest(models.Model):
     DELIVERY_CHOICES = (
         ('hosted', 'Hosted'),
