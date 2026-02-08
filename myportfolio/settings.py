@@ -177,7 +177,6 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL  # optional (for Django error emails)
 MARKETPLACE_ADMIN_EMAILS = ["TEEJAYADEWALE87@GMAIL.COM", 'tijaniapatira@gmail.com'] 
 MARKETPLACE_BRAND_NAME = "LAGOSWEBDEV MARKETPLACE"  
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -187,14 +186,19 @@ LOGGING = {
         },
     },
     'loggers': {
-        'contact': { # This matches the name of your app
+        'contact': {
             'handlers': ['console'],
-            'level': 'INFO', # Set to INFO to see the debug lines
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'marketplace': {  
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': False,
         },
         'django': {
             'handlers': ['console'],
-            'level': 'INFO', # You might want to change this to 'WARNING' for less verbosity
+            'level': 'INFO',
             'propagate': False,
         },
     },

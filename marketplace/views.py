@@ -1,16 +1,17 @@
 import uuid
+import os
 from decimal import Decimal
+from datetime import timedelta, date
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.http import HttpResponse, Http404
-import os
 from django.utils import timezone
-from datetime import timedelta, date
 from django.core.mail import send_mail
 from django.urls import reverse
-from datetime import timedelta
+
 from dateutil.relativedelta import relativedelta
-from django.utils import timezone
+
 from .models import (
     Product,
     HostingPlan,
@@ -19,12 +20,15 @@ from .models import (
     Rental,
     RentalInvoice,
     MagicLinkToken
-)           
+)
 from .forms import (
     CheckoutOptionsForm,
     BuyerDetailsForm,
     ReceiptUploadForm
 )
+
+# ✅ Import once (cleaner + avoids repeated imports)
+from .emails import send_purchase_pending_emails, send_rental_invoice_pending_emails
 
 
 def product_list(request):
@@ -133,16 +137,12 @@ def checkout_summary(request, checkout_id):
         messages.error(request, "Checkout session expired.")
         return redirect('marketplace:product_list')
 
-    # Get the product object
-    from .models import Product, HostingPlan
     product = Product.objects.get(id=checkout['product_id'])
 
     hosting_plan = None
     if checkout.get('hosting_plan_id'):
         hosting_plan = HostingPlan.objects.get(id=checkout['hosting_plan_id'])
 
-    # Pre-fill the receipt form if needed
-    from .forms import ReceiptUploadForm
     form = ReceiptUploadForm()
 
     return render(request, 'marketplace/checkout/summary.html', {
@@ -151,12 +151,11 @@ def checkout_summary(request, checkout_id):
         'product': product,
         'hosting_plan': hosting_plan,
         'form': form,
-        'step': 3  
+        'step': 3
     })
 
 
 def checkout_payment(request, checkout_id):
-    # Get all active checkouts from session
     checkouts = request.session.get('checkouts', {})
     checkout = checkouts.get(checkout_id)
 
@@ -164,10 +163,8 @@ def checkout_payment(request, checkout_id):
         messages.error(request, "Checkout session expired.")
         return redirect('marketplace:product_list')
 
-    # Fetch product object
     product = get_object_or_404(Product, id=checkout['product_id'])
 
-    # Optional: fetch hosting plan if selected
     hosting_plan = None
     if checkout.get('hosting_plan_id'):
         hosting_plan = get_object_or_404(HostingPlan, id=checkout['hosting_plan_id'])
@@ -175,7 +172,6 @@ def checkout_payment(request, checkout_id):
     if request.method == 'POST':
         form = ReceiptUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            # Create PurchaseRequest
             purchase = PurchaseRequest.objects.create(
                 product=product,
                 hosting_plan=hosting_plan,
@@ -185,12 +181,12 @@ def checkout_payment(request, checkout_id):
                 whatsapp_number=checkout['buyer']['whatsapp'],
                 amount=Decimal(checkout['amount']),
                 receipt=form.cleaned_data['receipt'],
-                status='pending'  # Default status
+                status='pending'
             )
-            from .emails import send_purchase_pending_emails
+
+            # ✅ Send 2 emails (customer + admin)
             send_purchase_pending_emails(request=request, purchase=purchase)
 
-            # Remove this checkout from session
             del checkouts[checkout_id]
             request.session['checkouts'] = checkouts
 
@@ -206,7 +202,7 @@ def checkout_payment(request, checkout_id):
         'product': product,
         'hosting_plan': hosting_plan,
         'form': form,
-        'step': 3  # Step indicator
+        'step': 3
     })
 
 
@@ -219,9 +215,9 @@ def download_product(request, token):
     if timezone.now() > download_token.expires_at:
         raise Http404("Download link expired.")
 
-    # Increment usage
     download_token.download_count += 1
     download_token.save(update_fields=['download_count'])
+
     file_path = download_token.license.purchase.product.source_file.path
     file_name = os.path.basename(file_path)
 
@@ -229,13 +225,13 @@ def download_product(request, token):
     response['Content-Disposition'] = f'attachment; filename="{file_name}"'
     return response
 
+
 def buy_now(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
 
     if request.method == 'POST':
         form = BuyerDetailsForm(request.POST)
         if form.is_valid():
-            # Save buyer info in session temporarily
             request.session['buy_now'] = {
                 'product_id': product.id,
                 'buyer_name': form.cleaned_data['buyer_name'],
@@ -253,6 +249,7 @@ def buy_now(request, slug):
         'step': 1
     })
 
+
 def buy_now_receipt(request, purchase_id):
     session_data = request.session.get('buy_now')
     if not session_data or int(session_data['product_id']) != purchase_id:
@@ -264,7 +261,6 @@ def buy_now_receipt(request, purchase_id):
     if request.method == 'POST':
         form = ReceiptUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            # Create PurchaseRequest
             purchase = PurchaseRequest.objects.create(
                 product=product,
                 delivery_type='source',
@@ -275,7 +271,10 @@ def buy_now_receipt(request, purchase_id):
                 receipt=form.cleaned_data['receipt'],
                 status='pending'
             )
-            # Clear session
+
+            # ✅ Send 2 emails (customer + admin)  <-- THIS WAS MISSING
+            send_purchase_pending_emails(request=request, purchase=purchase)
+
             del request.session['buy_now']
             return redirect('marketplace:buy_now_summary', purchase_id=purchase.id)
     else:
@@ -287,13 +286,14 @@ def buy_now_receipt(request, purchase_id):
         'step': 2
     })
 
+
 def buy_now_summary(request, purchase_id):
     purchase = get_object_or_404(PurchaseRequest, id=purchase_id)
-
     return render(request, 'marketplace/checkout/buy_now_summary.html', {
         'purchase': purchase,
         'step': 3
     })
+
 
 def rent_start(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
@@ -319,7 +319,6 @@ def rent_start(request, slug):
             messages.error(request, "Please fill in all required fields.")
             return redirect("marketplace:rent_start", slug=product.slug)
 
-        # First payment = setup fee + first month
         amount = product.rental_setup_fee + plan.monthly_price
 
         purchase = PurchaseRequest.objects.create(
@@ -355,9 +354,8 @@ def rent_receipt(request, purchase_id):
         purchase.status = "pending"
         purchase.save()
 
-        from .emails import send_purchase_pending_emails
+        # ✅ Send 2 emails (customer + admin)
         send_purchase_pending_emails(request=request, purchase=purchase)
-
 
         return redirect("marketplace:rent_confirmed", purchase_id=purchase.id)
 
@@ -376,7 +374,6 @@ def rentals_access_request(request):
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
 
-        # check if rentals exist for that email (any status)
         has_rentals = Rental.objects.filter(buyer_email__iexact=email).exists()
 
         if has_rentals:
@@ -388,7 +385,6 @@ def rentals_access_request(request):
                 reverse("marketplace:rentals_magic_login", args=[token_obj.token])
             )
 
-            # send email
             send_mail(
                 subject="Your Rentals Access Link",
                 message=f"Use this link to access your rentals (expires in 15 minutes):\n\n{link}",
@@ -397,7 +393,6 @@ def rentals_access_request(request):
                 fail_silently=False,
             )
 
-        # ALWAYS show neutral message (your security choice)
         messages.success(request, "If we found rentals for this email, we sent a link.")
         return redirect("marketplace:rentals_access_request")
 
@@ -413,9 +408,8 @@ def rentals_magic_login(request, token):
     token_obj.used_at = timezone.now()
     token_obj.save()
 
-    # store email in session (simple + clean)
     request.session["rentals_email"] = token_obj.email
-    request.session.set_expiry(60 * 30)  # 30 minutes session
+    request.session.set_expiry(60 * 30)
 
     return redirect("marketplace:rentals_dashboard")
 
@@ -434,7 +428,6 @@ def rentals_dashboard(request):
         .order_by("-created_at")
     )
 
-    # Auto-mark expired rentals (keeps UI truthful)
     now = timezone.now()
     for r in rentals:
         if r.status == "active" and r.expires_at and r.expires_at < now:
@@ -449,7 +442,7 @@ def rentals_dashboard(request):
 
 # -------------------------
 # RENEWALS
-
+# -------------------------
 def rental_generate_renew_invoice(request, rental_id):
     email = request.session.get("rentals_email")
     if not email:
@@ -458,7 +451,6 @@ def rental_generate_renew_invoice(request, rental_id):
 
     rental = get_object_or_404(Rental, id=rental_id, buyer_email__iexact=email)
 
-    # Prevent multiple pending invoices
     existing = (
         RentalInvoice.objects
         .filter(rental=rental, status="pending")
@@ -471,17 +463,13 @@ def rental_generate_renew_invoice(request, rental_id):
 
     now = timezone.now()
 
-    # Base date:
-    # - if rental still active and not expired -> start from expires_at (but avoid overlap)
-    # - else -> start from now
     if rental.expires_at and rental.expires_at > now:
         base_dt = rental.expires_at
     else:
         base_dt = now
 
-    # Start on the next day (avoids “double covering” the same day)
     period_start = (base_dt + timedelta(days=1)).date()
-    period_end = (base_dt + relativedelta(months=1)).date()  # monthly cycle
+    period_end = (base_dt + relativedelta(months=1)).date()
 
     invoice = RentalInvoice.objects.create(
         rental=rental,
@@ -493,6 +481,7 @@ def rental_generate_renew_invoice(request, rental_id):
 
     messages.success(request, f"Renewal invoice generated (#{invoice.id}). Upload your receipt to continue.")
     return redirect("marketplace:rental_invoice_upload", invoice_id=invoice.id)
+
 
 def rental_invoice_upload(request, invoice_id):
     email = request.session.get("rentals_email")
@@ -516,7 +505,7 @@ def rental_invoice_upload(request, invoice_id):
         invoice.status = "pending"
         invoice.save()
 
-        from .emails import send_rental_invoice_pending_emails
+        # ✅ Send 2 emails (customer + admin)
         send_rental_invoice_pending_emails(request=request, invoice=invoice)
 
         messages.success(request, "Receipt submitted. Verification usually takes 1–24 hours.")
