@@ -349,6 +349,7 @@ class DownloadTokenAdmin(admin.ModelAdmin):
 class RentalAdmin(admin.ModelAdmin):
     list_display = ("id", "product", "buyer_email", "hosting_plan", "status", "expires_at", "hosted_url", "created_at")
     list_filter = ("status", "hosting_plan")
+    list_display_links = ("id", "product")
     search_fields = ("buyer_email", "buyer_name", "product__title")
     readonly_fields = ("created_at",)
 
