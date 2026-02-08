@@ -19,6 +19,31 @@ from .models import (
     MagicLinkToken,
 )
 
+def _send_hosted_activation_email(request, purchase, rental):
+    access_url = request.build_absolute_uri(
+        reverse("marketplace:rentals_access_request")
+    )
+
+    hosted_url_line = f"Hosted URL: {rental.hosted_url}\n" if rental.hosted_url else ""
+
+    EmailMessage(
+        subject=f"Your Hosted Rental is Active: {purchase.product.title}",
+        body=(
+            f"Hi {purchase.buyer_name},\n\n"
+            f"Your hosted rental has been activated.\n\n"
+            f"Product: {purchase.product.title}\n"
+            f"Plan: {purchase.hosting_plan}\n"
+            f"Status: {rental.status}\n"
+            f"Active until: {rental.expires_at.strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"{hosted_url_line}\n"
+            f"To view your rental details and renew later, use the rentals access page:\n"
+            f"{access_url}\n\n"
+            f"Thanks!"
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[purchase.buyer_email],
+    ).send()
+
 
 def _add_one_month(dt):
     """
@@ -185,6 +210,11 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
                         existing_rental.admin_note = (existing_rental.admin_note or "") + f"\nRe-activated from PurchaseRequest #{purchase.id}."
                         existing_rental.save()
 
+                        try:
+                            _send_hosted_activation_email(request, purchase, existing_rental)
+                        except Exception:
+                            email_failed += 1
+
                         hosted_fulfilled += 1
                         continue
 
@@ -211,8 +241,12 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
                         admin_note=f"Initial month auto-approved from PurchaseRequest #{purchase.id}. Setup fee is separate in PurchaseRequest amount.",
                     )
 
-                    hosted_fulfilled += 1
+                    try:
+                        _send_hosted_activation_email(request, purchase, rental)
+                    except Exception:
+                        email_failed += 1
 
+                    hosted_fulfilled += 1
         # Summary messages
         if approved_count:
             self.message_user(request, f"✅ Approved {approved_count} purchase(s).", level=messages.SUCCESS)

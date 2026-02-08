@@ -11,7 +11,6 @@ from django.urls import reverse
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
-
 from .models import (
     Product,
     HostingPlan,
@@ -188,6 +187,8 @@ def checkout_payment(request, checkout_id):
                 receipt=form.cleaned_data['receipt'],
                 status='pending'  # Default status
             )
+            from .emails import send_purchase_pending_emails
+            send_purchase_pending_emails(request=request, purchase=purchase)
 
             # Remove this checkout from session
             del checkouts[checkout_id]
@@ -354,6 +355,10 @@ def rent_receipt(request, purchase_id):
         purchase.status = "pending"
         purchase.save()
 
+        from .emails import send_purchase_pending_emails
+        send_purchase_pending_emails(request=request, purchase=purchase)
+
+
         return redirect("marketplace:rent_confirmed", purchase_id=purchase.id)
 
     return render(request, "marketplace/rent_receipt.html", {"purchase": purchase})
@@ -389,7 +394,7 @@ def rentals_access_request(request):
                 message=f"Use this link to access your rentals (expires in 15 minutes):\n\n{link}",
                 from_email=None,  # uses DEFAULT_FROM_EMAIL
                 recipient_list=[email],
-                fail_silently=True,
+                fail_silently=False,
             )
 
         # ALWAYS show neutral message (your security choice)
@@ -510,6 +515,9 @@ def rental_invoice_upload(request, invoice_id):
         invoice.receipt = receipt
         invoice.status = "pending"
         invoice.save()
+
+        from .emails import send_rental_invoice_pending_emails
+        send_rental_invoice_pending_emails(request=request, invoice=invoice)
 
         messages.success(request, "Receipt submitted. Verification usually takes 1–24 hours.")
         return redirect("marketplace:rentals_dashboard")

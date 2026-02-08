@@ -13,8 +13,8 @@ urlpatterns = [
     path('checkout/<int:purchase_id>/upload-receipt/', views.buy_now_receipt, name='buy_now_receipt'),
     path('checkout/<int:purchase_id>/summary/', views.buy_now_summary, name='buy_now_summary'),
     path('checkout/<slug:slug>/options/', views.checkout_options, name='checkout_options'),
-   # path('checkout/details/', views.checkout_details, name='checkout_details'),
-    #path('checkout/payment/', views.checkout_payment, name='checkout_payment'),
+    path('checkout/details/', views.checkout_details, name='checkout_details'),
+    path('checkout/payment/', views.checkout_payment, name='checkout_payment'),
 
     path("rent/<slug:slug>/", views.rent_start, name="rent_start"),
     path("rent/<int:purchase_id>/upload-receipt/", views.rent_receipt, name="rent_receipt"),
@@ -28,4 +28,8 @@ urlpatterns = [
     # renew
     path("rentals/<int:rental_id>/renew/", views.rental_generate_renew_invoice, name="rental_generate_renew_invoice"),
     path("rentals/invoice/<int:invoice_id>/upload/", views.rental_invoice_upload, name="rental_invoice_upload"),
+    
+    path("download/<str:token>/", views.download_product, name="download_product"),
+
 ]
+

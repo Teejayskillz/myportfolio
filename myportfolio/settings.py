@@ -160,13 +160,23 @@ STATICFILES_DIRS = [                  # Where Django will look for your app's st
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+from decouple import config
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.lagoswebdev.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your@email.com'
-EMAIL_HOST_PASSWORD = 'yourpassword'
-DEFAULT_FROM_EMAIL = 'noreply@lagoswebdev.com'
+
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.lagoswebdev.com")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER)
+SERVER_EMAIL = DEFAULT_FROM_EMAIL  # optional (for Django error emails)
+
+MARKETPLACE_ADMIN_EMAILS = ["TEEJAYADEWALE87@GMAIL.COM", 'tijaniapatira@gmail.com'] 
+MARKETPLACE_BRAND_NAME = "LAGOSWEBDEV MARKETPLACE"  
+
 
 LOGGING = {
     'version': 1,
