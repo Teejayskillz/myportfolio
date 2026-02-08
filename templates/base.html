@@ -6,34 +6,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}{{ page.title|default:"Website Designer Nigeria - Affordable Web Design in Lagos |
-        LagosWebDev" }}{% endblock %}</title>
+    <!-- ✅ FIXED: one-line default title (no newline bug) -->
+    <title>{% block title %}{{ page.title|default:"Website Designer Nigeria - Affordable Web Design in Lagos | LagosWebDev" }}{% endblock %}</title>
 
     <meta name="description"
         content="{% block meta_description %}{{ page.meta_description|default:'Hire the best website designer in Nigeria. LagosWebDev builds fast, affordable, and professional websites for businesses in Lagos & across Nigeria. Call us today!' }}{% endblock %}">
-    <!-- Open Graph (for Facebook, LinkedIn, WhatsApp previews) -->
-    <meta property="og:title" content="Website Designer Nigeria - LagosWebDev">
-    <meta property="og:description"
-        content="We design fast, professional, and affordable websites for businesses in Lagos and across Nigeria. Contact LagosWebDev today.">
-    <meta property="og:image" content="{% static 'img/favicons/favicon.jpg' %}">
-    <meta property="og:url" content="https://www.lagoswebdev.com">
-    <meta property="og:type" content="website">
 
-    <!-- Twitter Card (for Twitter/X previews) -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Website Designer Nigeria - LagosWebDev">
-    <meta name="twitter:description"
-        content="Affordable and professional website design in Nigeria. Contact LagosWebDev for business websites, e-commerce, and custom development.">
-    <meta name="twitter:image" content="{% static 'img/favicons/favicon.jpg' %}">
+    <!-- ✅ UPGRADE: Open Graph blocks (better sharing for blog/projects) -->
+    <meta property="og:title" content="{% block og_title %}Website Designer Nigeria - LagosWebDev{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}We design fast, professional, and affordable websites for businesses in Lagos and across Nigeria. Contact LagosWebDev today.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'img/favicons/favicon.jpg' %}{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+
+    <!-- ✅ UPGRADE: Twitter blocks -->
+    <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}Website Designer Nigeria - LagosWebDev{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Affordable and professional website design in Nigeria. Contact LagosWebDev for business websites, e-commerce, and custom development.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'img/favicons/favicon.jpg' %}{% endblock %}">
+
     <meta name="keywords"
         content="Website Designer Nigeria, Web Design Lagos, Affordable Web Design Nigeria, WordPress Developer Nigeria, Django Developer Lagos, E-commerce Website Nigeria, Custom Web Development Lagos">
+
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicons/favicon.jpg' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicons/favicon.jpg' %}">
     <link rel="shortcut icon" href="{% static 'img/favicons/favicon.jpg' %}">
-
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicons/favicon.jpg' %}">
 
-    <link rel="manifest" href="{% static 'img/favicons/favicon.jpg' %}">
+    <!-- ✅ FIXED: manifest must NOT be an image (remove until you have a real manifest file) -->
+    {# <link rel="manifest" href="{% static 'site.webmanifest' %}"> #}
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,6 +87,27 @@
             font-weight: 700;
             color: var(--netflix-white);
             margin-bottom: 1rem;
+        }
+
+        /* ✅ NEW: GLOBAL DARK FORM CONTROLS (fixes dropdown options visibility) */
+        input, textarea, select { color-scheme: dark; }
+
+        .form-control, .form-select, textarea.form-control{
+            background: rgba(255,255,255,.03);
+            border: 1px solid var(--netflix-medium-gray);
+            color: var(--netflix-white);
+        }
+
+        .form-control:focus, .form-select:focus, textarea.form-control:focus{
+            background: rgba(255,255,255,.04);
+            border-color: rgba(229,9,20,.55);
+            box-shadow: 0 0 0 .2rem rgba(229,9,20,.15);
+            color: var(--netflix-white);
+        }
+
+        .form-select option{
+            background-color: var(--netflix-black);
+            color: var(--netflix-white);
         }
 
         /* --- CUSTOM SCROLLBAR --- */
@@ -171,7 +193,6 @@
             padding: 0.5rem;
         }
 
-        /* FIX: Styling for Font Awesome icon */
         .navbar-toggler i {
             color: var(--netflix-white);
             font-size: 1.5rem;
@@ -325,29 +346,14 @@
 
         /* --- ANIMATIONS --- */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
         /* --- LOADING ANIMATION --- */
@@ -361,87 +367,34 @@
             animation: spin 1s ease-in-out infinite;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* --- GLITCH EFFECT FOR BRAND --- */
-        .glitch {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch::before,
-        .glitch::after {
+        .glitch { position: relative; display: inline-block; }
+        .glitch::before, .glitch::after {
             content: attr(data-text);
             position: absolute;
             left: 0;
             top: 0;
             opacity: 0.8;
         }
-
-        .glitch::before {
-            animation: glitch-1 0.5s infinite;
-            color: #ff0000;
-            z-index: -1;
-        }
-
-        .glitch::after {
-            animation: glitch-2 0.5s infinite;
-            color: #00ff00;
-            z-index: -2;
-        }
+        .glitch::before { animation: glitch-1 0.5s infinite; color: #ff0000; z-index: -1; }
+        .glitch::after { animation: glitch-2 0.5s infinite; color: #00ff00; z-index: -2; }
 
         @keyframes glitch-1 {
-
-            0%,
-            14%,
-            15%,
-            49%,
-            50%,
-            99%,
-            100% {
-                transform: translate(0);
-            }
-
-            15%,
-            49% {
-                transform: translate(-2px, 1px);
-            }
+            0%,14%,15%,49%,50%,99%,100% { transform: translate(0); }
+            15%,49% { transform: translate(-2px, 1px); }
         }
 
         @keyframes glitch-2 {
-
-            0%,
-            20%,
-            21%,
-            62%,
-            63%,
-            99%,
-            100% {
-                transform: translate(0);
-            }
-
-            21%,
-            62% {
-                transform: translate(2px, -1px);
-            }
+            0%,20%,21%,62%,63%,99%,100% { transform: translate(0); }
+            21%,62% { transform: translate(2px, -1px); }
         }
 
         /* --- ACCESSIBILITY --- */
         @media (prefers-reduced-motion: reduce) {
-
-            .glitch::before,
-            .glitch::after {
-                animation: none;
-            }
-
-            .whatsapp-button {
-                animation: none;
-            }
-
+            .glitch::before, .glitch::after { animation: none; }
+            .whatsapp-button { animation: none; }
             * {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
@@ -452,13 +405,11 @@
         /* --- MOBILE NAV STYLES --- */
         .mobile-nav {
             display: none;
-            /* Hidden by default on desktop */
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             z-index: 1030;
-            /* Higher than other fixed elements */
             background: rgba(20, 20, 20, 0.9);
             backdrop-filter: blur(10px);
             border-top: 1px solid var(--netflix-medium-gray);
@@ -507,38 +458,14 @@
 
         /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (max-width: 768px) {
-
-            /* Show the mobile nav */
-            .mobile-nav {
-                display: block;
-            }
-
-            /* Hide the top navbar's collapsible menu and the toggler button */
-            .navbar-collapse,
-            .navbar-toggler {
-                display: none !important;
-            }
-
-            /* Ensure the brand is still visible */
-            .navbar-brand {
-                display: block;
-                font-size: 1.5rem;
-                text-align: left;
-            }
-
-            /* Add padding to the body to prevent content from being hidden behind the bottom nav */
-            body {
-                padding-bottom: 70px;
-                /* Adjust this value to match your mobile-nav height */
-            }
+            .mobile-nav { display: block; }
+            .navbar-collapse, .navbar-toggler { display: none !important; }
+            .navbar-brand { display: block; font-size: 1.5rem; text-align: left; }
+            body { padding-bottom: 70px; }
         }
 
         @media (min-width: 769px) {
-
-            /* Hide the mobile nav on larger screens */
-            .mobile-nav {
-                display: none;
-            }
+            .mobile-nav { display: none; }
         }
 
         @media (max-width: 768px) {
@@ -546,19 +473,13 @@
                 width: 55px;
                 height: 55px;
                 font-size: 24px;
-            }
-        }
-
-        /* --- FORCE WhatsApp button above mobile menu --- */
-        @media (max-width: 768px) {
-            .whatsapp-button {
                 bottom: 120px !important;
-                /* force override */
                 right: 20px !important;
                 z-index: 9999 !important;
             }
         }
     </style>
+
     <meta name="google-site-verification" content="jqfYFgQV0kESuRyFWMxh41yfwaeVeGuNENkZxPKvfmQ" />
 </head>
 
@@ -575,82 +496,64 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pages:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'projects:project_list' %}">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pages:about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog:post_list' %}">Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pricing:pricing_page' %}">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact:contact_page' %}">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'marketplace:product_list' %}">Marketplace</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'pages:home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'projects:project_list' %}">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'pages:about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'blog:post_list' %}">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'pricing:pricing_page' %}">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contact:contact_page' %}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'marketplace:product_list' %}">Marketplace</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <main>
+        <!-- ✅ MOVED: messages at top for better UX -->
+        <div class="container mt-3">
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+
         {% block content %}
         {% endblock %}
     </main>
 
     <nav class="mobile-nav" id="mobile-nav">
         <div class="mobile-nav-container">
-            <a href="{% url 'pages:home' %}"
-                class="mobile-nav-item {% if request.path == '/' or 'home' in request.path %}active{% endif %}">
+            <!-- ✅ FIXED: Home active logic -->
+            <a href="{% url 'pages:home' %}" class="mobile-nav-item {% if request.path == '/' %}active{% endif %}">
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
-            <a href="{% url 'projects:project_list' %}"
-                class="mobile-nav-item {% if 'projects' in request.path %}active{% endif %}">
+            <a href="{% url 'projects:project_list' %}" class="mobile-nav-item {% if 'projects' in request.path %}active{% endif %}">
                 <i class="fas fa-folder"></i>
                 <span>Projects</span>
             </a>
-            <a href="{% url 'blog:post_list' %}"
-                class="mobile-nav-item {% if 'blog' in request.path %}active{% endif %}">
+            <a href="{% url 'blog:post_list' %}" class="mobile-nav-item {% if 'blog' in request.path %}active{% endif %}">
                 <i class="fas fa-pen-nib"></i>
                 <span>Blog</span>
             </a>
-            <a href="{% url 'pricing:pricing_page' %}"
-                class="mobile-nav-item {% if 'pricing' in request.path %}active{% endif %}">
+            <a href="{% url 'pricing:pricing_page' %}" class="mobile-nav-item {% if 'pricing' in request.path %}active{% endif %}">
                 <i class="fas fa-tag"></i>
                 <span>Pricing</span>
             </a>
-            <a href="{% url 'contact:contact_page' %}"
-                class="mobile-nav-item {% if 'contact' in request.path %}active{% endif %}">
+            <a href="{% url 'contact:contact_page' %}" class="mobile-nav-item {% if 'contact' in request.path %}active{% endif %}">
                 <i class="fas fa-envelope"></i>
                 <span>Contact</span>
             </a>
-            <a href="{% url 'marketplace:product_list' %}"
-                class="mobile-nav-item {% if 'marketplace' in request.path %}active{% endif %}">
+            <a href="{% url 'marketplace:product_list' %}" class="mobile-nav-item {% if 'marketplace' in request.path %}active{% endif %}">
                 <i class="fas fa-store"></i>
                 <span>Marketplace</span>
             </a>
         </div>
     </nav>
-
-    <div class="container">
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-    </div>
 
     <footer class="footer">
         <div class="container">
@@ -669,73 +572,56 @@
         </div>
     </footer>
 
-    <a href="https://wa.me/2348102712103" target="_blank" class="whatsapp-button" title="Chat on WhatsApp">
+    <a href="https://wa.me/2348102712103" target="_blank" class="whatsapp-button" title="Chat on WhatsApp" rel="noopener">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Enhanced navbar scroll effect
         document.addEventListener("DOMContentLoaded", function () {
             const navbar = document.getElementById('mainNavbar');
             const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
             const currentPath = window.location.pathname;
 
-            // Add active class to current nav link
             navLinks.forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
                     link.classList.add('active');
                 }
             });
 
-            // Navbar background on scroll
             window.addEventListener('scroll', function () {
-                if (window.scrollY > 100) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
+                if (window.scrollY > 100) navbar.classList.add('scrolled');
+                else navbar.classList.remove('scrolled');
             });
 
-            // Smooth scroll for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
                     const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
+                    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
 
-            // Add loading state to buttons
             document.querySelectorAll('.btn-netflix-primary, .btn-netflix-secondary').forEach(btn => {
-    btn.addEventListener('click', function (e) {
+                btn.addEventListener('click', function () {
+                    if (this.type === 'submit') return;
+                    if (this.href && this.href.includes('#')) return;
 
-        // ✅ Don't interfere with form submit buttons
-        if (this.type === 'submit') return;
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span class="netflix-loading me-2"></span>Loading...';
+                    this.setAttribute('disabled', 'disabled');
 
-        // Allow in-page anchor links
-        if (this.href && this.href.includes('#')) return;
-
-        const originalText = this.innerHTML;
-        this.innerHTML = '<span class="netflix-loading me-2"></span>Loading...';
-        this.setAttribute('disabled', 'disabled');
-
-        setTimeout(() => {
-            this.innerHTML = originalText;
-            this.removeAttribute('disabled');
-        }, 3000);
-    });
-});
-
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.removeAttribute('disabled');
+                    }, 3000);
+                });
+            });
         });
     </script>
 
+    {% block extra_scripts %}{% endblock %}
 </body>
 
 </html>
