@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from django.utils.text import slugify
 import uuid
 from django.utils import timezone
@@ -80,10 +81,10 @@ class Product(models.Model):
 
 class PurchaseRequest(models.Model):
     DELIVERY_CHOICES = (
-        ('hosted', 'Hosted'),
-        ('source', 'Source Code'),
-        ('both', 'Hosted + Source Code'),
-    )
+    ("full_ownership", "Full Ownership (Source Code + Docs)"),
+    ("rent_own", "Rent & Host (Setup + Monthly)"),
+)
+
 
     STATUS_CHOICES = (
         ('pending', 'Pending'),
@@ -124,6 +125,15 @@ class PurchaseRequest(models.Model):
     admin_note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    from django.core.exceptions import ValidationError
+
+    def clean(self):
+       if self.delivery_type == "rent_own" and not self.hosting_plan:
+            raise ValidationError({"hosting_plan": "Hosting plan is required for Rent & Own."})
+       if self.delivery_type == "full_ownership":
+            self.hosting_plan = None
+
+        
 
 class License(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

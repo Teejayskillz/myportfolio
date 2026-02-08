@@ -1,12 +1,13 @@
 from django import forms
 from .models import HostingPlan
 
+from django import forms
+from .models import HostingPlan
 
 class CheckoutOptionsForm(forms.Form):
     DELIVERY_CHOICES = (
-        ('hosted', 'Hosted'),
-        ('source', 'Source Code'),
-        ('both', 'Hosted + Source Code'),
+        ("full_ownership", "Full Ownership (Source Code + Docs)"),
+        ("rent_own", "Rent & Host (Setup + Monthly)"),
     )
 
     delivery_type = forms.ChoiceField(choices=DELIVERY_CHOICES)
@@ -16,11 +17,25 @@ class CheckoutOptionsForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        product = kwargs.pop('product', None)
+        product = kwargs.pop("product", None)
         super().__init__(*args, **kwargs)
 
         if product:
-            self.fields['hosting_plan'].queryset = product.available_hosting_plans.filter(is_active=True)
+            self.fields["hosting_plan"].queryset = product.available_hosting_plans.filter(is_active=True)
+
+    def clean(self):
+        cleaned = super().clean()
+        delivery_type = cleaned.get("delivery_type")
+        hosting_plan = cleaned.get("hosting_plan")
+
+        if delivery_type == "rent_own" and not hosting_plan:
+            self.add_error("hosting_plan", "Please select a hosting plan for Rent & Host.")
+
+        if delivery_type == "full_ownership":
+            cleaned["hosting_plan"] = None  # ensure it doesn't carry over
+
+        return cleaned
+
 
 class BuyerDetailsForm(forms.Form):
     buyer_name = forms.CharField(max_length=255)

@@ -27,7 +27,6 @@ from .forms import (
     ReceiptUploadForm
 )
 
-# ✅ Import once (cleaner + avoids repeated imports)
 from .emails import send_purchase_pending_emails, send_rental_invoice_pending_emails
 
 
@@ -48,51 +47,50 @@ def product_detail(request, slug):
 def checkout_options(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CheckoutOptionsForm(request.POST, product=product)
 
         if form.is_valid():
-            delivery_type = form.cleaned_data['delivery_type']
-            hosting_plan = form.cleaned_data.get('hosting_plan')
+            delivery_type = form.cleaned_data["delivery_type"]          # full_ownership | rent_own
+            hosting_plan = form.cleaned_data.get("hosting_plan")
 
             # 🔐 SERVER-SIDE PRICE CALCULATION
-            amount = Decimal('0.00')
-
-            if delivery_type in ['hosted', 'both']:
+            if delivery_type == "rent_own":
                 if not hosting_plan:
                     messages.error(request, "Please select a hosting plan.")
                     return redirect(request.path)
-                amount += product.rental_setup_fee
-                amount += hosting_plan.monthly_price
 
-            if delivery_type in ['source', 'both']:
-                source_option = getattr(product, 'source_option', None)
-                if not source_option:
-                    messages.error(request, "Source code not available for this product.")
-                    return redirect(request.path)
-                amount += source_option.price
+                amount = (product.rental_setup_fee or Decimal("0.00")) + hosting_plan.monthly_price
+
+            elif delivery_type == "full_ownership":
+                amount = product.price_full_ownership
+                hosting_plan = None  # safety: ownership shouldn't carry a plan
+
+            else:
+                messages.error(request, "Invalid option selected.")
+                return redirect(request.path)
 
             checkout_id = str(uuid.uuid4())
 
-            checkouts = request.session.get('checkouts', {})
+            checkouts = request.session.get("checkouts", {})
             checkouts[checkout_id] = {
-                'product_id': product.id,
-                'delivery_type': delivery_type,
-                'hosting_plan_id': hosting_plan.id if hosting_plan else None,
-                'amount': str(amount),
-                'buyer': {}
+                "product_id": product.id,
+                "delivery_type": delivery_type,
+                "hosting_plan_id": hosting_plan.id if hosting_plan else None,
+                "amount": str(amount),
+                "buyer": {},
             }
 
-            request.session['checkouts'] = checkouts
-            return redirect('marketplace:checkout_details', checkout_id=checkout_id)
+            request.session["checkouts"] = checkouts
+            return redirect("marketplace:checkout_details", checkout_id=checkout_id)
 
     else:
         form = CheckoutOptionsForm(product=product)
 
-    return render(request, 'marketplace/checkout/options.html', {
-        'product': product,
-        'form': form,
-        'step': 1
+    return render(request, "marketplace/checkout/options.html", {
+        "product": product,
+        "form": form,
+        "step": 1
     })
 
 
@@ -175,7 +173,7 @@ def checkout_payment(request, checkout_id):
             purchase = PurchaseRequest.objects.create(
                 product=product,
                 hosting_plan=hosting_plan,
-                delivery_type=checkout['delivery_type'],
+                delivery_type=checkout['delivery_type'],  # full_ownership | rent_own
                 buyer_name=checkout['buyer']['name'],
                 buyer_email=checkout['buyer']['email'],
                 whatsapp_number=checkout['buyer']['whatsapp'],
@@ -263,7 +261,7 @@ def buy_now_receipt(request, purchase_id):
         if form.is_valid():
             purchase = PurchaseRequest.objects.create(
                 product=product,
-                delivery_type='source',
+                delivery_type='full_ownership',  # ✅ CHANGED
                 buyer_name=session_data['buyer_name'],
                 buyer_email=session_data['buyer_email'],
                 whatsapp_number=session_data['whatsapp_number'],
@@ -272,7 +270,6 @@ def buy_now_receipt(request, purchase_id):
                 status='pending'
             )
 
-            # ✅ Send 2 emails (customer + admin)  <-- THIS WAS MISSING
             send_purchase_pending_emails(request=request, purchase=purchase)
 
             del request.session['buy_now']
@@ -324,7 +321,7 @@ def rent_start(request, slug):
         purchase = PurchaseRequest.objects.create(
             product=product,
             hosting_plan=plan,
-            delivery_type="hosted",
+            delivery_type="rent_own",  # ✅ CHANGED
             buyer_name=buyer_name,
             buyer_email=buyer_email,
             whatsapp_number=whatsapp_number,
@@ -342,7 +339,7 @@ def rent_start(request, slug):
 
 
 def rent_receipt(request, purchase_id):
-    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="hosted")
+    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="rent_own")  # ✅ CHANGED
 
     if request.method == "POST":
         receipt = request.FILES.get("receipt")
@@ -354,7 +351,6 @@ def rent_receipt(request, purchase_id):
         purchase.status = "pending"
         purchase.save()
 
-        # ✅ Send 2 emails (customer + admin)
         send_purchase_pending_emails(request=request, purchase=purchase)
 
         return redirect("marketplace:rent_confirmed", purchase_id=purchase.id)
@@ -363,7 +359,7 @@ def rent_receipt(request, purchase_id):
 
 
 def rent_confirmed(request, purchase_id):
-    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="hosted")
+    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="rent_own")  # ✅ CHANGED
     return render(request, "marketplace/rent_confirmed.html", {"purchase": purchase})
 
 
@@ -463,10 +459,7 @@ def rental_generate_renew_invoice(request, rental_id):
 
     now = timezone.now()
 
-    if rental.expires_at and rental.expires_at > now:
-        base_dt = rental.expires_at
-    else:
-        base_dt = now
+    base_dt = rental.expires_at if rental.expires_at and rental.expires_at > now else now
 
     period_start = (base_dt + timedelta(days=1)).date()
     period_end = (base_dt + relativedelta(months=1)).date()
@@ -505,7 +498,6 @@ def rental_invoice_upload(request, invoice_id):
         invoice.status = "pending"
         invoice.save()
 
-        # ✅ Send 2 emails (customer + admin)
         send_rental_invoice_pending_emails(request=request, invoice=invoice)
 
         messages.success(request, "Receipt submitted. Verification usually takes 1–24 hours.")

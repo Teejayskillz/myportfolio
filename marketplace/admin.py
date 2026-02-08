@@ -19,14 +19,12 @@ from .models import (
     MagicLinkToken,
 )
 
-def _send_hosted_activation_email(request, purchase, rental):
-    access_url = request.build_absolute_uri(
-        reverse("marketplace:rentals_access_request")
-    )
 
+def _send_hosted_activation_email(request, purchase, rental) -> int:
+    access_url = request.build_absolute_uri(reverse("marketplace:rentals_access_request"))
     hosted_url_line = f"Hosted URL: {rental.hosted_url}\n" if rental.hosted_url else ""
 
-    EmailMessage(
+    msg = EmailMessage(
         subject=f"Your Hosted Rental is Active: {purchase.product.title}",
         body=(
             f"Hi {purchase.buyer_name},\n\n"
@@ -34,7 +32,7 @@ def _send_hosted_activation_email(request, purchase, rental):
             f"Product: {purchase.product.title}\n"
             f"Plan: {purchase.hosting_plan}\n"
             f"Status: {rental.status}\n"
-            f"Active until: {rental.expires_at.strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"Active until: {rental.expires_at:%Y-%m-%d %H:%M:%S}\n"
             f"{hosted_url_line}\n"
             f"To view your rental details and renew later, use the rentals access page:\n"
             f"{access_url}\n\n"
@@ -42,15 +40,30 @@ def _send_hosted_activation_email(request, purchase, rental):
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[purchase.buyer_email],
-    ).send()
+    )
+    return msg.send(fail_silently=False)
+
+
+def _send_ownership_email(request, purchase, license_obj, token_obj) -> int:
+    download_url = request.build_absolute_uri(
+        reverse("marketplace:download_product", kwargs={"token": token_obj.token})
+    )
+
+    msg = EmailMessage(
+        subject=f"Your Purchase: {purchase.product.title}",
+        body=(
+            f"Thank you {purchase.buyer_name}!\n\n"
+            f"Your license key: {license_obj.license_key}\n"
+            f"Download your product here: {download_url}\n\n"
+            f"License expires: {license_obj.expires_at:%Y-%m-%d %H:%M:%S}"
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[purchase.buyer_email],
+    )
+    return msg.send(fail_silently=False)
 
 
 def _add_one_month(dt):
-    """
-    Adds ~1 month safely.
-    If python-dateutil is installed, uses calendar months.
-    Otherwise falls back to 30 days.
-    """
     try:
         from dateutil.relativedelta import relativedelta
         return dt + relativedelta(months=1)
@@ -92,6 +105,7 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
         "status",
         "created_at",
     )
+    list_display_links = ("id", "product")
     list_filter = ("status", "delivery_type", "created_at")
     search_fields = ("buyer_email", "buyer_name", "whatsapp_number", "product__title")
     readonly_fields = ("created_at",)
@@ -103,16 +117,145 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
         ("Admin", {"fields": ("admin_note",)}),
     )
 
-    actions = ["approve_and_fulfill_all", "reject_purchase"]
+    actions = ["approve_and_fulfill_all", "resend_fulfillment_emails", "reject_purchase"]
 
-    @admin.action(description="Approve & fulfill (source license + hosted rental)")
+    def _fulfill_one(self, request, purchase, now):
+        """
+        Fulfill and email based on delivery_type.
+        Returns tuple: (source_sent, rent_sent, skipped, email_failed)
+        """
+        source_sent = 0
+        rent_sent = 0
+        skipped = 0
+        email_failed = 0
+
+        # OWNERSHIP (new + old alias)
+        if purchase.delivery_type in ("full_ownership", "source"):
+            license_obj, _ = License.objects.get_or_create(
+                purchase=purchase,
+                defaults={
+                    "product": purchase.product,
+                    "expires_at": now + timedelta(days=365),
+                },
+            )
+            token_obj, _ = DownloadToken.objects.get_or_create(
+                license=license_obj,
+                defaults={"expires_at": now + timedelta(days=7), "max_downloads": 3},
+            )
+
+            try:
+                sent = _send_ownership_email(request, purchase, license_obj, token_obj)
+                if sent == 0:
+                    email_failed += 1
+                    self.message_user(
+                        request,
+                        f"❌ Ownership email reported 0 sent for Purchase #{purchase.id} ({purchase.buyer_email}).",
+                        level=messages.ERROR,
+                    )
+                else:
+                    source_sent += 1
+            except Exception as e:
+                email_failed += 1
+                self.message_user(
+                    request,
+                    f"❌ Ownership email failed for Purchase #{purchase.id} ({purchase.buyer_email}): "
+                    f"{type(e).__name__}: {e}",
+                    level=messages.ERROR,
+                )
+
+        # RENT/HOST (new + old alias)
+        if purchase.delivery_type in ("rent_own", "hosted"):
+            if not purchase.hosting_plan:
+                skipped += 1
+                self.message_user(
+                    request,
+                    f"⚠️ Purchase #{purchase.id} skipped for rent: missing hosting_plan.",
+                    level=messages.WARNING,
+                )
+                return source_sent, rent_sent, skipped, email_failed
+
+            existing_rental = Rental.objects.filter(
+                product=purchase.product,
+                buyer_email__iexact=purchase.buyer_email,
+            ).order_by("-created_at").first()
+
+            if existing_rental:
+                base = existing_rental.expires_at if existing_rental.expires_at and existing_rental.expires_at > now else now
+                existing_rental.hosting_plan = purchase.hosting_plan
+                existing_rental.buyer_name = purchase.buyer_name
+                existing_rental.whatsapp_number = purchase.whatsapp_number
+                existing_rental.status = "active"
+                existing_rental.started_at = existing_rental.started_at or now
+                existing_rental.expires_at = _add_one_month(base)
+                existing_rental.admin_note = (existing_rental.admin_note or "") + f"\nRe-activated from PurchaseRequest #{purchase.id}."
+                existing_rental.save()
+
+                try:
+                    sent = _send_hosted_activation_email(request, purchase, existing_rental)
+                    if sent == 0:
+                        email_failed += 1
+                        self.message_user(
+                            request,
+                            f"❌ Rent email reported 0 sent for Purchase #{purchase.id} ({purchase.buyer_email}).",
+                            level=messages.ERROR,
+                        )
+                    else:
+                        rent_sent += 1
+                except Exception as e:
+                    email_failed += 1
+                    self.message_user(
+                        request,
+                        f"❌ Rent email failed for Purchase #{purchase.id} ({purchase.buyer_email}): "
+                        f"{type(e).__name__}: {e}",
+                        level=messages.ERROR,
+                    )
+                return source_sent, rent_sent, skipped, email_failed
+
+            rental = Rental.objects.create(
+                product=purchase.product,
+                hosting_plan=purchase.hosting_plan,
+                buyer_name=purchase.buyer_name,
+                buyer_email=purchase.buyer_email,
+                whatsapp_number=purchase.whatsapp_number,
+                status="active",
+                started_at=now,
+                expires_at=_add_one_month(now),
+                admin_note=f"Auto-created from PurchaseRequest #{purchase.id}. Setup fee included in PurchaseRequest amount.",
+            )
+
+            RentalInvoice.objects.create(
+                rental=rental,
+                period_start=now.date(),
+                period_end=_add_one_month(now).date(),
+                amount=purchase.hosting_plan.monthly_price,
+                status="approved",
+                admin_note=f"Initial month auto-approved from PurchaseRequest #{purchase.id}.",
+            )
+
+            try:
+                sent = _send_hosted_activation_email(request, purchase, rental)
+                if sent == 0:
+                    email_failed += 1
+                    self.message_user(
+                        request,
+                        f"❌ Rent email reported 0 sent for Purchase #{purchase.id} ({purchase.buyer_email}).",
+                        level=messages.ERROR,
+                    )
+                else:
+                    rent_sent += 1
+            except Exception as e:
+                email_failed += 1
+                self.message_user(
+                    request,
+                    f"❌ Rent email failed for Purchase #{purchase.id} ({purchase.buyer_email}): "
+                    f"{type(e).__name__}: {e}",
+                    level=messages.ERROR,
+                )
+
+        return source_sent, rent_sent, skipped, email_failed
+
+    @admin.action(description="Approve & fulfill (send emails + create license/rental)")
     def approve_and_fulfill_all(self, request, queryset):
-        """
-        - Approves pending PurchaseRequests.
-        - If delivery_type includes source: creates License + DownloadToken + sends email.
-        - If delivery_type includes hosted: creates Rental (if not exists) + creates initial approved invoice.
-        - Prevents duplicate rentals.
-        """
         approved_count = 0
         source_fulfilled = 0
         hosted_fulfilled = 0
@@ -123,141 +266,61 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
             purchases = queryset.select_for_update().select_related("product", "hosting_plan")
 
             for purchase in purchases:
-                # Only handle pending (avoid double-processing)
                 if purchase.status != "pending":
                     skipped += 1
                     continue
 
                 now = timezone.now()
 
-                # ✅ Approve purchase
+                # Fulfill + email first (so we can see errors)
+                s_sent, r_sent, sk, e_failed = self._fulfill_one(request, purchase, now)
+                source_fulfilled += s_sent
+                hosted_fulfilled += r_sent
+                skipped += sk
+                email_failed += e_failed
+
+                # Mark approved regardless (you can change this if you want)
                 purchase.status = "approved"
                 purchase.admin_note = (purchase.admin_note or "") + f"\nApproved on {now:%Y-%m-%d %H:%M} by admin."
                 purchase.save(update_fields=["status", "admin_note"])
                 approved_count += 1
 
-                # -------------------------
-                # SOURCE / BOTH: LICENSE + TOKEN + EMAIL
-                # -------------------------
-                if purchase.delivery_type in ("source", "both"):
-                    license_obj, _ = License.objects.get_or_create(
-                        purchase=purchase,
-                        defaults={
-                            "product": purchase.product,
-                            "expires_at": now + timedelta(days=365),
-                        },
-                    )
-
-                    token_obj, _ = DownloadToken.objects.get_or_create(
-                        license=license_obj,
-                        defaults={
-                            "expires_at": now + timedelta(days=7),
-                            "max_downloads": 3,
-                        },
-                    )
-
-                    download_url = request.build_absolute_uri(
-                        reverse("marketplace:download_product", kwargs={"token": token_obj.token})
-                    )
-
-                    try:
-                        EmailMessage(
-                            subject=f"Your Purchase: {purchase.product.title}",
-                            body=(
-                                f"Thank you {purchase.buyer_name}!\n\n"
-                                f"Your license key: {license_obj.license_key}\n"
-                                f"Download your product here: {download_url}\n\n"
-                                f"License expires: {license_obj.expires_at.strftime('%Y-%m-%d %H:%M:%S')}"
-                            ),
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            to=[purchase.buyer_email],
-                        ).send()
-                    except Exception:
-                        # Optional: log if you want
-                        email_failed += 1
-
-                    source_fulfilled += 1
-
-                # -------------------------
-                # HOSTED / BOTH: CREATE RENTAL + INITIAL INVOICE
-                # -------------------------
-                if purchase.delivery_type in ("hosted", "both"):
-                    if not purchase.hosting_plan:
-                        skipped += 1
-                        self.message_user(
-                            request,
-                            f"⚠️ Purchase #{purchase.id} skipped for hosted: missing hosting_plan.",
-                            level=messages.WARNING,
-                        )
-                        continue
-
-                    # Prevent duplicate rental creation for same product + email
-                    existing_rental = Rental.objects.filter(
-                        product=purchase.product,
-                        buyer_email__iexact=purchase.buyer_email,
-                    ).order_by("-created_at").first()
-
-                    if existing_rental:
-                        # If rental exists, you might want to activate it instead of creating a new one
-                        # We'll just ensure it's active and set a fresh expiry if it's expired/cancelled.
-                        base = existing_rental.expires_at if existing_rental.expires_at and existing_rental.expires_at > now else now
-                        existing_rental.hosting_plan = purchase.hosting_plan
-                        existing_rental.buyer_name = purchase.buyer_name
-                        existing_rental.whatsapp_number = purchase.whatsapp_number
-                        existing_rental.status = "active"
-                        existing_rental.started_at = existing_rental.started_at or now
-                        existing_rental.expires_at = _add_one_month(base)
-                        existing_rental.admin_note = (existing_rental.admin_note or "") + f"\nRe-activated from PurchaseRequest #{purchase.id}."
-                        existing_rental.save()
-
-                        try:
-                            _send_hosted_activation_email(request, purchase, existing_rental)
-                        except Exception:
-                            email_failed += 1
-
-                        hosted_fulfilled += 1
-                        continue
-
-                    # Create new rental
-                    rental = Rental.objects.create(
-                        product=purchase.product,
-                        hosting_plan=purchase.hosting_plan,
-                        buyer_name=purchase.buyer_name,
-                        buyer_email=purchase.buyer_email,
-                        whatsapp_number=purchase.whatsapp_number,
-                        status="active",
-                        started_at=now,
-                        expires_at=_add_one_month(now),
-                        admin_note=f"Auto-created from PurchaseRequest #{purchase.id}. Setup fee included in PurchaseRequest amount.",
-                    )
-
-                    # Create initial invoice as approved (first month already paid with setup fee + first month)
-                    RentalInvoice.objects.create(
-                        rental=rental,
-                        period_start=now.date(),
-                        period_end=_add_one_month(now).date(),
-                        amount=purchase.hosting_plan.monthly_price,
-                        status="approved",
-                        admin_note=f"Initial month auto-approved from PurchaseRequest #{purchase.id}. Setup fee is separate in PurchaseRequest amount.",
-                    )
-
-                    try:
-                        _send_hosted_activation_email(request, purchase, rental)
-                    except Exception:
-                        email_failed += 1
-
-                    hosted_fulfilled += 1
-        # Summary messages
         if approved_count:
             self.message_user(request, f"✅ Approved {approved_count} purchase(s).", level=messages.SUCCESS)
         if source_fulfilled:
-            self.message_user(request, f"📦 Fulfilled {source_fulfilled} source/both purchase(s) (license + download link).", level=messages.SUCCESS)
+            self.message_user(request, f"📦 Sent {source_fulfilled} ownership email(s).", level=messages.SUCCESS)
         if hosted_fulfilled:
-            self.message_user(request, f"🏠 Fulfilled {hosted_fulfilled} hosted/both purchase(s) (rental created/activated).", level=messages.SUCCESS)
+            self.message_user(request, f"🏠 Sent {hosted_fulfilled} rent email(s).", level=messages.SUCCESS)
         if email_failed:
-            self.message_user(request, f"⚠️ {email_failed} email(s) failed to send (check email settings/logs).", level=messages.WARNING)
+            self.message_user(request, f"⚠️ {email_failed} email(s) failed (see red errors above).", level=messages.WARNING)
         if skipped:
-            self.message_user(request, f"⚠️ Skipped {skipped} item(s) (not pending / missing plan / etc).", level=messages.WARNING)
+            self.message_user(request, f"⚠️ Skipped {skipped} item(s).", level=messages.WARNING)
+
+    @admin.action(description="Resend fulfillment email(s) (works for approved too)")
+    def resend_fulfillment_emails(self, request, queryset):
+        resent_ownership = 0
+        resent_rent = 0
+        skipped = 0
+        email_failed = 0
+
+        purchases = queryset.select_related("product", "hosting_plan")
+        now = timezone.now()
+
+        for purchase in purchases:
+            s_sent, r_sent, sk, e_failed = self._fulfill_one(request, purchase, now)
+            resent_ownership += s_sent
+            resent_rent += r_sent
+            skipped += sk
+            email_failed += e_failed
+
+        if resent_ownership:
+            self.message_user(request, f"📨 Resent {resent_ownership} ownership email(s).", level=messages.SUCCESS)
+        if resent_rent:
+            self.message_user(request, f"📨 Resent {resent_rent} rent email(s).", level=messages.SUCCESS)
+        if email_failed:
+            self.message_user(request, f"⚠️ {email_failed} email(s) failed (see red errors).", level=messages.WARNING)
+        if skipped:
+            self.message_user(request, f"⚠️ Skipped {skipped} item(s).", level=messages.WARNING)
 
     @admin.action(description="Reject purchase request(s)")
     def reject_purchase(self, request, queryset):
@@ -316,10 +379,7 @@ class RentalInvoiceAdmin(admin.ModelAdmin):
             invoices = queryset.select_for_update().select_related("rental", "rental__hosting_plan")
 
             for inv in invoices:
-                if inv.status == "approved":
-                    skipped_count += 1
-                    continue
-                if inv.status != "pending":
+                if inv.status == "approved" or inv.status != "pending":
                     skipped_count += 1
                     continue
 
@@ -327,12 +387,10 @@ class RentalInvoiceAdmin(admin.ModelAdmin):
                 now = timezone.now()
                 base = rental.expires_at if rental.expires_at and rental.expires_at > now else now
 
-                # Extend rental 1 month
                 rental.expires_at = _add_one_month(base)
                 rental.status = "active"
                 rental.save(update_fields=["expires_at", "status"])
 
-                # Approve invoice
                 inv.status = "approved"
                 inv.admin_note = (inv.admin_note or "") + f"\nApproved on {now:%Y-%m-%d %H:%M} by admin."
                 inv.save(update_fields=["status", "admin_note"])
@@ -340,17 +398,9 @@ class RentalInvoiceAdmin(admin.ModelAdmin):
                 approved_count += 1
 
         if approved_count:
-            self.message_user(
-                request,
-                f"✅ Approved {approved_count} invoice(s) and extended rentals.",
-                level=messages.SUCCESS,
-            )
+            self.message_user(request, f"✅ Approved {approved_count} invoice(s) and extended rentals.", level=messages.SUCCESS)
         if skipped_count:
-            self.message_user(
-                request,
-                f"⚠️ Skipped {skipped_count} invoice(s) (already approved or not pending).",
-                level=messages.WARNING,
-            )
+            self.message_user(request, f"⚠️ Skipped {skipped_count} invoice(s).", level=messages.WARNING)
 
     @admin.action(description="Reject selected invoices")
     def reject_selected_invoices(self, request, queryset):
