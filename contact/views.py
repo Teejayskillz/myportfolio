@@ -1,45 +1,27 @@
 from django.shortcuts import render, redirect
-from django.conf import settings
 from django.contrib import messages
-import os 
-from .forms import ContactForm
-from .utils import send_email_via_brevo  # import your Brevo function
-import requests 
+from .models import ContactMessage
 
-def contact_view(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            
-            name = form.cleaned_data['name']
-            email = form.cleaned_data['email']
-            phone = form.cleaned_data.get('phone', 'Not provided')
+def contact_page(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        message_text = request.POST.get("message", "").strip()
 
-            subject = form.cleaned_data['subject']
-            message = form.cleaned_data['message']
+        if not name or not email or not message_text:
+            messages.error(request, "Please fill in your name, email, and message.")
+            return redirect("contact:contact_page")
 
-            full_subject = f"Portfolio Contact Form: {subject} from {name}"
-            full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message} \n\nphone: {phone}"
+        ContactMessage.objects.create(
+            name=name,
+            email=email,
+            phone=request.POST.get("phone", "").strip(),
+            project_type=request.POST.get("project_type", "").strip(),
+            timeline=request.POST.get("timeline", "").strip(),
+            budget=request.POST.get("budget", "").strip(),
+            message=message_text,
+        )
+        messages.success(request, "Thanks! Your message has been submitted. I'll reply soon.")
+        return redirect("contact:contact_page")
 
-            try:
-                # Use Brevo API instead of send_mail
-                response = send_email_via_brevo(
-                    subject=full_subject,
-                    to_email='contact@lagoswebdev.com',  # your destination inbox
-                    content=full_message.replace("\n", "<br>"),
-                    api_key=os.environ.get('BREVO_API_KEY')
-                )
-
-                if response.status_code == 201:
-                    messages.success(request, 'Your message has been sent successfully! I will get back to you soon.')
-                    return redirect('pages:home')
-                else:
-                    messages.error(request, f"Email failed to send. Brevo error: {response.status_code} - {response.text}")
-            except Exception as e:
-                messages.error(request, f"There was an error sending your message. Please try again later. Error: {e}")
-        else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = ContactForm()
-
-    return render(request, 'contact/contact.html', {'form': form})
+    return render(request, "contact/contact.html")
