@@ -140,7 +140,7 @@
                     <li><i class="fas fa-check-circle"></i>Updates support</li>
                   </ul>
 
-                  <a href="/plans/{{ product.slug }}/rent" class="btn btn-netflix-secondary w-100 mt-3">
+                  <a href="{% url 'marketplace:rent_start' product.slug %}"  class="btn btn-netflix-secondary w-100 mt-3">
                     <i class="fas fa-rocket me-2"></i>Rent Now
                   </a>
                 </div>

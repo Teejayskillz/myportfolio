@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+{% block title %}My Rentals | LagosWebDev{% endblock %}
+
+{% block content %}
+<style>
+  .mr-wrap{ padding-top: 95px; padding-bottom: 60px; }
+
+  /* Top header */
+  .mr-top{
+    display:flex; justify-content:space-between; align-items:center;
+    gap: 1rem; flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+  .mr-top h3{ margin:0; font-weight: 950; }
+  .mr-email{
+    color: rgba(255,255,255,0.60);
+    font-size: .95rem;
+  }
+
+  /* Rental cards */
+  .mr-card{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 18px 55px rgba(0,0,0,0.50);
+    overflow:hidden;
+    position: relative;
+  }
+  .mr-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--netflix-red), transparent);
+    opacity: .85;
+  }
+
+  .mr-head{
+    padding: 1.25rem 1.35rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.10), rgba(0,0,0,0));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display:flex;
+    justify-content:space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items:flex-start;
+  }
+  .mr-title{
+    margin: 0 0 .25rem;
+    font-weight: 950;
+    font-size: 1.15rem;
+  }
+  .mr-sub{
+    color: rgba(255,255,255,0.55);
+    font-size: .92rem;
+  }
+
+  /* Status pills */
+  .status-pill{
+    display:inline-flex; align-items:center; gap:.45rem;
+    padding:.38rem .85rem; border-radius:999px;
+    font-weight:900; font-size:.82rem;
+    border:1px solid rgba(255,255,255,0.10);
+    background:rgba(255,255,255,.03);
+    color:rgba(255,255,255,0.75);
+    white-space: nowrap;
+  }
+  .status-pill i{ font-size:.9rem; }
+  .status-pill.active{ border-color:rgba(40,167,69,.45); background:rgba(40,167,69,.12); color:#28a745; }
+  .status-pill.expired{ border-color:rgba(255,193,7,.55); background:rgba(255,193,7,.12); color:#ffc107; }
+  .status-pill.cancelled{ border-color:rgba(108,117,125,.55); background:rgba(108,117,125,.14); color:#adb5bd; }
+
+  /* Body section */
+  .mr-body{ padding: 1.2rem 1.35rem 1.35rem; }
+
+  .mr-grid{
+    margin-top: .2rem;
+    display:grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: .9rem;
+  }
+  .mr-box{
+    grid-column: span 4;
+    border-radius: 16px;
+    padding: .95rem 1rem;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.10);
+    min-height: 96px;
+  }
+  .mr-box .k{
+    color: rgba(255,255,255,0.55);
+    font-size: .82rem;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    margin-bottom: .35rem;
+  }
+  .mr-box .v{
+    color: rgba(255,255,255,0.85);
+    font-size: .98rem;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  /* Expires hint */
+  .hint-badge{
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding:.25rem .6rem; border-radius:999px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,.03);
+    font-size:.78rem;
+    color: rgba(255,255,255,0.70);
+    margin-top: .55rem;
+  }
+  .hint-badge i{ color: var(--netflix-red); }
+
+  /* Links */
+  .link-soft{ color:rgba(255,255,255,0.70); text-decoration:none; }
+  .link-soft:hover{ color:var(--netflix-red); }
+
+  /* Invoices */
+  .mr-invoices{
+    margin-top: 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 1.1rem;
+  }
+  .mr-invoices-head{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:.75rem;
+    margin-bottom: .7rem;
+  }
+  .invoice-list{ display:flex; flex-direction:column; gap:.75rem; }
+  .invoice-row{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+    padding: 1rem 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+  }
+  .invoice-left .fw-semibold{ font-weight: 950 !important; }
+  .invoice-right{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; justify-content:flex-end; }
+
+  .mini-pill{
+    display:inline-flex; align-items:center; gap:.35rem;
+    padding:.28rem .65rem; border-radius:999px;
+    font-size:.78rem; font-weight:900;
+    border:1px solid rgba(255,255,255,0.10);
+    background:rgba(255,255,255,.03);
+    color:rgba(255,255,255,0.70);
+    white-space: nowrap;
+  }
+  .mini-pill.pending{ border-color:rgba(255,193,7,.55); background:rgba(255,193,7,.12); color:#ffc107; }
+  .mini-pill.approved{ border-color:rgba(40,167,69,.45); background:rgba(40,167,69,.12); color:#28a745; }
+  .mini-pill.rejected{ border-color:rgba(220,53,69,.55); background:rgba(220,53,69,.12); color:#dc3545; }
+
+  /* Actions */
+  .mr-actions{
+    margin-top: 1.25rem;
+    display:flex; gap:.6rem; flex-wrap:wrap;
+  }
+
+  /* Empty state */
+  .mr-empty{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 18px 55px rgba(0,0,0,0.45);
+    padding: 3.2rem 2rem;
+    text-align:center;
+  }
+
+  @media (max-width: 992px){
+    .mr-box{ grid-column: span 12; }
+  }
+</style>
+
+<div class="container mr-wrap">
+  <div class="mr-top">
+    <div>
+      <h3>My Rentals</h3>
+      <div class="mr-email"><i class="fas fa-envelope me-2" style="color: rgba(255,255,255,0.5);"></i>{{ email }}</div>
+    </div>
+
+    <a href="{% url 'marketplace:rentals_access_request' %}" class="btn btn-netflix-secondary">
+      <i class="fas fa-link me-2"></i>Request New Link
+    </a>
+  </div>
+
+  {% if rentals %}
+    <div class="row g-3">
+      {% for r in rentals %}
+      <div class="col-12">
+        <div class="mr-card">
+
+          <!-- Header -->
+          <div class="mr-head">
+            <div>
+              <div class="mr-title">{{ r.product.title }}</div>
+              <div class="mr-sub">
+                <i class="fas fa-layer-group me-2" style="color: rgba(255,255,255,0.45);"></i>
+                Plan: <span class="text-white">{{ r.hosting_plan.name }}</span>
+                • <span style="color: rgba(255,255,255,0.65);">₦{{ r.hosting_plan.monthly_price|floatformat:0 }}/month</span>
+              </div>
+            </div>
+
+            <div class="text-end">
+              {% if r.status == "cancelled" %}
+                <span class="status-pill cancelled"><i class="fas fa-ban"></i>Cancelled</span>
+              {% elif r.status == "expired" %}
+                <span class="status-pill expired"><i class="fas fa-triangle-exclamation"></i>Expired</span>
+              {% else %}
+                <span class="status-pill active"><i class="fas fa-check-circle"></i>Active</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="mr-body">
+            <div class="mr-grid">
+              <div class="mr-box">
+                <div class="k">Expires</div>
+                <div class="v">
+                  {{ r.expires_at|date:"M d, Y" }}
+                  {% if r.status == "active" and r.expires_at|timeuntil %}
+                    <div class="hint-badge">
+                      <i class="fas fa-clock"></i>{{ r.expires_at|timeuntil }} left
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="mr-box">
+                <div class="k">Hosted URL</div>
+                <div class="v">
+                  {% if r.hosted_url %}
+                    <a class="link-soft" href="{{ r.hosted_url }}" target="_blank" rel="noopener">
+                      {{ r.hosted_url|truncatechars:42 }} <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                  {% else %}
+                    <span>Not set</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="mr-box">
+                <div class="k">Notes</div>
+                <div class="v">
+                  {% if r.admin_note %}
+                    {{ r.admin_note|truncatechars:80 }}
+                  {% else %}
+                    <span>—</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <!-- INVOICES -->
+            <div class="mr-invoices">
+              <div class="mr-invoices-head">
+                <h6 class="mb-0" style="font-weight: 950;">
+                  <i class="fas fa-file-invoice me-2" style="color: var(--netflix-red);"></i>Invoices
+                </h6>
+
+                {# If there is any pending invoice, show a hint #}
+                {% with pending_inv=None %}
+                  {% for inv in r.invoices.all %}
+                    {% if inv.status == "pending" %}
+                      {% with pending_inv=inv %}{% endwith %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if pending_inv %}
+                    <span class="mini-pill pending">
+                      <i class="fas fa-hourglass-half me-1"></i>Pending invoice exists (#{{ pending_inv.id }})
+                    </span>
+                  {% endif %}
+                {% endwith %}
+              </div>
+
+              {% if r.invoices.all %}
+                <div class="invoice-list">
+                  {% for inv in r.invoices.all|dictsortreversed:"created_at" %}
+                    <div class="invoice-row">
+                      <div class="invoice-left">
+                        <div class="fw-semibold">Invoice #{{ inv.id }}</div>
+                        <div class="text-muted small">
+                          Period: {{ inv.period_start|date:"M d, Y" }} → {{ inv.period_end|date:"M d, Y" }}
+                          • Amount: ₦{{ inv.amount|floatformat:0 }}
+                        </div>
+                      </div>
+
+                      <div class="invoice-right">
+                        {% if inv.status == "approved" %}
+                          <span class="mini-pill approved"><i class="fas fa-check-circle me-1"></i>Approved</span>
+                        {% elif inv.status == "rejected" %}
+                          <span class="mini-pill rejected"><i class="fas fa-times-circle me-1"></i>Rejected</span>
+                        {% else %}
+                          <span class="mini-pill pending"><i class="fas fa-clock me-1"></i>Pending</span>
+                        {% endif %}
+
+                        {% if inv.status == "pending" %}
+                          <a class="btn btn-sm btn-netflix-secondary"
+                             href="{% url 'marketplace:rental_invoice_upload' inv.id %}">
+                            Upload Receipt
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="text-muted small mt-2">No invoices yet.</div>
+              {% endif %}
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="mr-actions">
+              {% now "U" as now_ts %}
+              {% with expires_ts=r.expires_at|date:"U" %}
+                {% if r.status == "cancelled" or r.status == "expired" or expires_ts|add:"-604800" <= now_ts %}
+                  <a class="btn btn-netflix-primary"
+                     href="{% url 'marketplace:rental_generate_renew_invoice' r.id %}">
+                    Generate Renewal Invoice <i class="fas fa-arrow-right ms-2"></i>
+                  </a>
+                {% else %}
+                  <button class="btn btn-netflix-secondary" type="button" disabled
+                          title="You can renew when it's close to expiry (7 days) or if expired/cancelled.">
+                    Renewal not needed yet
+                  </button>
+                {% endif %}
+              {% endwith %}
+
+              {% if r.hosted_url %}
+                <a class="btn btn-netflix-secondary" href="{{ r.hosted_url }}" target="_blank" rel="noopener">
+                  Open Site <i class="fas fa-external-link-alt ms-2"></i>
+                </a>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="mr-empty">
+      <i class="fas fa-box-open fa-3x mb-3" style="color: rgba(255,255,255,0.45);"></i>
+      <h4 class="mb-2" style="font-weight: 950;">No rentals found</h4>
+      <p class="mb-0" style="color: rgba(255,255,255,0.60);">
+        If you believe this is a mistake, contact support.
+      </p>
+      <div class="mt-3">
+        <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-secondary">
+          Contact Support <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

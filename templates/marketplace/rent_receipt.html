@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+{% block title %}Upload Receipt - Rent & Host | LagosWebDev{% endblock %}
+
+{% block content %}
+<style>
+  .ur-wrap { padding-top: 95px; padding-bottom: 60px; }
+
+  /* Left main card */
+  .ur-card{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.50);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Top accent line */
+  .ur-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--netflix-red), transparent);
+    opacity: .9;
+  }
+
+  /* Section header */
+  .ur-head{
+    padding: 1.7rem 1.7rem 1.2rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.12), rgba(0,0,0,0.00));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ur-head h3{ margin:0 0 .35rem; font-weight: 950; }
+  .ur-head p{ margin:0; color: var(--netflix-light-gray); }
+
+  /* Amount box */
+  .ur-summary{
+    margin: 1.5rem;
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .ur-summary .label{ color: var(--netflix-light-gray); font-size: .95rem; }
+  .ur-summary .value{
+    font-size: 1.7rem;
+    font-weight: 950;
+    color: var(--netflix-red);
+    line-height: 1.1;
+  }
+  .ur-summary .sub{
+    margin-top: .35rem;
+    color: rgba(255,255,255,0.70);
+    font-size: .95rem;
+  }
+
+  /* Steps */
+  .ur-steps{
+    margin: 0 1.5rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .75rem;
+  }
+  .ur-step{
+    border-radius: 14px;
+    padding: .9rem .9rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    height: 100%;
+  }
+  .ur-step .top{
+    display:flex;
+    align-items:center;
+    gap:.55rem;
+    margin-bottom: .35rem;
+    font-weight: 900;
+  }
+  .ur-step .top i{ color: var(--netflix-red); }
+  .ur-step p{ margin:0; color: var(--netflix-light-gray); font-size: .92rem; line-height: 1.35; }
+
+  /* Form area */
+  .ur-form{
+    padding: 1.4rem 1.5rem 1.7rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .ur-form label{ font-weight: 800; }
+  .ur-file{
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--netflix-white);
+    border-radius: 14px;
+    padding: 1rem 1rem;
+  }
+  .ur-file:focus{
+    outline: none;
+    box-shadow: none;
+    border-color: rgba(229,9,20,0.45);
+  }
+  .ur-help{
+    margin-top: .6rem;
+    color: rgba(255,255,255,0.60);
+    font-size: .9rem;
+  }
+
+  /* Right side info */
+  .ur-side{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    overflow: hidden;
+    position: sticky;
+    top: 110px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+  }
+  .ur-side .side-head{
+    padding: 1.3rem 1.5rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.10), rgba(0,0,0,0));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ur-side .side-head h5{
+    margin: 0;
+    font-weight: 950;
+    display:flex;
+    align-items:center;
+    gap:.55rem;
+  }
+  .ur-side .side-head i{ color: var(--netflix-red); }
+  .ur-side .side-body{ padding: 1.2rem 1.5rem 1.5rem; }
+
+  .bank-row{
+    display:flex;
+    justify-content:space-between;
+    gap: 1rem;
+    padding: .55rem 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.78);
+  }
+  .bank-row:last-child{ border-bottom: 0; }
+  .bank-row .k{ color: var(--netflix-light-gray); }
+
+  .ur-warn{
+    margin-top: 1rem;
+    border-radius: 16px;
+    background: rgba(255,193,7,.08);
+    border: 1px solid rgba(255,193,7,.25);
+    padding: 1rem 1rem;
+    color: rgba(255,255,255,0.88);
+  }
+  .ur-warn strong{ color: #ffc107; }
+
+  /* Mobile */
+  @media (max-width: 992px){
+    .ur-side{ position: static; top: auto; }
+  }
+  @media (max-width: 768px){
+    .ur-steps{ grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container ur-wrap">
+  <div class="row g-4">
+
+    <!-- LEFT: Upload form -->
+    <div class="col-lg-7">
+      <div class="ur-card">
+
+        <div class="ur-head">
+          <h3><i class="fas fa-receipt me-2" style="color: var(--netflix-red);"></i>Upload Payment Receipt</h3>
+          <p>Pay and upload a clear screenshot/receipt to continue.</p>
+        </div>
+
+        <div class="ur-summary">
+          <div class="d-flex align-items-end justify-content-between flex-wrap gap-2">
+            <div>
+              <div class="label">Amount to pay</div>
+              <div class="value">₦{{ purchase.amount|floatformat:0 }}</div>
+            </div>
+            <div class="text-end">
+              <div class="label">Request ID</div>
+              <div class="fw-bold" style="letter-spacing:1px;">#{{ purchase.id|stringformat:"05d" }}</div>
+            </div>
+          </div>
+
+          <div class="sub">
+            <i class="fas fa-box me-2" style="color:rgba(255,255,255,0.55);"></i>
+            Product: <span class="text-white">{{ purchase.product.title }}</span>
+            {% if purchase.hosting_plan %}
+              • Plan: <span class="text-white">{{ purchase.hosting_plan.name }}</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="ur-steps">
+          <div class="ur-step">
+            <div class="top"><i class="fas fa-money-bill-wave"></i>1) Make payment</div>
+            <p>Transfer the exact amount to the bank details on the right.</p>
+          </div>
+          <div class="ur-step">
+            <div class="top"><i class="fas fa-camera"></i>2) Screenshot receipt</div>
+            <p>Ensure name/date/amount are visible (clear image).</p>
+          </div>
+          <div class="ur-step">
+            <div class="top"><i class="fas fa-shield-alt"></i>3) We verify</div>
+            <p>Verification usually takes 1–24 hours, then access is unlocked.</p>
+          </div>
+        </div>
+
+        <div class="ur-form">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label class="form-label">Receipt <span class="text-danger">*</span></label>
+            <input
+              type="file"
+              name="receipt"
+              class="form-control ur-file"
+              required
+              accept=".jpg,.jpeg,.png,.pdf"
+            >
+            <div class="ur-help">
+              Allowed: JPG / PNG / PDF • Best: clear screenshot (not cropped).
+            </div>
+
+            <button class="btn btn-netflix-primary w-100 mt-4 btn-lg">
+              Submit Receipt <i class="fas fa-paper-plane ms-2"></i>
+            </button>
+
+            <div class="text-center mt-3 small" style="color: rgba(255,255,255,0.55);">
+              Need help? <a href="{% url 'contact:contact_page' %}" class="text-danger text-decoration-none">Contact support</a>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Bank details -->
+    <div class="col-lg-5">
+      <div class="ur-side">
+
+        <div class="side-head">
+          <h5><i class="fas fa-university"></i>Bank Details</h5>
+        </div>
+
+        <div class="side-body">
+          <div class="bank-row">
+            <div class="k">Bank</div>
+            <div class="v fw-bold text-white">GTBank</div>
+          </div>
+          <div class="bank-row">
+            <div class="k">Account No</div>
+            <div class="v fw-bold text-white">1234567890</div>
+          </div>
+          <div class="bank-row">
+            <div class="k">Account Name</div>
+            <div class="v fw-bold text-white">Apatira Tijani</div>
+          </div>
+
+          <div class="ur-warn">
+            <div class="d-flex align-items-start gap-2">
+              <i class="fas fa-triangle-exclamation mt-1" style="color:#ffc107;"></i>
+              <div>
+                <strong>Tip:</strong> Pay the exact amount.
+                <div style="color: rgba(255,255,255,0.75); margin-top:4px;">
+                  Verification takes <b>1–24 hours</b>. Keep your Request ID for quick support.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 small" style="color: rgba(255,255,255,0.55);">
+            If you accidentally paid a different amount, message support with your Request ID.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

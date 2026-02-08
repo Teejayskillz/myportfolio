@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}Renew Rental - Upload Receipt | LagosWebDev{% endblock %}
+
+{% block content %}
+<style>
+  .rr-wrap{ padding-top: 95px; padding-bottom: 60px; }
+  .rr-max{ max-width: 900px; }
+
+  .rr-card{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.50);
+    overflow:hidden;
+    position: relative;
+  }
+  .rr-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--netflix-red), transparent);
+    opacity: .9;
+  }
+
+  .rr-head{
+    padding: 1.7rem 1.7rem 1.2rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.12), rgba(0,0,0,0));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .rr-head h3{ margin: 0 0 .35rem; font-weight: 950; }
+  .rr-head p{ margin:0; color: var(--netflix-light-gray); }
+
+  .rr-body{ padding: 1.4rem 1.7rem 1.7rem; }
+
+  .rr-summary{
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .rr-summary .rowline{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+  .rr-summary .k{ color: var(--netflix-light-gray); }
+  .rr-summary .v{
+    font-weight: 950;
+    color: var(--netflix-red);
+    font-size: 1.5rem;
+    line-height: 1.1;
+  }
+  .rr-summary .sub{
+    margin-top: .55rem;
+    color: rgba(255,255,255,0.60);
+    font-size: .92rem;
+  }
+
+  .rr-steps{
+    margin-top: 1rem;
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: .75rem;
+  }
+  .rr-step{
+    border-radius: 14px;
+    padding: .9rem .9rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .rr-step .top{
+    display:flex;
+    align-items:center;
+    gap:.55rem;
+    margin-bottom: .35rem;
+    font-weight: 900;
+  }
+  .rr-step .top i{ color: var(--netflix-red); }
+  .rr-step p{ margin:0; color: var(--netflix-light-gray); font-size: .92rem; line-height: 1.35; }
+
+  .rr-label{ font-weight: 850; }
+  .rr-file{
+    background: rgba(0,0,0,0.35) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    color: var(--netflix-white) !important;
+    border-radius: 14px !important;
+    padding: 1rem 1rem !important;
+  }
+  .rr-file:focus{
+    outline:none !important;
+    box-shadow:none !important;
+    border-color: rgba(229,9,20,0.55) !important;
+  }
+
+  .rr-help{
+    margin-top: .6rem;
+    color: rgba(255,255,255,0.60);
+    font-size: .9rem;
+  }
+
+  .rr-tip{
+    margin-top: 1rem;
+    border-radius: 16px;
+    background: rgba(255,193,7,.08);
+    border: 1px solid rgba(255,193,7,.25);
+    padding: 1rem 1rem;
+    color: rgba(255,255,255,0.88);
+  }
+  .rr-tip strong{ color: #ffc107; }
+
+  @media (max-width: 768px){
+    .rr-body{ padding: 1.25rem 1.25rem 1.5rem; }
+    .rr-steps{ grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="container rr-wrap rr-max">
+  <div class="rr-card">
+
+    <div class="rr-head">
+      <h3><i class="fas fa-rotate me-2" style="color: var(--netflix-red);"></i>Renew Rental</h3>
+      <p>Upload receipt for renewal payment.</p>
+    </div>
+
+    <div class="rr-body">
+
+      <div class="rr-summary mb-3">
+        <div class="rowline">
+          <span class="k">Amount</span>
+          <span class="v">₦{{ invoice.amount|floatformat:0 }}</span>
+        </div>
+        <div class="sub">
+          <i class="fas fa-calendar-alt me-2" style="color: rgba(255,255,255,0.55);"></i>
+          Period: <span class="text-white">{{ invoice.period_start }}</span> → <span class="text-white">{{ invoice.period_end }}</span>
+        </div>
+      </div>
+
+      <div class="rr-steps">
+        <div class="rr-step">
+          <div class="top"><i class="fas fa-money-bill-wave"></i>1) Pay</div>
+          <p>Transfer the exact renewal amount.</p>
+        </div>
+        <div class="rr-step">
+          <div class="top"><i class="fas fa-camera"></i>2) Screenshot</div>
+          <p>Make sure date/amount are readable.</p>
+        </div>
+        <div class="rr-step">
+          <div class="top"><i class="fas fa-shield-alt"></i>3) Verify</div>
+          <p>We verify within 1–24 hours and renew access.</p>
+        </div>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+
+        <label class="form-label rr-label">Receipt <span class="text-danger">*</span></label>
+        <input type="file" name="receipt" class="form-control rr-file" required accept=".jpg,.jpeg,.png,.pdf">
+
+        <div class="rr-help">
+          Allowed: JPG / PNG / PDF • Best: clear screenshot (not cropped).
+        </div>
+
+        <button class="btn btn-netflix-primary w-100 mt-4 btn-lg">
+          Submit Receipt <i class="fas fa-paper-plane ms-2"></i>
+        </button>
+
+        <div class="rr-tip mt-3">
+          <div class="d-flex align-items-start gap-2">
+            <i class="fas fa-triangle-exclamation mt-1" style="color:#ffc107;"></i>
+            <div>
+              <strong>Tip:</strong> Pay exact amount to avoid delays.
+              <div style="color: rgba(255,255,255,0.75); margin-top:4px;">
+                Keep a copy of your receipt until renewal is confirmed.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-3 small" style="color: rgba(255,255,255,0.55);">
+          Need help? <a href="{% url 'contact:contact_page' %}" class="text-danger text-decoration-none">Contact support</a>.
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

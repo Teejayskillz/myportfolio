@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}Rent & Host - {{ product.title }} | LagosWebDev{% endblock %}
+
+{% block content %}
+<style>
+  .rh-wrap{ padding-top: 95px; padding-bottom: 60px; }
+
+  /* Main card */
+  .rh-card{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.50);
+    overflow:hidden;
+    position: relative;
+  }
+  .rh-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--netflix-red), transparent);
+    opacity: .9;
+  }
+
+  /* Header */
+  .rh-head{
+    padding: 1.7rem 1.7rem 1.2rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.12), rgba(0,0,0,0));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .rh-head h3{ margin: 0 0 .35rem; font-weight: 950; }
+  .rh-head p{ margin:0; color: var(--netflix-light-gray); }
+
+  /* Form area */
+  .rh-form{ padding: 1.4rem 1.7rem 1.7rem; }
+
+  .rh-label{ font-weight: 850; }
+  .rh-input, .rh-select{
+    background: rgba(0,0,0,0.35) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    color: var(--netflix-white) !important;
+    border-radius: 14px !important;
+    padding: 0.95rem 1rem !important;
+  }
+  .rh-input::placeholder{ color: rgba(255,255,255,0.45) !important; }
+  .rh-input:focus, .rh-select:focus{
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: rgba(229,9,20,0.55) !important;
+  }
+
+  .rh-note{
+    color: rgba(255,255,255,0.55);
+    font-size: .9rem;
+    margin-top: .45rem;
+  }
+
+  /* Summary box */
+  .rh-summary{
+    margin-top: 1.1rem;
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .rh-summary .rowline{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+  .rh-summary .k{ color: var(--netflix-light-gray); }
+  .rh-summary .v{ font-weight: 900; color: var(--netflix-white); }
+  .rh-summary .v.red{ color: var(--netflix-red); }
+  .rh-summary .sub{
+    margin-top: .55rem;
+    color: rgba(255,255,255,0.60);
+    font-size: .92rem;
+  }
+
+  /* Sticky sidebar */
+  .rh-side{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    overflow:hidden;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+    position: sticky;
+    top: 110px;
+  }
+  .rh-side .side-head{
+    padding: 1.2rem 1.4rem;
+    background: linear-gradient(135deg, rgba(229,9,20,0.10), rgba(0,0,0,0));
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .rh-side .side-head h5{
+    margin: 0;
+    font-weight: 950;
+    display:flex;
+    align-items:center;
+    gap:.55rem;
+  }
+  .rh-side .side-head i{ color: var(--netflix-red); }
+
+  .rh-side .side-body{ padding: 1.2rem 1.4rem 1.4rem; }
+
+  .rh-prod{
+    display:flex;
+    gap: .9rem;
+    align-items:flex-start;
+  }
+  .rh-thumb{
+    width: 78px;
+    height: 78px;
+    border-radius: 14px;
+    overflow:hidden;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    flex-shrink:0;
+  }
+  .rh-thumb img{ width:100%; height:100%; object-fit: cover; display:block; }
+  .rh-prod h6{ margin: 0 0 .2rem; font-weight: 950; }
+  .rh-prod .muted{ color: rgba(255,255,255,0.55); font-size: .9rem; }
+
+  .rh-points{
+    list-style:none;
+    padding-left: 0;
+    margin: 0;
+    color: rgba(255,255,255,0.70);
+    font-size: .95rem;
+  }
+  .rh-points li{
+    display:flex;
+    gap: .6rem;
+    align-items:flex-start;
+    padding: .55rem 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.10);
+  }
+  .rh-points li:last-child{ border-bottom: 0; }
+  .rh-points i{
+    margin-top: .2rem;
+    color: #28a745;
+  }
+
+  /* Small “security” pill */
+  .rh-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    padding: .5rem .8rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.70);
+    font-size: .9rem;
+    margin-top: .9rem;
+  }
+  .rh-pill i{ color: var(--netflix-red); }
+
+  @media (max-width: 992px){
+    .rh-side{ position: static; top:auto; }
+  }
+</style>
+
+<div class="container rh-wrap">
+  <div class="row g-4">
+
+    <!-- LEFT -->
+    <div class="col-lg-7">
+      <div class="rh-card">
+
+        <div class="rh-head">
+          <h3><i class="fas fa-server me-2" style="color: var(--netflix-red);"></i>Rent & Host</h3>
+          <p>Select a hosting plan and enter your details.</p>
+        </div>
+
+        <div class="rh-form">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label rh-label">Hosting Plan <span class="text-danger">*</span></label>
+              <select name="plan_id" class="form-select rh-select" required id="planSelect">
+                <option value="">Select a plan…</option>
+                {% for plan in plans %}
+                  <option value="{{ plan.id }}" data-price="{{ plan.monthly_price }}">
+                    {{ plan.name }} — ₦{{ plan.monthly_price|floatformat:0 }}/mo
+                  </option>
+                {% endfor %}
+              </select>
+              <div class="rh-note">Setup fee is added once.</div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label rh-label">Full Name <span class="text-danger">*</span></label>
+                <input name="buyer_name" class="form-control rh-input" placeholder="Enter your full name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label rh-label">Email <span class="text-danger">*</span></label>
+                <input type="email" name="buyer_email" class="form-control rh-input" placeholder="name@example.com" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label rh-label">WhatsApp <span class="text-danger">*</span></label>
+                <input name="whatsapp_number" class="form-control rh-input" placeholder="+2348012345678" required>
+              </div>
+            </div>
+
+            <div class="rh-summary mt-4">
+              <div class="rowline">
+                <span class="k">One-time setup fee</span>
+                <span class="v">₦{{ setup_fee|floatformat:0 }}</span>
+              </div>
+              <div class="rowline mt-2">
+                <span class="k">Selected plan (monthly)</span>
+                <span class="v red" id="planPrice">—</span>
+              </div>
+              <div class="sub">
+                Total today = setup fee + selected plan monthly price.
+              </div>
+            </div>
+
+            <button class="btn btn-netflix-primary w-100 mt-4 btn-lg">
+              Continue to Upload Receipt <i class="fas fa-arrow-right ms-2"></i>
+            </button>
+
+            <div class="text-center mt-3 small" style="color: rgba(255,255,255,0.55);">
+              Need help choosing a plan? <a href="{% url 'contact:contact_page' %}" class="text-danger text-decoration-none">Message me</a>.
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col-lg-5">
+      <div class="rh-side">
+        <div class="side-head">
+          <h5><i class="fas fa-box"></i>Product</h5>
+        </div>
+
+        <div class="side-body">
+          <div class="rh-prod">
+            <div class="rh-thumb">
+              {% if product.main_image %}
+                <img src="{{ product.main_image.url }}" alt="{{ product.title }}">
+              {% else %}
+                <div class="h-100 d-flex align-items-center justify-content-center" style="color: rgba(255,255,255,0.55);">
+                  <i class="fas fa-laptop-code fa-2x"></i>
+                </div>
+              {% endif %}
+            </div>
+            <div>
+              <h6>{{ product.title }}</h6>
+              <div class="muted">{{ product.get_category_display }}</div>
+              {% if product.tech_stack %}
+                <div class="muted mt-1"><i class="fas fa-layer-group me-2" style="color: rgba(255,255,255,0.45);"></i>{{ product.tech_stack }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <hr style="border-color: var(--netflix-medium-gray); opacity:.6;">
+
+          <ul class="rh-points">
+            <li><i class="fas fa-check-circle"></i><span>Setup + Hosting managed by us</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Renew monthly to keep it active</span></li>
+            <li><i class="fas fa-check-circle"></i><span>Access via email magic link</span></li>
+          </ul>
+
+          <div class="rh-pill">
+            <i class="fas fa-shield-alt"></i>Secure verification • 1–24 hours
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Show selected plan price in the summary box (no backend changes needed)
+  document.addEventListener("DOMContentLoaded", function () {
+    const planSelect = document.getElementById("planSelect");
+    const planPriceEl = document.getElementById("planPrice");
+
+    function formatNaira(value) {
+      // value may be "12000.00" or "12000"
+      const num = Number(value);
+      if (!isFinite(num)) return "—";
+      return "₦" + Math.round(num).toLocaleString();
+    }
+
+    function updatePrice() {
+      const opt = planSelect?.selectedOptions?.[0];
+      const price = opt?.dataset?.price;
+      planPriceEl.textContent = price ? formatNaira(price) : "—";
+    }
+
+    if (planSelect) {
+      planSelect.addEventListener("change", updatePrice);
+      updatePrice();
+    }
+  });
+</script>
+{% endblock %}

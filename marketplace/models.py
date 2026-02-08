@@ -5,9 +5,6 @@ from django.utils import timezone
 from datetime import timedelta
 import secrets
 from ckeditor.fields import RichTextField
-from django.db import models
-from ckeditor.fields import RichTextField
-from django.utils.text import slugify
 
 class HostingPlan(models.Model):
     PLAN_CHOICES = [
@@ -168,3 +165,87 @@ class DownloadToken(models.Model):
 
     def is_valid(self):
         return self.download_count < self.max_downloads
+
+class Rental(models.Model):
+    STATUS_CHOICES = (
+        ("active", "Active"),
+        ("expired", "Expired"),
+        ("cancelled", "Cancelled"),
+    )
+
+    product = models.ForeignKey("marketplace.Product", on_delete=models.CASCADE)
+    hosting_plan = models.ForeignKey("marketplace.HostingPlan", on_delete=models.PROTECT)
+
+    buyer_name = models.CharField(max_length=255)
+    buyer_email = models.EmailField(db_index=True)
+    whatsapp_number = models.CharField(max_length=30)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
+
+    started_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField()
+
+    # optional: admin can store hosted URL or notes
+    hosted_url = models.URLField(blank=True)
+    admin_note = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            # default: 30 days rental after activation
+            self.expires_at = timezone.now() + timedelta(days=30)
+        super().save(*args, **kwargs)
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+    
+
+    def __str__(self):
+        return f"{self.product.title} ({self.buyer_email}) - {self.status}"
+
+
+class RentalInvoice(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    )
+
+    rental = models.ForeignKey(Rental, on_delete=models.CASCADE, related_name="invoices")
+
+    # What payment covers
+    period_start = models.DateField()
+    period_end = models.DateField()
+
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    receipt = models.FileField(upload_to="marketplace/rental_receipts/", blank=True, null=True)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    admin_note = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Invoice #{self.id} - {self.rental.buyer_email} - {self.status}"
+
+
+class MagicLinkToken(models.Model):
+    email = models.EmailField(db_index=True)
+    token = models.CharField(max_length=64, unique=True, editable=False)
+    expires_at = models.DateTimeField()
+    used_at = models.DateTimeField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            self.token = secrets.token_urlsafe(32)
+        super().save(*args, **kwargs)
+
+    def is_valid(self):
+        return self.used_at is None and timezone.now() < self.expires_at
+
+    def __str__(self):
+        return f"{self.email} - valid={self.is_valid()}"

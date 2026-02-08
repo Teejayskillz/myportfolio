@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}Receipt Submitted | LagosWebDev{% endblock %}
+
+{% block content %}
+<style>
+  /* Page spacing (since you use fixed navbar) */
+  .rs-wrap { padding-top: 95px; padding-bottom: 60px; }
+
+  /* Success card */
+  .rs-card{
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(135deg, rgba(229,9,20,0.10), rgba(255,255,255,0.03));
+    box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+  }
+
+  /* Top accent bar */
+  .rs-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--netflix-red), transparent);
+    opacity: .9;
+  }
+
+  /* Subtle glow blob */
+  .rs-card::after{
+    content:'';
+    position:absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(229,9,20,0.28), transparent 60%);
+    top: -180px;
+    right: -170px;
+    filter: blur(6px);
+    opacity: .9;
+    pointer-events: none;
+  }
+
+  /* Animated check ring */
+  .rs-check{
+    width: 98px;
+    height: 98px;
+    border-radius: 999px;
+    margin: 0 auto 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(40,167,69,0.14);
+    border: 1px solid rgba(40,167,69,0.45);
+    box-shadow: 0 0 0 0 rgba(40,167,69,0.35);
+    animation: rsPulse 1.8s ease-in-out infinite;
+  }
+  .rs-check i{
+    font-size: 3rem;
+    color: #28a745;
+    filter: drop-shadow(0 10px 25px rgba(40,167,69,0.25));
+  }
+
+  @keyframes rsPulse{
+    0% { box-shadow: 0 0 0 0 rgba(40,167,69,0.35); transform: translateY(0); }
+    70% { box-shadow: 0 0 0 18px rgba(40,167,69,0); transform: translateY(-2px); }
+    100% { box-shadow: 0 0 0 0 rgba(40,167,69,0); transform: translateY(0); }
+  }
+
+  /* Request ID pill */
+  .rs-pill{
+    display:inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.10);
+    min-width: 210px;
+  }
+  .rs-pill .label{
+    color: var(--netflix-light-gray);
+    font-size: .85rem;
+  }
+  .rs-pill .value{
+    font-size: 1.3rem;
+    font-weight: 950;
+    letter-spacing: 1px;
+    color: var(--netflix-white);
+  }
+
+  /* Next steps box */
+  .rs-steps{
+    margin-top: 26px;
+    text-align: left;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--netflix-medium-gray);
+    border-radius: 16px;
+    padding: 18px 18px;
+  }
+  .rs-steps h5{
+    margin: 0 0 10px;
+    font-weight: 900;
+  }
+  .rs-steps ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .rs-steps li{
+    display:flex;
+    gap: 10px;
+    align-items:flex-start;
+    color: var(--netflix-light-gray);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .rs-steps li:last-child{ margin-bottom:0; }
+  .rs-steps li i{
+    color: var(--netflix-red);
+    margin-top: 4px;
+  }
+
+  /* Buttons row */
+  .rs-actions{
+    margin-top: 26px;
+    display:flex;
+    gap: 12px;
+    justify-content:center;
+    flex-wrap: wrap;
+  }
+
+  /* Mobile tuning */
+  @media (max-width: 768px){
+    .rs-card{ padding: 26px !important; }
+    .rs-check{ width: 88px; height: 88px; }
+    .rs-check i{ font-size: 2.6rem; }
+  }
+</style>
+
+<div class="container rs-wrap">
+  <div class="netflix-card rs-card p-5 text-center">
+
+    <div class="rs-check">
+      <i class="fas fa-check"></i>
+    </div>
+
+    <h2 class="mb-2" style="font-weight:950;">Receipt Submitted</h2>
+    <p class="mb-0" style="color: var(--netflix-light-gray); max-width: 720px; margin: 0 auto;">
+      Thanks! Your payment is being verified. This usually takes <strong class="text-white">1–24 hours</strong>.
+      Once approved, you’ll get access immediately.
+    </p>
+
+    <div class="mt-4">
+      <div class="rs-pill">
+        <div class="label">Request ID</div>
+        <div class="value">#{{ purchase.id|stringformat:"05d" }}</div>
+      </div>
+    </div>
+
+    <div class="rs-steps">
+      <h5><i class="fas fa-info-circle me-2" style="color: var(--netflix-red);"></i>What happens next</h5>
+      <ul>
+        <li><i class="fas fa-clock"></i>We’ll review your receipt and confirm the payment.</li>
+        <li><i class="fas fa-envelope"></i>You’ll be notified when verification is complete.</li>
+        <li><i class="fas fa-unlock"></i>After approval, your download/access becomes available.</li>
+      </ul>
+    </div>
+
+    <div class="rs-actions">
+      <a href="{% url 'marketplace:product_list' %}" class="btn btn-netflix-primary btn-lg">
+        <i class="fas fa-store me-2"></i>Browse More Products
+      </a>
+
+      <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-secondary btn-lg">
+        <i class="fas fa-headset me-2"></i>Need Help?
+      </a>
+    </div>
+
+    <div class="mt-4 small" style="color: rgba(255,255,255,0.55);">
+      Tip: Keep your <strong class="text-white">Request ID</strong> — it helps support find your payment quickly.
+    </div>
+
+  </div>
+</div>
+{% endblock %}

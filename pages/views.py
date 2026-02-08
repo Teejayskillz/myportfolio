@@ -1,13 +1,24 @@
 from django.shortcuts import render
 from projects.models import Project 
+from django.db.models import Q
+from blog.models import Post
+from marketplace.models import Product
 
-# Create your views here.
 def home_view(request):
-    """
-    Renders homepage
-    """
+    latest_posts = (
+        Post.objects.filter(status='published')
+        .order_by('-publish')[:10]
+    )
 
-    return render(request, 'pages/home.html')
+    featured_products = (
+        Product.objects.filter(is_active=True)
+        .order_by('-id')[:12]
+    )
+
+    return render(request, 'pages/home.html', {
+        'latest_posts': latest_posts,
+        'featured_products': featured_products,
+    })
 
 def about_view(request):
     """

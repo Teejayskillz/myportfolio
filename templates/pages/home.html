@@ -9,328 +9,669 @@
 <style>
     /* --- HOME PAGE SPECIFIC STYLES --- */
 
-    /* 1. Hero Section */
+    /* 1) HERO */
     .hero-section {
-        min-height: 90vh;
+        min-height: 92vh;
         display: flex;
         align-items: center;
         position: relative;
-        padding: 6rem 0;
-        background: linear-gradient(rgba(20, 20, 20, 0.6), rgba(20, 20, 20, 1)), url('https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=2106&auto=format&fit=crop') no-repeat center center;
+        padding: 7rem 0 5rem;
+        background:
+            linear-gradient(rgba(20, 20, 20, 0.65), rgba(20, 20, 20, 1)),
+            url('https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=2106&auto=format&fit=crop')
+            no-repeat center center;
         background-size: cover;
+        border-bottom: 1px solid var(--netflix-medium-gray);
     }
 
     .hero-content h1 {
-        font-size: 3.8rem;
+        font-size: 3.6rem;
         font-weight: 900;
         text-shadow: 0 4px 20px rgba(0,0,0,0.7);
-        line-height: 1.2;
+        line-height: 1.15;
+        letter-spacing: -0.5px;
     }
 
     .hero-content .lead {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: var(--netflix-light-gray);
-        max-width: 650px;
-        margin: 1.5rem auto 2.5rem;
+        max-width: 780px;
+        margin: 1.2rem auto 2rem;
     }
 
-    .hero-buttons .btn {
-        margin: 0.5rem;
-    }
-    
-    /* General Section Styling */
-    .section-padding {
-        padding: 5rem 0;
+    .hero-subline {
+        color: rgba(255,255,255,0.85);
+        max-width: 780px;
+        margin: 0 auto 2.2rem;
+        font-size: 1.05rem;
     }
 
+    .hero-buttons .btn { margin: 0.5rem; }
+
+    /* “Trusted stack” row */
+    .trust-row {
+        margin-top: 2.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        opacity: 0.95;
+    }
+    .trust-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 1px solid var(--netflix-medium-gray);
+        background: rgba(255,255,255,0.06);
+        color: var(--netflix-light-gray);
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        backdrop-filter: blur(10px);
+    }
+    .trust-pill i { color: var(--netflix-red); }
+
+    /* 2) SECTION BASE */
+    .section-padding { padding: 5rem 0; }
     .section-title {
         text-align: center;
-        margin-bottom: 4rem;
-        font-size: 2.5rem;
-        font-weight: 700;
+        margin-bottom: 3.5rem;
+        font-size: 2.4rem;
+        font-weight: 800;
         position: relative;
         padding-bottom: 1rem;
     }
-
     .section-title::after {
         content: '';
         position: absolute;
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
-        width: 80px;
+        width: 90px;
         height: 4px;
         background-color: var(--netflix-red);
         border-radius: 2px;
     }
+    .section-subtitle {
+        text-align: center;
+        color: var(--netflix-light-gray);
+        max-width: 850px;
+        margin: -2.2rem auto 2.8rem;
+        font-size: 1.05rem;
+    }
 
-    /* 2. Featured Projects Section */
+    /* 3) FEATURED PROJECTS */
     .project-card {
         background: var(--netflix-dark-gray);
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: hidden;
         border: 1px solid var(--netflix-medium-gray);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: all 0.35s ease;
         position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
-
     .project-card:hover {
-        transform: translateY(-15px) scale(1.03);
-        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+        transform: translateY(-10px);
+        box-shadow: 0 25px 55px rgba(0,0,0,0.55);
         border-color: var(--netflix-red);
     }
-
     .project-thumbnail {
-        height: 250px;
+        height: 240px;
         background-size: cover;
         background-position: center;
         position: relative;
     }
-    
     .project-thumbnail::after {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 50%);
+        inset: 0;
+        background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 60%);
     }
-
-    .project-info {
-        padding: 1.5rem;
-    }
-
-    .project-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
+    .project-info { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .project-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .project-tags { margin-bottom: 0.9rem; }
     .project-tags span {
-        background: var(--netflix-medium-gray);
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.08);
         color: var(--netflix-light-gray);
-        padding: 0.25rem 0.75rem;
-        border-radius: 15px;
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
         font-size: 0.8rem;
-        margin-right: 0.5rem;
+        margin-right: 0.4rem;
         display: inline-block;
         margin-bottom: 0.5rem;
     }
-
-    /* 3. Why Choose Me Section */
-    .feature-item {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 2rem;
+    .project-meta {
+        color: rgba(255,255,255,0.65);
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
     }
-    .feature-icon {
-        font-size: 2rem;
-        color: var(--netflix-red);
-        margin-right: 1.5rem;
-        width: 40px;
-    }
+    .project-actions { margin-top: auto; display: flex; gap: 0.6rem; flex-wrap: wrap; }
 
-    /* 4. Testimonials Section */
-    .testimonial-card {
+    /* 4) DELIVERABLES (replaces fake testimonials) */
+    .deliverable-card {
         background: var(--netflix-dark-gray);
-        border-radius: 8px;
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 10px;
         padding: 2rem;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        transition: all 0.3s ease;
     }
-    .testimonial-quote {
-        font-size: 1.1rem;
-        font-style: italic;
-        color: var(--netflix-light-gray);
-        margin-bottom: 1.5rem;
-        border-left: 3px solid var(--netflix-red);
-        padding-left: 1.5rem;
+    .deliverable-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--netflix-red);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.45);
     }
-    .testimonial-author {
-        display: flex;
-        align-items: center;
-    }
-    .author-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: var(--netflix-red);
-        color: var(--netflix-white);
+    .deliverable-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
-        margin-right: 1rem;
+        background: rgba(229, 9, 20, 0.12);
+        border: 1px solid rgba(229, 9, 20, 0.25);
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        color: var(--netflix-red);
     }
-    .author-name {
-        font-weight: 700;
-        margin: 0;
+    .deliverable-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.6rem;
+        font-weight: 800;
     }
-    .author-title {
-        color: var(--netflix-light-gray);
-        font-size: 0.9rem;
-    }
+    .deliverable-card p { color: var(--netflix-light-gray); margin: 0; }
 
-    /* 5. CTA Section */
+    /* 5) PROCESS */
+    .process-wrap {
+        background: var(--netflix-dark-gray);
+        border-top: 1px solid var(--netflix-medium-gray);
+        border-bottom: 1px solid var(--netflix-medium-gray);
+    }
+    .process-step {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 10px;
+        padding: 1.7rem;
+        height: 100%;
+    }
+    .process-step .num {
+        width: 34px; height: 34px;
+        border-radius: 999px;
+        background: var(--netflix-red);
+        color: var(--netflix-white);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        margin-bottom: 0.85rem;
+    }
+    .process-step h4 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .process-step p { color: var(--netflix-light-gray); margin: 0; }
+
+    /* 6) CTA */
     .cta-section {
         background: var(--netflix-dark-gray);
         padding: 5rem 0;
         text-align: center;
         border-top: 2px solid var(--netflix-red);
     }
-    
+
+    /* ===== NEW: NETFLIX-STYLE ROW SLIDERS (BLOG + MARKETPLACE) ===== */
+    .row-header{
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        gap:1rem;
+        margin-bottom: 1.2rem;
+    }
+    .row-header h2{
+        margin:0;
+        font-size: 1.7rem;
+        font-weight: 950;
+        letter-spacing: -.3px;
+    }
+    .row-header a{
+        color: var(--netflix-light-gray);
+        text-decoration:none;
+        font-weight: 700;
+        font-size: .95rem;
+    }
+    .row-header a:hover{ color: var(--netflix-red); }
+
+    .slider-wrap{ position: relative; }
+    .slider{
+        display:flex;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: .25rem .25rem 1rem;
+    }
+    .slider::-webkit-scrollbar{ height: 8px; }
+    .slider::-webkit-scrollbar-track{ background: transparent; }
+    .slider::-webkit-scrollbar-thumb{ background: var(--netflix-medium-gray); border-radius: 99px; }
+
+    .slide{
+        flex: 0 0 320px;
+        scroll-snap-align: start;
+        background: var(--netflix-dark-gray);
+        border: 1px solid var(--netflix-medium-gray);
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        transform-origin: center;
+        will-change: transform;
+    }
+    /* Hover expand like Netflix */
+    .slide:hover{
+        transform: scale(1.06);
+        z-index: 5;
+        border-color: rgba(229, 9, 20, 0.55);
+        box-shadow: 0 24px 55px rgba(0,0,0,0.55);
+    }
+
+    .slide-img{
+        height: 185px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    .slide-img::after{
+        content:'';
+        position:absolute;
+        inset:0;
+        background: linear-gradient(to top, rgba(20,20,20,1) 0%, rgba(20,20,20,0) 65%);
+    }
+
+    .slide-body{ padding: 1rem 1rem 1.1rem; }
+    .slide-title{
+        font-weight: 950;
+        font-size: 1.05rem;
+        margin: 0 0 .35rem;
+        color: var(--netflix-white);
+        line-height: 1.35;
+    }
+    .slide-meta{
+        color: var(--netflix-light-gray);
+        font-size: .85rem;
+        margin-bottom: .55rem;
+        display:flex;
+        gap: .6rem;
+        flex-wrap: wrap;
+        align-items:center;
+    }
+    .chip{
+        display:inline-flex;
+        align-items:center;
+        gap:.45rem;
+        background: rgba(229,9,20,0.12);
+        border: 1px solid rgba(229,9,20,0.22);
+        color: var(--netflix-red);
+        padding: .22rem .6rem;
+        border-radius: 999px;
+        font-size: .75rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        white-space: nowrap;
+    }
+    .slide-desc{
+        color: rgba(255,255,255,0.72);
+        font-size: .92rem;
+        margin: 0 0 .9rem;
+        line-height: 1.55;
+    }
+    .slide-cta{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:.75rem;
+    }
+    .price-tag{
+        font-weight: 950;
+        color: var(--netflix-red);
+        font-size: 1.05rem;
+    }
+
+    /* Slider arrows (desktop) */
+    .slider-btn{
+        position:absolute;
+        top: 42%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(0,0,0,0.55);
+        color: var(--netflix-white);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index: 10;
+        transition: all .2s ease;
+    }
+    .slider-btn:hover{
+        background: rgba(229,9,20,0.85);
+        border-color: rgba(229,9,20,0.85);
+    }
+    .slider-btn.prev{ left: -10px; }
+    .slider-btn.next{ right: -10px; }
+
+    /* Make slider feel more “Netflix”: subtle fade edges */
+    .slider-fade::before,
+    .slider-fade::after{
+        content:'';
+        position:absolute;
+        top:0; bottom: 0;
+        width: 40px;
+        z-index: 6;
+        pointer-events:none;
+    }
+    .slider-fade::before{
+        left:0;
+        background: linear-gradient(90deg, rgba(20,20,20,1), rgba(20,20,20,0));
+    }
+    .slider-fade::after{
+        right:0;
+        background: linear-gradient(270deg, rgba(20,20,20,1), rgba(20,20,20,0));
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-        .hero-section { min-height: 70vh; }
-        .hero-content h1 { font-size: 2.8rem; }
+        .hero-section { min-height: 75vh; padding: 6.2rem 0 4rem; }
+        .hero-content h1 { font-size: 2.55rem; }
+        .hero-content .lead { font-size: 1.1rem; }
+        .trust-row { gap: 0.5rem; }
+        .slide{ flex-basis: 78vw; }
+        .slider-btn{ display:none; } /* swipe on mobile */
+        .slider-fade::before, .slider-fade::after{ display:none; }
+        .slide:hover{ transform: none; } /* avoid jumpy zoom on small screens */
     }
 </style>
 
-<!-- 1. HERO SECTION -->
+<!-- 1) HERO -->
 <section class="hero-section">
     <div class="container text-center">
         <div class="hero-content" style="animation: fadeInUp 1s ease-out;">
-            <h1 class="mb-4">Top-Tier Web Development in Lagos to <span style="color: var(--netflix-red);">Elevate Your Brand</span></h1>
+            <h1 class="mb-3">
+                Web Development in Lagos that <span style="color: var(--netflix-red);">Gets You Customers</span>
+            </h1>
+
             <p class="lead">
-                I build fast, secure, and engaging web applications that deliver measurable results. Let's turn your digital vision into a powerful asset for your business.
+                I design and build business websites, e-commerce stores, and custom web apps that load fast, look premium, and convert visitors into leads.
             </p>
+
+            <p class="hero-subline">
+                Mobile-first. SEO-ready foundation. Clean admin setup so you can update content easily.
+            </p>
+
             <div class="hero-buttons">
                 <a href="{% url 'projects:project_list' %}" class="btn btn-netflix-primary btn-lg">
-                    <i class="fas fa-play me-2"></i>Explore My Work
+                    <i class="fas fa-play me-2"></i>See Projects
                 </a>
                 <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-secondary btn-lg">
-                    <i class="fas fa-info-circle me-2"></i>Get a Quote
+                    <i class="fas fa-file-signature me-2"></i>Request a Quote
                 </a>
+                <a href="https://wa.me/2348102712103" target="_blank" class="btn btn-netflix-secondary btn-lg" rel="noopener">
+                    <i class="fab fa-whatsapp me-2"></i>WhatsApp Me
+                </a>
+            </div>
+
+            <!-- TRUST / STACK ROW -->
+            <div class="trust-row">
+                <span class="trust-pill"><i class="fas fa-bolt"></i> Performance-first builds</span>
+                <span class="trust-pill"><i class="fas fa-lock"></i> Secure setup</span>
+                <span class="trust-pill"><i class="fas fa-search"></i> SEO-ready structure</span>
+                <span class="trust-pill"><i class="fas fa-store"></i> WordPress & WooCommerce</span>
+                <span class="trust-pill"><i class="fas fa-code"></i> Python & Django</span>
             </div>
         </div>
     </div>
 </section>
 
-<!-- 2. FEATURED PROJECTS -->
+<!-- 2) FEATURED PROJECTS -->
 <section class="section-padding">
     <div class="container">
         <h2 class="section-title">Featured Projects</h2>
+        <p class="section-subtitle">
+            A few recent builds — focused on speed, clean UI, and business outcomes like leads, bookings, and sales.
+        </p>
+
         <div class="row g-4">
             <!-- Project 1 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="project-card">
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="project-card w-100">
                     <div class="project-thumbnail" style="background-image: url('https://lagoswebdev.com/media/projects_images/Screenshot_from_2025-08-09_19-40-08.png');"></div>
                     <div class="project-info">
-                        <h3 class="project-title">E-commerce Powerhouse</h3>
-                        <div class="project-tags mb-3">
-                            <span>Wordpress</span><span>Woocommerce</span><span>MysqlSQL</span>
+                        <h3 class="project-title">E-commerce Store (WooCommerce)</h3>
+                        <div class="project-tags">
+                            <span>WordPress</span><span>WooCommerce</span><span>MySQL</span>
                         </div>
-                        <p class="text-white-50 mb-3">A high-performance e-commerce site that increased sales by 40% for a Lagos fashion brand.</p>
-                        <a href="https://lagoswebdev.com/projects/makeup-shop-ecomerce-website/" class="btn btn-sm btn-netflix-secondary">View Case Study <i class="fas fa-arrow-right ms-2"></i></a>
+                        <p class="project-meta">
+                            Built a fast store with a clean product layout, mobile checkout flow, and SEO-ready pages.
+                        </p>
+                        <div class="project-actions">
+                            <a href="https://lagoswebdev.com/projects/makeup-shop-ecomerce-website/" class="btn btn-sm btn-netflix-secondary">
+                                View Case Study <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <!-- Project 2 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="project-card">
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="project-card w-100">
                     <div class="project-thumbnail" style="background-image: url('https://lagoswebdev.com/media/projects_images/Screenshot_from_2025-12-23_02-51-30.png');"></div>
                     <div class="project-info">
-                        <h3 class="project-title">Restaurant Management System</h3>
-                        <div class="project-tags mb-3">
-                            <span>Wordpress</span><span>Php</span><span>Javascript</span>
+                        <h3 class="project-title">Restaurant Website + Reservations</h3>
+                        <div class="project-tags">
+                            <span>WordPress</span><span>PHP</span><span>JavaScript</span>
                         </div>
-                        <p class="text-white-50 mb-3">This is a modern WordPress restaurant website designed to help food businesses attract customers and manage table reservations online. The website includes a built-in reservation system that allows customers to book tables easily, while restaurant owners can manage bookings from the admin dashboard. Fully responsive, fast, and user-friendly.</p>
-                        <a href="https://portal.lagoswebdev.com/" class="btn btn-sm btn-netflix-secondary">View Case Study <i class="fas fa-arrow-right ms-2"></i></a>
+                        <p class="project-meta">
+                            Modern restaurant site with booking/reservation workflow and an admin dashboard for managing reservations.
+                        </p>
+                        <div class="project-actions">
+                            <a href="https://portal.lagoswebdev.com/" class="btn btn-sm btn-netflix-secondary" target="_blank" rel="noopener">
+                                View Live <i class="fas fa-external-link-alt ms-2"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <!-- Project 3 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="project-card">
+            <div class="col-lg-4 col-md-6 d-flex">
+                <div class="project-card w-100">
                     <div class="project-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop');"></div>
                     <div class="project-info">
-                        <h3 class="project-title">Real Estate Agency Portal</h3>
-                        <div class="project-tags mb-3">
-                            <span>WordPress</span><span>Performance</span><span>SEO</span>
+                        <h3 class="project-title">Real Estate Website (Lead-Focused)</h3>
+                        <div class="project-tags">
+                            <span>WordPress</span><span>SEO</span><span>Performance</span>
                         </div>
-                        <p class="text-white-50 mb-3">A visually stunning and fast-loading portfolio site that improved lead generation for a creative agency.</p>
-                        <a href="https://lagoswebdev.com/projects/real-estate-agency-website/" class="btn btn-sm btn-netflix-secondary">View Case Study <i class="fas fa-arrow-right ms-2"></i></a>
+                        <p class="project-meta">
+                            Built for speed and lead capture: clear property pages, strong CTAs, and clean structure for search visibility.
+                        </p>
+                        <div class="project-actions">
+                            <a href="https://lagoswebdev.com/projects/real-estate-agency-website/" class="btn btn-sm btn-netflix-secondary">
+                                View Case Study <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div></section>
 
-<!-- 3. WHY CHOOSE ME -->
-<section class="section-padding" style="background-color: var(--netflix-dark-gray);">
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'projects:project_list' %}" class="btn btn-netflix-primary btn-lg">
+                View All Projects <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ✅ NEW: BLOG SLIDER ROW -->
+<section class="section-padding" style="background: var(--netflix-dark-gray); border-top: 1px solid var(--netflix-medium-gray); border-bottom: 1px solid var(--netflix-medium-gray);">
     <div class="container">
-        <h2 class="section-title">The LagosWebDev Advantage</h2>
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <!-- Replace with an image of you working or an abstract tech graphic -->
-                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop" 
-                     alt="Developer working on a custom web application in Lagos" 
-                     class="img-fluid rounded-3 shadow-lg">
-            </div>
-            <div class="col-lg-6">
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
-                    <div>
-                        <h4>Client-Focused Solutions</h4>
-                        <p class="text-white-50">I don't just build websites; I build solutions to your problems. My process starts with understanding your business goals to ensure the final product delivers real value.</p>
-                    </div>
+        <div class="row-header">
+            <h2><i class="fas fa-pen-nib me-2" style="color: var(--netflix-red);"></i>Latest from the Blog</h2>
+            <a href="{% url 'blog:post_list' %}">View all <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+
+        <div class="slider-wrap slider-fade">
+            <button class="slider-btn prev" type="button" data-target="blogSlider" aria-label="Scroll blog left">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-btn next" type="button" data-target="blogSlider" aria-label="Scroll blog right">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="slider auto-slider" id="blogSlider" data-autoscroll="true">
+                {% for post in latest_posts %}
+                <div class="slide">
+                    <a href="{{ post.get_absolute_url }}" style="text-decoration:none; display:block;">
+                        <div class="slide-img"
+                             style="background-image: url('{% if post.image %}{{ post.image.url }}{% else %}https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop{% endif %}');">
+                        </div>
+                        <div class="slide-body">
+                            <div class="slide-meta">
+                                <span><i class="fas fa-calendar-alt me-1" style="color: var(--netflix-red);"></i>{{ post.publish|date:"M j, Y" }}</span>
+                                {% if post.category %}
+                                    <span class="chip"><i class="fas fa-tag"></i>{{ post.category.name }}</span>
+                                {% endif %}
+                            </div>
+                            <h3 class="slide-title">{{ post.title }}</h3>
+                            <p class="slide-desc">{{ post.content|striptags|truncatewords:18 }}</p>
+                            <div class="slide-cta">
+                                <span class="text-white-50" style="font-size:.9rem;">Read article</span>
+                                <span class="chip"><i class="fas fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
-                    <div>
-                        <h4>Modern & Robust Technology</h4>
-                        <p class="text-white-50">Leveraging powerful tools like Python, Django, and modern JavaScript, I build applications that are not only scalable and secure but also a pleasure to use.</p>
-                    </div>
+                {% empty %}
+                <div class="netflix-card p-4 text-center w-100">
+                    <h4 class="text-white mb-1">No posts yet</h4>
+                    <p class="text-white-50 mb-0">Publish a few blog posts and they’ll show here automatically.</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fas fa-comments"></i></div>
-                    <div>
-                        <h4>Transparent Communication</h4>
-                        <p class="text-white-50">Based right here in Lagos, I pride myself on clear, consistent communication. You'll be involved and informed at every stage of the project, from kickoff to launch.</p>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </section>
 
-<!-- 4. TESTIMONIALS -->
+<!-- ✅ NEW: MARKETPLACE SLIDER ROW -->
 <section class="section-padding">
     <div class="container">
-        <h2 class="section-title">What My Clients Say</h2>
-        <div class="row g-4">
-            <div class="col-lg-4 d-flex">
-                <div class="testimonial-card">
-                    <p class="testimonial-quote">"The custom Django application LagosWebDev built for us revolutionized our workflow. An exceptional developer who truly understands business needs."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">JS</div>
-                        <div>
-                            <h5 class="author-name">John Smith</h5>
-                            <p class="author-title m-0">Operations Manager, Logistics Inc.</p>
+        <div class="row-header">
+            <h2><i class="fas fa-store me-2" style="color: var(--netflix-red);"></i>Marketplace Highlights</h2>
+            <a href="{% url 'marketplace:product_list' %}">Browse marketplace <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+
+        <div class="slider-wrap slider-fade">
+            <button class="slider-btn prev" type="button" data-target="mpSlider" aria-label="Scroll marketplace left">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slider-btn next" type="button" data-target="mpSlider" aria-label="Scroll marketplace right">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="slider auto-slider" id="mpSlider" data-autoscroll="true">
+                {% for product in featured_products %}
+                <div class="slide">
+                    <a href="{% url 'marketplace:product_detail' product.slug %}" style="text-decoration:none; display:block;">
+                        <div class="slide-img"
+                             style="background-image: url('{% if product.main_image %}{{ product.main_image.url }}{% else %}https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop{% endif %}');">
                         </div>
+                        <div class="slide-body">
+                            <div class="slide-meta">
+                                <span class="chip"><i class="fas fa-tag"></i>{{ product.get_category_display }}</span>
+                                {% if product.version %}
+                                    <span class="text-white-50">v{{ product.version }}</span>
+                                {% endif %}
+                            </div>
+                            <h3 class="slide-title">{{ product.title }}</h3>
+
+                            {% if product.short_description %}
+                                <p class="slide-desc">{{ product.short_description|truncatewords:16 }}</p>
+                            {% elif product.description %}
+                                <p class="slide-desc">{{ product.description|striptags|truncatewords:16 }}</p>
+                            {% else %}
+                                <p class="slide-desc">Premium digital product ready for your next project.</p>
+                            {% endif %}
+
+                            <div class="slide-cta">
+                                <span class="price-tag">₦{{ product.price_full_ownership|floatformat:0 }}</span>
+                                <span class="chip"><i class="fas fa-arrow-right"></i>View</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="netflix-card p-4 text-center w-100">
+                    <h4 class="text-white mb-1">No products yet</h4>
+                    <p class="text-white-50 mb-0">Add products to your marketplace and they’ll show here.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3) WHY CHOOSE ME -->
+<section class="section-padding" style="background-color: var(--netflix-dark-gray);">
+    <div class="container">
+        <h2 class="section-title">Why LagosWebDev</h2>
+        <p class="section-subtitle">
+            You’re not just getting “a website”. You’re getting a build that’s designed to perform, rank, and convert.
+        </p>
+
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <img
+                    src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop"
+                    alt="Developer working on a custom web application in Lagos"
+                    class="img-fluid rounded-3 shadow-lg">
+            </div>
+            <div class="col-lg-6">
+                <div class="d-flex align-items-start mb-4">
+                    <div class="me-3" style="font-size: 2rem; color: var(--netflix-red); width: 44px;">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-1">Business-first builds</h4>
+                        <p class="text-white-50 mb-0">
+                            I start with your goals — leads, bookings, sales — then design the pages and flow to support that outcome.
+                        </p>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 d-flex">
-                <div class="testimonial-card">
-                    <p class="testimonial-quote">"Our new e-commerce site is not only beautiful but incredibly fast. Our sales have increased significantly since the launch. Highly recommended!"</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">JD</div>
-                        <div>
-                            <h5 class="author-name">Jane Doe</h5>
-                            <p class="author-title m-0">CEO, Fashion Co.</p>
-                        </div>
+
+                <div class="d-flex align-items-start mb-4">
+                    <div class="me-3" style="font-size: 2rem; color: var(--netflix-red); width: 44px;">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-1">Speed & quality</h4>
+                        <p class="text-white-50 mb-0">
+                            Clean code, optimized images, and good structure so your site feels fast on Nigerian mobile networks.
+                        </p>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 d-flex">
-                <div class="testimonial-card">
-                    <p class="testimonial-quote">"From start to finish, the process was seamless. The attention to detail and commitment to performance was outstanding. A true professional."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">ER</div>
-                        <div>
-                            <h5 class="author-name">Emily Richards</h5>
-                            <p class="author-title m-0">Founder, Creative Agency</p>
-                        </div>
+
+                <div class="d-flex align-items-start">
+                    <div class="me-3" style="font-size: 2rem; color: var(--netflix-red); width: 44px;">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div>
+                        <h4 class="mb-1">Clear communication</h4>
+                        <p class="text-white-50 mb-0">
+                            Quick updates, transparent timelines, and a smooth handoff — so you’re never confused about progress.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -338,19 +679,222 @@
     </div>
 </section>
 
-
-<!-- 5. FINAL CTA SECTION -->
-<section class="cta-section">
+<!-- 4) WHAT YOU’LL GET -->
+<section class="section-padding">
     <div class="container">
-        <h2 class="display-5 fw-bold mb-3">Have a Project in Mind?</h2>
-        <p class="lead text-white-50 mb-4">
-            Let's discuss how a high-performance web application can help you achieve your business goals.<br>
-            Your initial consultation is always free.
+        <h2 class="section-title">What You’ll Get</h2>
+        <p class="section-subtitle">
+            Everything needed for a professional launch — plus a foundation you can grow on.
         </p>
-        <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-primary btn-lg">
-            Book a Free Consultation
-        </a>
+
+        <div class="row g-4">
+            <div class="col-lg-4 d-flex">
+                <div class="deliverable-card w-100">
+                    <div class="deliverable-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile-First Design</h3>
+                    <p>A clean, responsive layout that looks great on phones and loads smoothly.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 d-flex">
+                <div class="deliverable-card w-100">
+                    <div class="deliverable-icon"><i class="fas fa-search"></i></div>
+                    <h3>SEO-Ready Foundation</h3>
+                    <p>Proper titles/meta, clean structure, and indexing-friendly pages (plus analytics setup if needed).</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 d-flex">
+                <div class="deliverable-card w-100">
+                    <div class="deliverable-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Secure & Reliable Setup</h3>
+                    <p>Best-practice basics: SSL support, backups guidance, spam protection, and clean admin access.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-lg-4 d-flex">
+                <div class="deliverable-card w-100">
+                    <div class="deliverable-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Performance Optimizations</h3>
+                    <p>Image optimization, caching guidance, and a structure built to load fast.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 d-flex">
+                <div class="deliverable-card w-100">
+                    <div class="deliverable-icon"><i class="fas fa-tools"></i></div>
+                    <h3>Easy Content Updates</h3>
+                    <p>A setup where you can edit content without stress — and I can help with updates when needed.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 d-flex">
+                <div class="deliverable-card w-100">
+                    <div class="deliverable-icon"><i class="fas fa-handshake"></i></div>
+                    <h3>Support After Launch</h3>
+                    <p>Clear handoff, guidance, and optional maintenance so your site stays healthy.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- 5) PROCESS -->
+<section class="section-padding process-wrap">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Simple process, clear communication — from idea to launch.</p>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 d-flex">
+                <div class="process-step w-100">
+                    <div class="num">1</div>
+                    <h4>Discovery</h4>
+                    <p>We discuss your goals, pages, features, and examples you like.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 d-flex">
+                <div class="process-step w-100">
+                    <div class="num">2</div>
+                    <h4>Design + Build</h4>
+                    <p>I design the layout and develop the site with performance in mind.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 d-flex">
+                <div class="process-step w-100">
+                    <div class="num">3</div>
+                    <h4>Review</h4>
+                    <p>You review, we refine, and I polish details for a clean launch.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 d-flex">
+                <div class="process-step w-100">
+                    <div class="num">4</div>
+                    <h4>Launch</h4>
+                    <p>Go live with guidance, basic SEO setup, and a smooth handoff.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6) FINAL CTA -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="display-5 fw-bold mb-3">Ready to Build Something Serious?</h2>
+        <p class="lead text-white-50 mb-4">
+            Tell me what you want to achieve, and I’ll recommend the best approach (website, e-commerce, or custom web app).
+        </p>
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            <a href="{% url 'contact:contact_page' %}" class="btn btn-netflix-primary btn-lg">
+                Book a Free Consultation
+            </a>
+            <a href="https://wa.me/2348102712103" target="_blank" class="btn btn-netflix-secondary btn-lg" rel="noopener">
+                <i class="fab fa-whatsapp me-2"></i>Chat on WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+/*
+  Netflix-ish row behavior:
+  - Arrow buttons scroll by 1 card
+  - Auto-scroll every few seconds
+  - Pause on hover / focus / touch interaction
+  - Loop back to start when reaching end
+*/
+document.addEventListener('DOMContentLoaded', () => {
+    const sliders = document.querySelectorAll('.auto-slider[data-autoscroll="true"]');
+
+    // Arrow buttons
+    document.querySelectorAll('.slider-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const slider = document.getElementById(targetId);
+            if (!slider) return;
+
+            const card = slider.querySelector('.slide');
+            const cardWidth = card ? card.getBoundingClientRect().width : 320;
+            const gap = 16; // ~1rem
+            const amount = cardWidth + gap;
+
+            slider.scrollBy({
+                left: btn.classList.contains('next') ? amount : -amount,
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Auto-scroll logic per slider
+    sliders.forEach(slider => {
+        let intervalId = null;
+        let paused = false;
+
+        const getStep = () => {
+            const card = slider.querySelector('.slide');
+            const w = card ? card.getBoundingClientRect().width : 320;
+            return w + 16;
+        };
+
+        const atEnd = () => {
+            // allow small tolerance
+            return slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 8;
+        };
+
+        const tick = () => {
+            if (paused) return;
+
+            // If we are at the end, loop back
+            if (atEnd()) {
+                slider.scrollTo({ left: 0, behavior: 'smooth' });
+                return;
+            }
+
+            slider.scrollBy({ left: getStep(), behavior: 'smooth' });
+        };
+
+        const start = () => {
+            if (intervalId) return;
+            intervalId = setInterval(tick, 2800);
+        };
+
+        const stop = () => {
+            if (!intervalId) return;
+            clearInterval(intervalId);
+            intervalId = null;
+        };
+
+        // Pause on hover/focus
+        slider.addEventListener('mouseenter', () => { paused = true; });
+        slider.addEventListener('mouseleave', () => { paused = false; });
+
+        slider.addEventListener('focusin', () => { paused = true; });
+        slider.addEventListener('focusout', () => { paused = false; });
+
+        // Pause briefly after manual scroll/touch so user can control
+        let manualTimeout = null;
+        const pauseTemporarily = () => {
+            paused = true;
+            if (manualTimeout) clearTimeout(manualTimeout);
+            manualTimeout = setTimeout(() => { paused = false; }, 2200);
+        };
+        slider.addEventListener('wheel', pauseTemporarily, { passive: true });
+        slider.addEventListener('touchstart', pauseTemporarily, { passive: true });
+        slider.addEventListener('touchmove', pauseTemporarily, { passive: true });
+
+        // Start auto-scroll
+        start();
+
+        // If tab is hidden, stop to save resources
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stop();
+            else start();
+        });
+    });
+});
+</script>
 
 {% endblock %}
