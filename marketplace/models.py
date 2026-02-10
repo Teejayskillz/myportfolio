@@ -50,13 +50,17 @@ class Product(models.Model):
     price_full_ownership = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        help_text="One-time price for full source code ownership"
+        help_text="One-time price for full source code ownership",
+        null=True,
+        blank=True
     )
 
     rental_setup_fee = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        help_text="One-time setup fee for managed/rental version"
+        help_text="One-time setup fee for managed/rental version",
+        null=True,
+        blank=True
     )
 
     # Hosting options

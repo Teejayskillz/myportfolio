@@ -85,67 +85,86 @@
               {% endif %}
             </div>
 
-            <!-- Pricing cards -->
-            <div class="row g-3">
-              <!-- Full Ownership -->
-              <div class="col-md-6">
-                <div class="pd-price-card">
-                  <div class="pc-ico"><i class="fas fa-code"></i></div>
-                  <h4 class="mb-1">Full Ownership</h4>
-                  <p class="small mb-3" style="color: var(--netflix-light-gray);">
-                    Get full source code + docs.
-                  </p>
+       
 
-                  <div class="pc-price">
-                    ₦{{ product.price_full_ownership|floatformat:0 }}
+            {% if product.price_full_ownership or product.rental_setup_fee %}
+              <!-- Pricing cards -->
+              <div class="row g-3">
+
+                <!-- Full Ownership -->
+                {% if product.price_full_ownership %}
+                <div class="col-md-6">
+                  <div class="pd-price-card">
+                    <div class="pc-ico"><i class="fas fa-code"></i></div>
+                    <h4 class="mb-1">Full Ownership</h4>
+                    <p class="small mb-3" style="color: var(--netflix-light-gray);">
+                      Get full source code + docs.
+                    </p>
+
+                    <div class="pc-price">
+                      ₦{{ product.price_full_ownership|floatformat:0 }}
+                    </div>
+
+                    <ul class="pc-list mt-3">
+                      <li><i class="fas fa-check-circle"></i>Source code</li>
+                      <li><i class="fas fa-check-circle"></i>Documentation</li>
+                      <li><i class="fas fa-check-circle"></i>Commercial use</li>
+                    </ul>
+
+                    <a href="{% url 'marketplace:buy_now' product.slug %}" class="btn btn-netflix-primary w-100 mt-3">
+                      <i class="fas fa-shopping-cart me-2"></i>Buy Now
+                    </a>
                   </div>
-
-                  <ul class="pc-list mt-3">
-                    <li><i class="fas fa-check-circle"></i>Source code</li>
-                    <li><i class="fas fa-check-circle"></i>Documentation</li>
-                    <li><i class="fas fa-check-circle"></i>Commercial use</li>
-                  </ul>
-
-                  <a href="{% url 'marketplace:buy_now' product.slug %}" class="btn btn-netflix-primary w-100 mt-3">
-                    <i class="fas fa-shopping-cart me-2"></i>Buy Now
-                  </a>
                 </div>
-              </div>
+                {% endif %}
 
-              <!-- Rent & Host -->
-              <div class="col-md-6">
-                <div class="pd-price-card alt">
-                  <div class="pc-ico alt"><i class="fas fa-server"></i></div>
-                  <h4 class="mb-1">Rent & Host</h4>
-                  <p class="small mb-3" style="color: var(--netflix-light-gray);">
-                    We set it up and host it for you.
-                  </p>
+                <!-- Rent & Host -->
+                {% if product.rental_setup_fee %}
+                <div class="col-md-6">
+                  <div class="pd-price-card alt">
+                    <div class="pc-ico alt"><i class="fas fa-server"></i></div>
+                    <h4 class="mb-1">Rent & Host</h4>
+                    <p class="small mb-3" style="color: var(--netflix-light-gray);">
+                      We set it up and host it for you.
+                    </p>
 
-                  <div class="pc-price">
-                    ₦{{ product.rental_setup_fee|floatformat:0 }}
-                  </div>
+                    <div class="pc-price">
+                      ₦{{ product.rental_setup_fee|floatformat:0 }}
+                    </div>
 
-                  <div class="small mt-1" style="color: var(--netflix-light-gray);">
                     {% if product.starting_monthly_price %}
-                      + ₦{{ product.starting_monthly_price.monthly_price|floatformat:0 }}/month
-                      <span class="d-block">({{ product.starting_monthly_price.name }} plan)</span>
+                      <div class="small mt-1" style="color: var(--netflix-light-gray);">
+                        + ₦{{ product.starting_monthly_price.monthly_price|floatformat:0 }}/month
+                        <span class="d-block">({{ product.starting_monthly_price.name }} plan)</span>
+                      </div>
                     {% else %}
-                      Hosting plan required
+                      {# If you want to hide this line completely when no plan exists, remove this else block #}
+                      <div class="small mt-1" style="color: var(--netflix-light-gray);">
+                        Hosting plan required
+                      </div>
                     {% endif %}
+
+                    <ul class="pc-list mt-3">
+                      <li><i class="fas fa-check-circle"></i>Setup & deployment</li>
+                      <li><i class="fas fa-check-circle"></i>Managed hosting</li>
+                      <li><i class="fas fa-check-circle"></i>Updates support</li>
+                    </ul>
+
+                    <a href="{% url 'marketplace:rent_start' product.slug %}" class="btn btn-netflix-secondary w-100 mt-3">
+                      <i class="fas fa-rocket me-2"></i>Rent Now
+                    </a>
                   </div>
-
-                  <ul class="pc-list mt-3">
-                    <li><i class="fas fa-check-circle"></i>Setup & deployment</li>
-                    <li><i class="fas fa-check-circle"></i>Managed hosting</li>
-                    <li><i class="fas fa-check-circle"></i>Updates support</li>
-                  </ul>
-
-                  <a href="{% url 'marketplace:rent_start' product.slug %}"  class="btn btn-netflix-secondary w-100 mt-3">
-                    <i class="fas fa-rocket me-2"></i>Rent Now
-                  </a>
                 </div>
+                {% endif %}
+
               </div>
-            </div>
+            {% else %}
+              <div class="netflix-card p-3">
+                <p class="mb-0" style="color: var(--netflix-light-gray);">
+                  Pricing is not available for this product yet. Please check back soon or contact us on WhatsApp.
+                </p>
+              </div>
+            {% endif %}
 
             <!-- Secondary actions -->
             <div class="d-flex gap-3 mt-4">
