@@ -511,12 +511,13 @@
 
     <!-- ✅ SEO: internal links to service pages (create later if you don’t have them yet) -->
     <div class="seo-link-strip">
-      Popular services in Lagos:
-      <a href="/website-design-lagos/">Business Website Design</a> •
-      <a href="/ecommerce-website-lagos/">E-commerce Website Development</a> •
-      <a href="/custom-web-apps-lagos/">Custom Web App Development</a> •
-      <a href="/wordpress-developer-lagos/">WordPress Developer in Lagos</a>
-    </div>
+  Explore:
+  <a href="{% url 'projects:project_list' %}">Project Portfolio</a> •
+  <a href="{% url 'pricing:pricing_page' %}">Website Pricing</a> •
+  <a href="{% url 'blog:post_list' %}">Web Design Tips</a> •
+  <a href="{% url 'contact:contact_page' %}">Contact LagosWebDev</a>
+</div>
+
 
     <div class="text-center mt-4">
       <a href="{% url 'pricing:pricing_page' %}" class="btn btn-netflix-secondary btn-lg">
