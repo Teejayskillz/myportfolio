@@ -16,7 +16,7 @@
     padding: 7rem 0 5rem;
     background:
       linear-gradient(rgba(20,20,20,0.70), rgba(20,20,20,1)),
-      url('https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=2106&auto=format&fit=crop')
+      url("{% static 'img/home/lagos-web-design-hero.webp' %}")  /* ✅ SEO/SPEED: serve locally (replace file path) */
       no-repeat center center;
     background-size: cover;
     border-bottom: 1px solid var(--netflix-medium-gray);
@@ -37,9 +37,23 @@
   .hero-subline{
     color: rgba(255,255,255,0.88);
     max-width: 860px;
-    margin: 0 auto 1.6rem;
+    margin: 0 auto 1.2rem;
     font-size: 1.05rem;
   }
+
+  .hero-links{
+    max-width: 860px;
+    margin: 0.2rem auto 1.5rem;
+    color: rgba(255,255,255,0.78);
+    font-size: .95rem;
+  }
+  .hero-links a{
+    color: rgba(255,255,255,0.85);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .hero-links a:hover{ color: var(--netflix-red); }
+
   .hero-buttons .btn{ margin: .45rem; }
   .hero-microtrust{
     margin-top: 1.1rem;
@@ -85,8 +99,28 @@
     text-align:center;
     color: var(--netflix-light-gray);
     max-width: 900px;
-    margin: -2.2rem auto 2.8rem;
+    margin: -2.2rem auto 2.2rem;
     font-size: 1.05rem;
+  }
+
+  /* ✅ NEW: Internal Link Strip (SEO) */
+  .seo-link-strip{
+    margin-top: 1.3rem;
+    text-align:center;
+    color: rgba(255,255,255,0.75);
+    font-size: .95rem;
+  }
+  .seo-link-strip a{
+    color: rgba(255,255,255,0.85);
+    text-decoration:none;
+    border-bottom: 1px dashed rgba(255,255,255,0.35);
+    padding-bottom: 2px;
+    margin: 0 .25rem;
+    white-space: nowrap;
+  }
+  .seo-link-strip a:hover{
+    color: var(--netflix-red);
+    border-bottom-color: rgba(229,9,20,0.7);
   }
 
   /* 2b) QUICK-OFFER STRIP */
@@ -395,17 +429,31 @@
   }
 </style>
 
-<!-- 1) HERO (conversion copy) -->
+<!-- 1) HERO (conversion copy + SEO clarity) -->
 <section class="hero-section">
   <div class="container text-center">
     <div class="hero-content" style="animation: fadeInUp 1s ease-out;">
       <h1 class="mb-3">
-        Get a Website That <span style="color: var(--netflix-red);">Brings Customers</span> in Lagos & Nigeria
+        Web Design & Development in <span style="color: var(--netflix-red);">Lagos, Nigeria</span>
+        That Brings Customers
       </h1>
 
       <p class="lead">
         I help businesses get more calls, WhatsApp messages, bookings, and sales with modern websites, e-commerce stores, and custom web apps.
       </p>
+
+      <p class="hero-subline">
+        LagosWebDev is a Lagos-based web designer & developer building business websites, e-commerce stores,
+        and custom web applications for companies in Lagos and across Nigeria.
+      </p>
+
+      <div class="hero-links">
+        See proof:
+        <a href="{% url 'projects:project_list' %}">Project portfolio</a> •
+        <a href="https://lagoswebdev.com/projects/a-resturant-website/">Restaurant website case study</a> •
+        <a href="https://lagoswebdev.com/projects/makeup-shop-ecomerce-website/">E-commerce case study</a> •
+        <a href="https://lagoswebdev.com/projects/real-estate-agency-website/">Real estate case study</a>
+      </div>
 
       <p class="hero-subline">
         Fast on mobile • Clear messaging • SEO-ready pages • Easy admin so you can update content anytime.
@@ -433,7 +481,7 @@
   </div>
 </section>
 
-<!-- 2) QUICK OFFER STRIP (what you build + outcomes) -->
+<!-- 2) QUICK OFFER STRIP (what you build + outcomes + SEO links) -->
 <section class="section-padding quick-offer">
   <div class="container">
     <h2 class="section-title">What I Can Build for You</h2>
@@ -459,6 +507,15 @@
         <h3>Custom Web App</h3>
         <p>Booking, dashboards, portals, rentals, admin tools — built to match your workflow.</p>
       </div>
+    </div>
+
+    <!-- ✅ SEO: internal links to service pages (create later if you don’t have them yet) -->
+    <div class="seo-link-strip">
+      Popular services in Lagos:
+      <a href="/website-design-lagos/">Business Website Design</a> •
+      <a href="/ecommerce-website-lagos/">E-commerce Website Development</a> •
+      <a href="/custom-web-apps-lagos/">Custom Web App Development</a> •
+      <a href="/wordpress-developer-lagos/">WordPress Developer in Lagos</a>
     </div>
 
     <div class="text-center mt-4">
@@ -499,6 +556,9 @@
               <a href="https://lagoswebdev.com/projects/makeup-shop-ecomerce-website/" class="btn btn-sm btn-netflix-secondary">
                 View Case Study <i class="fas fa-arrow-right ms-2"></i>
               </a>
+              <a href="{% url 'projects:project_list' %}" class="btn btn-sm btn-netflix-secondary">
+                All Projects <i class="fas fa-folder-open ms-2"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -519,6 +579,9 @@
               <li><i class="fas fa-check-circle"></i><span>Easy updates in admin</span></li>
             </ul>
             <div class="project-actions">
+              <a href="https://lagoswebdev.com/projects/a-resturant-website/" class="btn btn-sm btn-netflix-secondary">
+                View Case Study <i class="fas fa-arrow-right ms-2"></i>
+              </a>
               <a href="https://portal.lagoswebdev.com/" class="btn btn-sm btn-netflix-secondary" target="_blank" rel="noopener">
                 View Live <i class="fas fa-external-link-alt ms-2"></i>
               </a>
@@ -545,6 +608,9 @@
               <a href="https://lagoswebdev.com/projects/real-estate-agency-website/" class="btn btn-sm btn-netflix-secondary">
                 View Case Study <i class="fas fa-arrow-right ms-2"></i>
               </a>
+              <a href="{% url 'projects:project_list' %}" class="btn btn-sm btn-netflix-secondary">
+                More Case Studies <i class="fas fa-folder-open ms-2"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -566,6 +632,11 @@
       <h2><i class="fas fa-pen-nib me-2" style="color: var(--netflix-red);"></i>Helpful Articles (Free Tips)</h2>
       <a href="{% url 'blog:post_list' %}">View all <i class="fas fa-arrow-right ms-1"></i></a>
     </div>
+
+    <!-- ✅ SEO: static keyword-rich intro so Google has “real text” here -->
+    <p class="text-white-50 mb-4">
+      Free tips for Lagos businesses: website pricing in Nigeria, how to get more customers online, basic SEO, and how to improve your website conversion rate.
+    </p>
 
     <div class="slider-wrap slider-fade">
       <button class="slider-btn prev" type="button" data-target="blogSlider" aria-label="Scroll blog left"><i class="fas fa-chevron-left"></i></button>
@@ -614,6 +685,11 @@
       <h2><i class="fas fa-store me-2" style="color: var(--netflix-red);"></i>Ready-Made Templates & Tools</h2>
       <a href="{% url 'marketplace:product_list' %}">Browse marketplace <i class="fas fa-arrow-right ms-1"></i></a>
     </div>
+
+    <!-- ✅ SEO: static text (helps Google understand what marketplace is) -->
+    <p class="text-white-50 mb-4">
+      Download website templates, scripts, and tools. If you want, I can also host and maintain the product for your business in Lagos or anywhere in Nigeria.
+    </p>
 
     <div class="slider-wrap slider-fade">
       <button class="slider-btn prev" type="button" data-target="mpSlider" aria-label="Scroll marketplace left"><i class="fas fa-chevron-left"></i></button>
