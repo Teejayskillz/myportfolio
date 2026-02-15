@@ -2,16 +2,13 @@ import uuid
 import os
 from decimal import Decimal
 from datetime import timedelta, date
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.http import HttpResponse, Http404
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.urls import reverse
-
 from dateutil.relativedelta import relativedelta
-
 from .models import (
     Product,
     HostingPlan,
@@ -26,8 +23,18 @@ from .forms import (
     BuyerDetailsForm,
     ReceiptUploadForm
 )
-
 from .emails import send_purchase_pending_emails, send_rental_invoice_pending_emails
+import requests
+from django.conf import settings
+from django.http import HttpResponseBadRequest
+from django.contrib.contenttypes.models import ContentType
+from .models import PurchaseRequest, RentalInvoice, PaymentTransaction
+import hmac, hashlib, json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.utils import timezone
+from .models import PaymentTransaction, PurchaseRequest, RentalInvoice
+from .services import fulfill_purchase, fulfill_invoice
 
 
 def product_list(request):
@@ -504,3 +511,196 @@ def rental_invoice_upload(request, invoice_id):
         return redirect("marketplace:rentals_dashboard")
 
     return render(request, "marketplace/rental_invoice_upload.html", {"invoice": invoice})
+
+
+def _paystack_init(*, email, amount_naira, reference, callback_url):
+    url = "https://api.paystack.co/transaction/initialize"
+    headers = {
+        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "email": email,
+        "amount": int(amount_naira * 100),
+        "reference": reference,
+        "callback_url": callback_url,
+    }
+
+    r = requests.post(url, json=payload, headers=headers, timeout=30)
+    print("PAYSTACK_INIT_STATUS:", r.status_code)
+    print("PAYSTACK_INIT_TEXT:", r.text)   
+    secret = (settings.PAYSTACK_SECRET_KEY or "").strip()
+    print("PAYSTACK_SECRET repr:", repr(secret))
+    print("PAYSTACK_SECRET length:", len(secret))
+    print("PAYSTACK_SECRET startswith sk_:", secret.startswith("sk_"))
+    print("RAW_SECRET_REPR:", repr(settings.PAYSTACK_SECRET_KEY))
+    print("STRIPPED_SECRET_REPR:", repr((settings.PAYSTACK_SECRET_KEY or "").strip()))
+
+    return r.json()
+
+def paystack_start_purchase(request, purchase_id):
+    purchase = get_object_or_404(PurchaseRequest, id=purchase_id)
+
+    # safety: don’t pay for already approved
+    if purchase.status == "approved":
+        return redirect("marketplace:product_list")
+
+    reference = f"PR-{purchase.id}-{uuid.uuid4().hex[:10]}"
+
+    tx = PaymentTransaction.objects.create(
+        reference=reference,
+        email=purchase.buyer_email,
+        amount=purchase.amount,
+        content_type=ContentType.objects.get_for_model(PurchaseRequest),
+        object_id=purchase.id,
+        status="pending",
+    )
+
+    callback_url = request.build_absolute_uri(reverse("marketplace:paystack_callback"))
+
+    res = _paystack_init(
+        email=purchase.buyer_email,
+        amount_naira=purchase.amount,
+        reference=reference,
+        callback_url=callback_url,
+    )
+
+    if not res.get("status"):
+        tx.status = "failed"
+        tx.paystack_payload = res
+        tx.save(update_fields=["status", "paystack_payload"])
+        return HttpResponseBadRequest("Unable to initialize payment.")
+
+    tx.paystack_payload = res
+    tx.save(update_fields=["paystack_payload"])
+
+
+    return redirect(res["data"]["authorization_url"])
+
+
+def paystack_start_invoice(request, invoice_id):
+    invoice = get_object_or_404(RentalInvoice, id=invoice_id)
+
+    if invoice.status == "approved":
+        return redirect("marketplace:rentals_dashboard")
+
+    reference = f"INV-{invoice.id}-{uuid.uuid4().hex[:10]}"
+
+    tx = PaymentTransaction.objects.create(
+        reference=reference,
+        email=invoice.rental.buyer_email,
+        amount=invoice.amount,
+        content_type=ContentType.objects.get_for_model(RentalInvoice),
+        object_id=invoice.id,
+        status="pending",
+    )
+
+    callback_url = request.build_absolute_uri(reverse("marketplace:paystack_callback"))
+
+    res = _paystack_init(
+        email=invoice.rental.buyer_email,
+        amount_naira=invoice.amount,
+        reference=reference,
+        callback_url=callback_url,
+    )
+
+    if not res.get("status"):
+        tx.status = "failed"
+        tx.paystack_payload = res
+        tx.save(update_fields=["status", "paystack_payload"])
+        return HttpResponseBadRequest("Unable to initialize payment.")
+
+    tx.paystack_payload = res
+    tx.save(update_fields=["paystack_payload"])
+
+    return redirect(res["data"]["authorization_url"])
+
+
+def paystack_callback(request):
+    # UX page only — webhook does the real approval
+    # You can show “We are confirming your payment…”
+    return redirect("marketplace:product_list")
+
+
+
+def _paystack_verify(reference: str):
+    url = f"https://api.paystack.co/transaction/verify/{reference}"
+    headers = {"Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"}
+    r = requests.get(url, headers=headers, timeout=30)
+    return r.json()
+
+
+@csrf_exempt
+def paystack_webhook(request):
+    signature = request.headers.get("x-paystack-signature")
+    if not signature:
+        return HttpResponse(status=400)
+
+    body = request.body
+    computed = hmac.new(
+        key=settings.PAYSTACK_SECRET_KEY.encode(),
+        msg=body,
+        digestmod=hashlib.sha512
+    ).hexdigest()
+
+    if not hmac.compare_digest(computed, signature):
+        return HttpResponse(status=401)
+
+    event = json.loads(body.decode("utf-8"))
+    event_type = event.get("event")
+    data = event.get("data", {})
+    reference = data.get("reference")
+
+    if not reference:
+        return HttpResponse(status=400)
+
+    # We only care about successful charge events
+    if event_type not in ("charge.success",):
+        return HttpResponse(status=200)
+
+    tx = PaymentTransaction.objects.filter(reference=reference).select_related("content_type").first()
+    if not tx:
+        return HttpResponse(status=200)
+
+    # idempotency: if already success, do nothing
+    if tx.status == "success":
+        return HttpResponse(status=200)
+
+    # Verify with Paystack (extra safety)
+    verify = _paystack_verify(reference)
+    if not verify.get("status"):
+        return HttpResponse(status=200)
+
+    vdata = verify.get("data", {})
+    if vdata.get("status") != "success":
+        tx.status = "failed"
+        tx.paystack_payload = verify
+        tx.save(update_fields=["status", "paystack_payload"])
+        return HttpResponse(status=200)
+
+    paid_amount_kobo = int(vdata.get("amount", 0))
+    paid_amount_naira = paid_amount_kobo / 100
+
+    # ensure amount matches what we expected
+    if float(tx.amount) != float(paid_amount_naira):
+        tx.status = "failed"
+        tx.paystack_payload = verify
+        tx.save(update_fields=["status", "paystack_payload"])
+        return HttpResponse(status=200)
+
+    tx.status = "success"
+    tx.paid_at = timezone.now()
+    tx.paystack_payload = verify
+    tx.save(update_fields=["status", "paid_at", "paystack_payload"])
+
+    # Fulfill based on linked object
+    obj = tx.content_object
+
+    # We need a request-like object for request.build_absolute_uri() inside emails.
+    # Easiest: use the webhook request itself.
+    if isinstance(obj, PurchaseRequest):
+        fulfill_purchase(request=request, purchase=obj)
+    elif isinstance(obj, RentalInvoice):
+        fulfill_invoice(invoice=obj)
+
+    return HttpResponse(status=200)

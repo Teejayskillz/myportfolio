@@ -137,6 +137,29 @@
         </div>
       </div>
 
+<!-- Paystack Option -->
+<div class="rr-summary mb-3" style="border-color: rgba(40,167,69,0.35);">
+  <div class="rowline">
+    <span class="k">Pay Automatically</span>
+    <span class="v" style="color: #28a745;">Paystack</span>
+  </div>
+  <div class="sub">
+    Pay now and your renewal will be confirmed automatically.
+  </div>
+
+  <form method="post" action="{% url 'marketplace:paystack_start_invoice' invoice.id %}" class="mt-3">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success w-100 btn-lg">
+      Pay ₦{{ invoice.amount|floatformat:0 }} with Paystack <i class="fas fa-lock ms-2"></i>
+    </button>
+  </form>
+
+  <div class="text-center mt-2 small" style="color: rgba(255,255,255,0.55);">
+    Or upload a manual payment receipt below.
+  </div>
+</div>
+
+
       <div class="rr-steps">
         <div class="rr-step">
           <div class="top"><i class="fas fa-money-bill-wave"></i>1) Pay</div>

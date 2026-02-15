@@ -84,6 +84,28 @@
             </div>
           </div>
 
+          <!-- Paystack Option -->
+<div class="netflix-card mb-4">
+  <h4 class="mb-2" style="font-weight: 900;">
+    <i class="fas fa-bolt me-2"></i>Pay Automatically (Paystack)
+  </h4>
+  <p class="mb-3" style="color: var(--netflix-light-gray);">
+    Pay instantly with card, bank transfer, or USSD. Your order will be activated automatically after verification.
+  </p>
+
+  <form method="post" action="{% url 'marketplace:paystack_start_purchase' purchase.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success w-100 btn-lg">
+      <i class="fas fa-lock me-2"></i>Pay ₦{{ purchase.amount|floatformat:0 }} with Paystack
+    </button>
+  </form>
+
+  <div class="text-center mt-3 small" style="color: rgba(255,255,255,0.55);">
+    Prefer manual transfer? Upload receipt below.
+  </div>
+</div>
+
+
           <!-- Upload Receipt -->
           <div class="netflix-card">
             <h4 class="mb-2" style="font-weight: 900;">
