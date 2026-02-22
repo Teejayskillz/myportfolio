@@ -128,6 +128,34 @@
     font-size: .92rem;
   }
 
+  /* Plan details box */
+  .rh-plan-details{
+    margin-top: .85rem;
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: none;
+  }
+  .rh-plan-details .title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+  .rh-plan-details .title .k{ color: var(--netflix-light-gray); }
+  .rh-plan-details .title .v{ font-weight: 950; color: var(--netflix-white); }
+  .rh-plan-details .features{
+    margin-top: .55rem;
+    color: rgba(255,255,255,0.72);
+    font-size: .95rem;
+  }
+  .rh-plan-details ul{
+    margin: .4rem 0 0;
+    padding-left: 1.1rem;
+  }
+  .rh-plan-details li{ margin: .28rem 0; }
+
   /* Sticky sidebar */
   .rh-side{
     border-radius: 18px;
@@ -233,12 +261,26 @@
               <select name="plan_id" class="form-select rh-select" required id="planSelect">
                 <option value="">Select a plan…</option>
                 {% for plan in plans %}
-                  <option value="{{ plan.id }}" data-price="{{ plan.monthly_price }}">
+                  <option
+                    value="{{ plan.id }}"
+                    data-price="{{ plan.monthly_price }}"
+                    data-name="{{ plan.name }}"
+                    data-features="{{ plan.features|default:''|escape }}"
+                  >
                     {{ plan.name }} — ₦{{ plan.monthly_price|floatformat:0 }}/mo
                   </option>
                 {% endfor %}
               </select>
               <div class="rh-note">Setup fee is added once.</div>
+
+              <!-- ✅ Plan Details (Option A) -->
+              <div class="rh-plan-details" id="planDetailsBox">
+                <div class="title">
+                  <span class="k">Plan details</span>
+                  <span class="v" id="planName">—</span>
+                </div>
+                <div class="features" id="planFeatures">—</div>
+              </div>
             </div>
 
             <div class="row g-3">
@@ -373,10 +415,14 @@
 </div>
 
 <script>
-  // Show selected plan price in the summary box
   document.addEventListener("DOMContentLoaded", function () {
     const planSelect = document.getElementById("planSelect");
     const planPriceEl = document.getElementById("planPrice");
+
+    // Plan details elements
+    const planDetailsBox = document.getElementById("planDetailsBox");
+    const planNameEl = document.getElementById("planName");
+    const planFeaturesEl = document.getElementById("planFeatures");
 
     function formatNaira(value) {
       const num = Number(value);
@@ -384,15 +430,54 @@
       return "₦" + Math.round(num).toLocaleString();
     }
 
-    function updatePrice() {
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderFeatures(featuresStr) {
+      const raw = (featuresStr || "").trim();
+      if (!raw) return "No feature details added yet.";
+
+      // stored as comma-separated in DB
+      const items = raw.split(",").map(s => s.trim()).filter(Boolean);
+      if (!items.length) return "No feature details added yet.";
+
+      return `
+        <ul>
+          ${items.map(i => `<li>${escapeHtml(i)}</li>`).join("")}
+        </ul>
+      `;
+    }
+
+    function updatePlanUI() {
       const opt = planSelect?.selectedOptions?.[0];
       const price = opt?.dataset?.price;
+      const name = opt?.dataset?.name;
+      const features = opt?.dataset?.features;
+
+      // price
       planPriceEl.textContent = price ? formatNaira(price) : "—";
+
+      // plan details
+      if (opt && opt.value) {
+        if (planDetailsBox) planDetailsBox.style.display = "block";
+        if (planNameEl) planNameEl.textContent = name || "Selected plan";
+        if (planFeaturesEl) planFeaturesEl.innerHTML = renderFeatures(features);
+      } else {
+        if (planDetailsBox) planDetailsBox.style.display = "none";
+        if (planNameEl) planNameEl.textContent = "—";
+        if (planFeaturesEl) planFeaturesEl.textContent = "—";
+      }
     }
 
     if (planSelect) {
-      planSelect.addEventListener("change", updatePrice);
-      updatePrice();
+      planSelect.addEventListener("change", updatePlanUI);
+      updatePlanUI();
     }
 
     // Domain toggle
