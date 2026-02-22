@@ -135,19 +135,39 @@ class PurchaseRequest(models.Model):
         default='pending'
     )
 
+    DOMAIN_OPTION_CHOICES = (
+        ("none", "No domain"),
+        ("have_domain", "I already have a domain"),
+        ("need_domain", "I want Sleekpedia to register a domain"),
+    )
+
+    domain_option = models.CharField(
+        max_length=20,
+        choices=DOMAIN_OPTION_CHOICES,
+        default="none"
+    )
+    domain_name = models.CharField(max_length=253, blank=True)  # domains max ~253 chars
+    domain_status = models.CharField(
+        max_length=20,
+        default="unchecked",
+        blank=True
+    )
+
     admin_note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     from django.core.exceptions import ValidationError
 
     def clean(self):
+       super().clean()
        if self.delivery_type == "rent_own" and not self.hosting_plan:
             raise ValidationError({"hosting_plan": "Hosting plan is required for Rent & Own."})
        if self.delivery_type == "full_ownership":
             self.hosting_plan = None
-
+       if self.domain_option in ("have_domain", "need_domain") and not self.domain_name:
+            raise ValidationError({"domain_name": "Please enter a domain name."})
         
-
+ 
 class License(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     purchase = models.OneToOneField(PurchaseRequest, on_delete=models.CASCADE)

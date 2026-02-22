@@ -12,20 +12,75 @@
     <div class="mb-3">
         {{ form.buyer_name.label_tag }}
         {{ form.buyer_name }}
+        {{ form.buyer_name.errors }}
     </div>
+
     <div class="mb-3">
         {{ form.buyer_email.label_tag }}
         {{ form.buyer_email }}
+        {{ form.buyer_email.errors }}
     </div>
+
     <div class="mb-3">
         {{ form.whatsapp_number.label_tag }}
         {{ form.whatsapp_number }}
+        {{ form.whatsapp_number.errors }}
     </div>
+
     <div class="mb-3">
         {{ form.note.label_tag }}
         {{ form.note }}
+        {{ form.note.errors }}
+    </div>
+
+    <hr>
+
+    <h5>Domain (optional)</h5>
+
+    <div class="mb-3">
+        {{ form.domain_option.label_tag }}
+        {{ form.domain_option }}
+        {{ form.domain_option.errors }}
+    </div>
+
+    <div class="mb-3" id="domainNameWrap">
+        {{ form.domain_name.label_tag }}
+        {{ form.domain_name }}
+        {{ form.domain_name.errors }}
+        <small class="text-muted d-block mt-1">
+            If you picked “I already have a domain” or “Register a domain”, enter it like: example.com
+        </small>
     </div>
 
     <button type="submit" class="btn btn-primary">Next</button>
 </form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const opt = document.querySelector('select[name="domain_option"], input[name="domain_option"]');
+    const wrap = document.getElementById("domainNameWrap");
+
+    function getValue() {
+      // If select
+      const sel = document.querySelector('select[name="domain_option"]');
+      if (sel) return sel.value;
+
+      // If radios
+      const rad = document.querySelector('input[name="domain_option"]:checked');
+      return rad ? rad.value : "none";
+    }
+
+    function sync() {
+      const v = getValue();
+      const show = (v === "have_domain" || v === "need_domain");
+      if (wrap) wrap.style.display = show ? "block" : "none";
+    }
+
+    document.addEventListener("change", function(e){
+      if (e.target && e.target.name === "domain_option") sync();
+    });
+
+    sync();
+  });
+</script>
 {% endblock %}

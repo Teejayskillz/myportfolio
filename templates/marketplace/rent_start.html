@@ -56,6 +56,55 @@
     margin-top: .45rem;
   }
 
+  /* Divider */
+  .rh-divider{
+    margin: 1.2rem 0 1rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Domain section */
+  .rh-domain{
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.08);
+    margin-top: 1.2rem;
+  }
+  .rh-domain h6{
+    margin: 0 0 .8rem;
+    font-weight: 950;
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .rh-domain h6 i{ color: var(--netflix-red); }
+
+  .rh-radio{
+    display:flex;
+    flex-direction:column;
+    gap:.55rem;
+  }
+  .rh-radio .opt{
+    display:flex;
+    gap:.6rem;
+    align-items:flex-start;
+    padding:.65rem .75rem;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .rh-radio input[type="radio"]{
+    margin-top: .25rem;
+    accent-color: var(--netflix-red);
+  }
+  .rh-radio .opt strong{ display:block; font-weight: 900; }
+  .rh-radio .opt small{ color: rgba(255,255,255,0.55); }
+
+  .rh-domain-input{
+    margin-top: .9rem;
+    display:none;
+  }
+
   /* Summary box */
   .rh-summary{
     margin-top: 1.1rem;
@@ -207,6 +256,50 @@
               </div>
             </div>
 
+            <!-- ✅ DOMAIN SECTION -->
+            <div class="rh-domain">
+              <h6><i class="fas fa-globe"></i>Domain (optional)</h6>
+
+              <div class="rh-radio" id="domainOptions">
+                <label class="opt">
+                  <input type="radio" name="domain_option" value="none" checked>
+                  <div>
+                    <strong>No domain for now</strong>
+                    <small>You can add a domain later.</small>
+                  </div>
+                </label>
+
+                <label class="opt">
+                  <input type="radio" name="domain_option" value="have_domain">
+                  <div>
+                    <strong>I already have a domain</strong>
+                    <small>Tell us the domain you’ll use (e.g. mysite.com).</small>
+                  </div>
+                </label>
+
+                <label class="opt">
+                  <input type="radio" name="domain_option" value="need_domain">
+                  <div>
+                    <strong>I want LagosWebDev to register a domain for me</strong>
+                    <small>Enter your preferred domain name.</small>
+                  </div>
+                </label>
+              </div>
+
+              <div class="rh-domain-input" id="domainInputWrap">
+                <label class="form-label rh-label mt-2">Domain Name</label>
+                <input
+                  name="domain_name"
+                  class="form-control rh-input"
+                  placeholder="example.com"
+                  id="domainNameInput"
+                >
+                <div class="rh-note">
+                  We’ll confirm availability after you submit (or during payment approval).
+                </div>
+              </div>
+            </div>
+
             <div class="rh-summary mt-4">
               <div class="rowline">
                 <span class="k">One-time setup fee</span>
@@ -280,13 +373,12 @@
 </div>
 
 <script>
-  // Show selected plan price in the summary box (no backend changes needed)
+  // Show selected plan price in the summary box
   document.addEventListener("DOMContentLoaded", function () {
     const planSelect = document.getElementById("planSelect");
     const planPriceEl = document.getElementById("planPrice");
 
     function formatNaira(value) {
-      // value may be "12000.00" or "12000"
       const num = Number(value);
       if (!isFinite(num)) return "—";
       return "₦" + Math.round(num).toLocaleString();
@@ -301,6 +393,26 @@
     if (planSelect) {
       planSelect.addEventListener("change", updatePrice);
       updatePrice();
+    }
+
+    // Domain toggle
+    const domainOptions = document.getElementById("domainOptions");
+    const domainWrap = document.getElementById("domainInputWrap");
+    const domainInput = document.getElementById("domainNameInput");
+
+    function syncDomainUI() {
+      const picked = domainOptions.querySelector('input[name="domain_option"]:checked')?.value || "none";
+      const needsName = (picked === "have_domain" || picked === "need_domain");
+      domainWrap.style.display = needsName ? "block" : "none";
+
+      if (!needsName && domainInput) {
+        domainInput.value = "";
+      }
+    }
+
+    if (domainOptions) {
+      domainOptions.addEventListener("change", syncDomainUI);
+      syncDomainUI();
     }
   });
 </script>

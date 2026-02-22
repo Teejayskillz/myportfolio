@@ -40,6 +40,23 @@ class BuyerDetailsForm(forms.Form):
     whatsapp_number = forms.CharField(max_length=30)
     note = forms.CharField(widget=forms.Textarea, required=False)
 
+    DOMAIN_OPTION_CHOICES = (
+        ("none", "No domain"),
+        ("have_domain", "I already have a domain"),
+        ("need_domain", "I want Lagoswebdev to register a domain"),
+    )
+
+    domain_option = forms.ChoiceField(choices=DOMAIN_OPTION_CHOICES, required=False)
+    domain_name = forms.CharField(max_length=253, required=False)
+
+    def clean(self):
+        cleaned = super().clean()
+        opt = cleaned.get("domain_option") or "none"
+        name = (cleaned.get("domain_name") or "").strip().lower()
+
+        if opt in ("have_domain", "need_domain") and not name:
+            self.add_error("domain_name", "Enter your domain name.")
+        return cleaned
 
 class ReceiptUploadForm(forms.Form):
     receipt = forms.FileField()

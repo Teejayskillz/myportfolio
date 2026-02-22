@@ -2,13 +2,23 @@ import uuid
 import os
 from decimal import Decimal
 from datetime import timedelta, date
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.urls import reverse
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.views.decorators.csrf import csrf_exempt
+
 from dateutil.relativedelta import relativedelta
+import requests
+import hmac
+import hashlib
+import json
+
 from .models import (
     Product,
     HostingPlan,
@@ -16,7 +26,8 @@ from .models import (
     DownloadToken,
     Rental,
     RentalInvoice,
-    MagicLinkToken
+    MagicLinkToken,
+    PaymentTransaction,
 )
 from .forms import (
     CheckoutOptionsForm,
@@ -24,16 +35,6 @@ from .forms import (
     ReceiptUploadForm
 )
 from .emails import send_purchase_pending_emails, send_rental_invoice_pending_emails
-import requests
-from django.conf import settings
-from django.http import HttpResponseBadRequest
-from django.contrib.contenttypes.models import ContentType
-from .models import PurchaseRequest, RentalInvoice, PaymentTransaction
-import hmac, hashlib, json
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
-from django.utils import timezone
-from .models import PaymentTransaction, PurchaseRequest, RentalInvoice
 from .services import fulfill_purchase, fulfill_invoice
 
 
@@ -58,7 +59,7 @@ def checkout_options(request, slug):
         form = CheckoutOptionsForm(request.POST, product=product)
 
         if form.is_valid():
-            delivery_type = form.cleaned_data["delivery_type"]          # full_ownership | rent_own
+            delivery_type = form.cleaned_data["delivery_type"]  # full_ownership | rent_own
             hosting_plan = form.cleaned_data.get("hosting_plan")
 
             # 🔐 SERVER-SIDE PRICE CALCULATION
@@ -118,13 +119,30 @@ def checkout_details(request, checkout_id):
                 'name': form.cleaned_data['buyer_name'],
                 'email': form.cleaned_data['buyer_email'],
                 'whatsapp': form.cleaned_data['whatsapp_number'],
-                'note': form.cleaned_data.get('note', '')
+                'note': form.cleaned_data.get('note', ''),
+
+                # ✅ domain fields (new)
+                'domain_option': form.cleaned_data.get('domain_option', 'none'),
+                'domain_name': (form.cleaned_data.get('domain_name') or '').strip().lower(),
             }
             checkouts[checkout_id] = checkout
             request.session['checkouts'] = checkouts
             return redirect('marketplace:checkout_summary', checkout_id=checkout_id)
+
     else:
-        form = BuyerDetailsForm()
+        # ✅ prefill if user goes back
+        initial = {}
+        buyer = checkout.get('buyer') or {}
+        if buyer:
+            initial = {
+                'buyer_name': buyer.get('name', ''),
+                'buyer_email': buyer.get('email', ''),
+                'whatsapp_number': buyer.get('whatsapp', ''),
+                'note': buyer.get('note', ''),
+                'domain_option': buyer.get('domain_option', 'none'),
+                'domain_name': buyer.get('domain_name', ''),
+            }
+        form = BuyerDetailsForm(initial=initial)
 
     return render(request, 'marketplace/checkout/details.html', {
         'form': form,
@@ -177,19 +195,28 @@ def checkout_payment(request, checkout_id):
     if request.method == 'POST':
         form = ReceiptUploadForm(request.POST, request.FILES)
         if form.is_valid():
+            buyer = checkout.get('buyer') or {}
+
             purchase = PurchaseRequest.objects.create(
                 product=product,
                 hosting_plan=hosting_plan,
                 delivery_type=checkout['delivery_type'],  # full_ownership | rent_own
-                buyer_name=checkout['buyer']['name'],
-                buyer_email=checkout['buyer']['email'],
-                whatsapp_number=checkout['buyer']['whatsapp'],
+                buyer_name=buyer.get('name', ''),
+                buyer_email=buyer.get('email', ''),
+                whatsapp_number=buyer.get('whatsapp', ''),
+
+                # ✅ domain fields (new)
+                domain_option=buyer.get('domain_option', 'none'),
+                domain_name=(buyer.get('domain_name') or '').strip().lower(),
+
+                # NOTE: only keep this if your model has it
+                domain_status="unchecked",
+
                 amount=Decimal(checkout['amount']),
                 receipt=form.cleaned_data['receipt'],
                 status='pending'
             )
 
-            # ✅ Send 2 emails (customer + admin)
             send_purchase_pending_emails(request=request, purchase=purchase)
 
             del checkouts[checkout_id]
@@ -242,9 +269,15 @@ def buy_now(request, slug):
                 'buyer_name': form.cleaned_data['buyer_name'],
                 'buyer_email': form.cleaned_data['buyer_email'],
                 'whatsapp_number': form.cleaned_data['whatsapp_number'],
+
+                # ✅ domain fields (new)
+                'domain_option': form.cleaned_data.get('domain_option', 'none'),
+                'domain_name': (form.cleaned_data.get('domain_name') or '').strip().lower(),
+
                 'amount': str(product.price_full_ownership)
             }
             return redirect('marketplace:buy_now_receipt', purchase_id=product.id)
+
     else:
         form = BuyerDetailsForm()
 
@@ -268,10 +301,18 @@ def buy_now_receipt(request, purchase_id):
         if form.is_valid():
             purchase = PurchaseRequest.objects.create(
                 product=product,
-                delivery_type='full_ownership',  # ✅ CHANGED
+                delivery_type='full_ownership',
                 buyer_name=session_data['buyer_name'],
                 buyer_email=session_data['buyer_email'],
                 whatsapp_number=session_data['whatsapp_number'],
+
+                # ✅ domain fields (new)
+                domain_option=session_data.get('domain_option', 'none'),
+                domain_name=(session_data.get('domain_name') or '').strip().lower(),
+
+                # NOTE: only keep this if your model has it
+                domain_status="unchecked",
+
                 amount=Decimal(session_data['amount']),
                 receipt=form.cleaned_data['receipt'],
                 status='pending'
@@ -281,6 +322,7 @@ def buy_now_receipt(request, purchase_id):
 
             del request.session['buy_now']
             return redirect('marketplace:buy_now_summary', purchase_id=purchase.id)
+
     else:
         form = ReceiptUploadForm()
 
@@ -305,9 +347,14 @@ def rent_start(request, slug):
 
     if request.method == "POST":
         plan_id = request.POST.get("plan_id")
+
         buyer_name = request.POST.get("buyer_name", "").strip()
         buyer_email = request.POST.get("buyer_email", "").strip()
         whatsapp_number = request.POST.get("whatsapp_number", "").strip()
+
+        # ✅ Domain fields (new)
+        domain_option = (request.POST.get("domain_option") or "none").strip()
+        domain_name = (request.POST.get("domain_name") or "").strip().lower()
 
         plans = product.available_hosting_plans.filter(is_active=True).order_by("monthly_price")
         if not plans.exists():
@@ -323,17 +370,29 @@ def rent_start(request, slug):
             messages.error(request, "Please fill in all required fields.")
             return redirect("marketplace:rent_start", slug=product.slug)
 
-        amount = product.rental_setup_fee + plan.monthly_price
+        # ✅ Validate domain only when needed
+        if domain_option in ("have_domain", "need_domain") and not domain_name:
+            messages.error(request, "Please enter your domain name.")
+            return redirect("marketplace:rent_start", slug=product.slug)
+
+        amount = (product.rental_setup_fee or Decimal("0.00")) + plan.monthly_price
 
         purchase = PurchaseRequest.objects.create(
             product=product,
             hosting_plan=plan,
-            delivery_type="rent_own",  # ✅ CHANGED
+            delivery_type="rent_own",
             buyer_name=buyer_name,
             buyer_email=buyer_email,
             whatsapp_number=whatsapp_number,
             amount=amount,
             status="pending",
+
+            # ✅ Save domain choice
+            domain_option=domain_option,
+            domain_name=domain_name,
+
+            # NOTE: only keep this if your model has it
+            domain_status="unchecked",
         )
 
         return redirect("marketplace:rent_receipt", purchase_id=purchase.id)
@@ -346,7 +405,7 @@ def rent_start(request, slug):
 
 
 def rent_receipt(request, purchase_id):
-    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="rent_own")  # ✅ CHANGED
+    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="rent_own")
 
     if request.method == "POST":
         receipt = request.FILES.get("receipt")
@@ -366,7 +425,7 @@ def rent_receipt(request, purchase_id):
 
 
 def rent_confirmed(request, purchase_id):
-    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="rent_own")  # ✅ CHANGED
+    purchase = get_object_or_404(PurchaseRequest, id=purchase_id, delivery_type="rent_own")
     return render(request, "marketplace/rent_confirmed.html", {"purchase": purchase})
 
 
@@ -465,7 +524,6 @@ def rental_generate_renew_invoice(request, rental_id):
         return redirect("marketplace:rental_invoice_upload", invoice_id=existing.id)
 
     now = timezone.now()
-
     base_dt = rental.expires_at if rental.expires_at and rental.expires_at > now else now
 
     period_start = (base_dt + timedelta(days=1)).date()
@@ -527,21 +585,12 @@ def _paystack_init(*, email, amount_naira, reference, callback_url):
     }
 
     r = requests.post(url, json=payload, headers=headers, timeout=30)
-    print("PAYSTACK_INIT_STATUS:", r.status_code)
-    print("PAYSTACK_INIT_TEXT:", r.text)   
-    secret = (settings.PAYSTACK_SECRET_KEY or "").strip()
-    print("PAYSTACK_SECRET repr:", repr(secret))
-    print("PAYSTACK_SECRET length:", len(secret))
-    print("PAYSTACK_SECRET startswith sk_:", secret.startswith("sk_"))
-    print("RAW_SECRET_REPR:", repr(settings.PAYSTACK_SECRET_KEY))
-    print("STRIPPED_SECRET_REPR:", repr((settings.PAYSTACK_SECRET_KEY or "").strip()))
-
     return r.json()
+
 
 def paystack_start_purchase(request, purchase_id):
     purchase = get_object_or_404(PurchaseRequest, id=purchase_id)
 
-    # safety: don’t pay for already approved
     if purchase.status == "approved":
         return redirect("marketplace:product_list")
 
@@ -573,7 +622,6 @@ def paystack_start_purchase(request, purchase_id):
 
     tx.paystack_payload = res
     tx.save(update_fields=["paystack_payload"])
-
 
     return redirect(res["data"]["authorization_url"])
 
@@ -617,10 +665,7 @@ def paystack_start_invoice(request, invoice_id):
 
 
 def paystack_callback(request):
-    # UX page only — webhook does the real approval
-    # You can show “We are confirming your payment…”
     return redirect("marketplace:product_list")
-
 
 
 def _paystack_verify(reference: str):
@@ -654,7 +699,6 @@ def paystack_webhook(request):
     if not reference:
         return HttpResponse(status=400)
 
-    # We only care about successful charge events
     if event_type not in ("charge.success",):
         return HttpResponse(status=200)
 
@@ -662,11 +706,9 @@ def paystack_webhook(request):
     if not tx:
         return HttpResponse(status=200)
 
-    # idempotency: if already success, do nothing
     if tx.status == "success":
         return HttpResponse(status=200)
 
-    # Verify with Paystack (extra safety)
     verify = _paystack_verify(reference)
     if not verify.get("status"):
         return HttpResponse(status=200)
@@ -681,7 +723,6 @@ def paystack_webhook(request):
     paid_amount_kobo = int(vdata.get("amount", 0))
     paid_amount_naira = paid_amount_kobo / 100
 
-    # ensure amount matches what we expected
     if float(tx.amount) != float(paid_amount_naira):
         tx.status = "failed"
         tx.paystack_payload = verify
@@ -693,11 +734,8 @@ def paystack_webhook(request):
     tx.paystack_payload = verify
     tx.save(update_fields=["status", "paid_at", "paystack_payload"])
 
-    # Fulfill based on linked object
     obj = tx.content_object
 
-    # We need a request-like object for request.build_absolute_uri() inside emails.
-    # Easiest: use the webhook request itself.
     if isinstance(obj, PurchaseRequest):
         fulfill_purchase(request=request, purchase=obj)
     elif isinstance(obj, RentalInvoice):
