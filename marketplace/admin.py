@@ -1,5 +1,3 @@
-# marketplace/admin.py
-
 from datetime import timedelta
 from django.conf import settings
 from django.contrib import admin, messages
@@ -7,7 +5,6 @@ from django.core.mail import EmailMessage
 from django.db import transaction
 from django.urls import reverse
 from django.utils import timezone
-
 from .models import (
     Product,
     HostingPlan,
